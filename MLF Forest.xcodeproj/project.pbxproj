@@ -35,7 +35,6 @@
 		BB0A5B8A16BFED550020EA0A /* ParameterNamedIndex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB0A5B7C16BFED550020EA0A /* ParameterNamedIndex.cpp */; };
 		BB0A5B8B16BFED550020EA0A /* ParameterVec3f.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB0A5B8116BFED550020EA0A /* ParameterVec3f.cpp */; };
 		BB0A5B8C16BFED550020EA0A /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB0A5B8316BFED550020EA0A /* Utils.cpp */; };
-		BB6A0AF716B804060047D519 /* ofxSSAO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB6A0AE816B804060047D519 /* ofxSSAO.cpp */; };
 		BB74BC1E16BD092400314E64 /* ControlProperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB74BC1C16BD092400314E64 /* ControlProperties.cpp */; };
 		BB83BD3616B76E2F00703A21 /* Config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB83BCE816B76E2F00703A21 /* Config.cpp */; };
 		BB83BD3716B76E2F00703A21 /* Container.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB83BCEA16B76E2F00703A21 /* Container.cpp */; };
@@ -65,7 +64,6 @@
 		BBFAD45616B88FE200C65307 /* ofxAssimpModelLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBFAD44A16B88FE200C65307 /* ofxAssimpModelLoader.cpp */; };
 		BBFAD45816B891CB00C65307 /* Performer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBFAD45716B891CB00C65307 /* Performer.cpp */; };
 		BBFAD47416B8B50400C65307 /* Rod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBFAD47316B8B50400C65307 /* Rod.cpp */; };
-		BBFAD48016B904B200C65307 /* ofEasyCam2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBFAD47E16B904B100C65307 /* ofEasyCam2.cpp */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
 		E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */; };
@@ -260,8 +258,6 @@
 		BB0A5B8216BFED550020EA0A /* ParameterVec3f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParameterVec3f.h; sourceTree = "<group>"; };
 		BB0A5B8316BFED550020EA0A /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
 		BB0A5B8416BFED550020EA0A /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
-		BB6A0AE816B804060047D519 /* ofxSSAO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSSAO.cpp; sourceTree = "<group>"; };
-		BB6A0AE916B804060047D519 /* ofxSSAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSSAO.h; sourceTree = "<group>"; };
 		BB74BC1C16BD092400314E64 /* ControlProperties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ControlProperties.cpp; sourceTree = "<group>"; };
 		BB74BC1D16BD092400314E64 /* ControlProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControlProperties.h; sourceTree = "<group>"; };
 		BB83BCE816B76E2F00703A21 /* Config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Config.cpp; sourceTree = "<group>"; };
@@ -367,12 +363,9 @@
 		BBFAD44B16B88FE200C65307 /* ofxAssimpModelLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAssimpModelLoader.h; sourceTree = "<group>"; };
 		BBFAD44C16B88FE200C65307 /* ofxAssimpUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAssimpUtils.h; sourceTree = "<group>"; };
 		BBFAD45716B891CB00C65307 /* Performer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Performer.cpp; sourceTree = "<group>"; };
-		BBFAD47216B8956500C65307 /* Arcball.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Arcball.h; sourceTree = "<group>"; };
 		BBFAD47316B8B50400C65307 /* Rod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rod.cpp; sourceTree = "<group>"; };
 		BBFAD47A16B8BBB100C65307 /* Scale.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Scale.h; sourceTree = "<group>"; };
 		BBFAD47C16B8BBD100C65307 /* ScaleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScaleManager.h; sourceTree = "<group>"; };
-		BBFAD47E16B904B100C65307 /* ofEasyCam2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofEasyCam2.cpp; sourceTree = "<group>"; };
-		BBFAD47F16B904B100C65307 /* ofEasyCam2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofEasyCam2.h; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../openFrameworks/libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
@@ -799,31 +792,12 @@
 			isa = PBXGroup;
 			children = (
 				BBFAD40916B88FE200C65307 /* ofxAssimpModelLoader */,
-				BB6A0ACF16B804060047D519 /* ofxSSAO */,
 				a0b90d3b0adb9c1716816714bf7f212b /* ofxOpenCv */,
 				e6053ab7fec63d5f83825b880ce53c41 /* ofxOsc */,
 				1f4fb5c423662b96adfdcc0badec1cb0 /* ofxXmlSettings */,
 				2413c01760b1811bed0f502df2311b72 /* ofxMidi */,
 			);
 			name = addons;
-			sourceTree = "<group>";
-		};
-		BB6A0ACF16B804060047D519 /* ofxSSAO */ = {
-			isa = PBXGroup;
-			children = (
-				BB6A0AE716B804060047D519 /* src */,
-			);
-			name = ofxSSAO;
-			path = ../../../openFrameworks/addons/ofxSSAO;
-			sourceTree = "<group>";
-		};
-		BB6A0AE716B804060047D519 /* src */ = {
-			isa = PBXGroup;
-			children = (
-				BB6A0AE816B804060047D519 /* ofxSSAO.cpp */,
-				BB6A0AE916B804060047D519 /* ofxSSAO.h */,
-			);
-			path = src;
 			sourceTree = "<group>";
 		};
 		BB83BCBD16B76E1800703A21 /* msalibs */ = {
@@ -1202,11 +1176,8 @@
 				BBFAD45716B891CB00C65307 /* Performer.cpp */,
 				BB83BD4E16B76F9F00703A21 /* Rod.h */,
 				BBFAD47316B8B50400C65307 /* Rod.cpp */,
-				BBFAD47216B8956500C65307 /* Arcball.h */,
 				BBFAD47A16B8BBB100C65307 /* Scale.h */,
 				BBFAD47C16B8BBD100C65307 /* ScaleManager.h */,
-				BBFAD47E16B904B100C65307 /* ofEasyCam2.cpp */,
-				BBFAD47F16B904B100C65307 /* ofEasyCam2.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -1516,13 +1487,11 @@
 				BB83BD4216B76E2F00703A21 /* Panel.cpp in Sources */,
 				BB83BD4316B76E2F00703A21 /* Renderer.cpp in Sources */,
 				BB83BD4616B76E2F00703A21 /* ofxMSAInteractiveObject.cpp in Sources */,
-				BB6A0AF716B804060047D519 /* ofxSSAO.cpp in Sources */,
 				BBFAD45416B88FE200C65307 /* ofxAssimpAnimation.cpp in Sources */,
 				BBFAD45516B88FE200C65307 /* ofxAssimpMeshHelper.cpp in Sources */,
 				BBFAD45616B88FE200C65307 /* ofxAssimpModelLoader.cpp in Sources */,
 				BBFAD45816B891CB00C65307 /* Performer.cpp in Sources */,
 				BBFAD47416B8B50400C65307 /* Rod.cpp in Sources */,
-				BBFAD48016B904B200C65307 /* ofEasyCam2.cpp in Sources */,
 				BB74BC1E16BD092400314E64 /* ControlProperties.cpp in Sources */,
 				BB0A5B8516BFED550020EA0A /* ControllerBase.cpp in Sources */,
 				BB0A5B8616BFED550020EA0A /* Master.cpp in Sources */,

@@ -1,14 +1,11 @@
 #include "testApp.h"
 #include "ofxMSAControlFreakGui.h"
-#include "ofxSSAO.h"
 #include "Rod.h"
 #include "Performer.h"
 #include "ScaleManager.h"
-#include "ofEasyCam2.h"
 #include "ofxOpenCv.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofxOsc.h"
-//#include "Arcball.h"
 
 /*
  TODO:
@@ -27,10 +24,8 @@ vector<Performer> performers;
 ScaleManager scaleManager;
 
 vector<ofCamera*> cameras;
-ofEasyCam2 easyCam;
-//Arcball arcball;
+ofEasyCam easyCam;
 
-//ofxSSAO ssao;
 vector<ofLight*> lights;
 ofFbo fbo;
 

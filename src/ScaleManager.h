@@ -67,28 +67,16 @@ public:
     //--------------------------------------------------------------
     void setup() {
         scaleNames.push_back("hicaz kar");
-        scaleNames.push_back("Gong-Diao/Pentatonic");
-        scaleNames.push_back("Zhi-Diao/Pentatonic");
-        scaleNames.push_back("iwato");
-        scaleNames.push_back("dorian");
         scaleNames.push_back("chromatic");
         scaleNames.push_back("weird");
         
 #ifdef USE_SAMPLE
         static float scale1[] = { 220.000, 293.664, 311.126, 369.994, 391.995, 440.000, 466.163, 554.365, 587.329 }; // hicaz kar
-        static float scale2[] = { 195.997, 261.625, 293.664, 329.627, 391.995, 440.000, 523.251, 587.329, 659.255 }; // Gong-Diao/Pentatonic
-        static float scale3[] = { 174.614, 261.625, 293.665, 349.228, 391.995, 440.000, 523.251, 587.329, 698.456 }; // Zhi-Diao/Pentatonic
-        static float scale4[] = { 174.614, 183.942, 232.571, 261.625, 277.182, 349.228, 369.994, 466.163, 523.251, 554.365 }; // iwato
-        static float scale5[] = { 195.997, 261.625, 293.664, 311.126, 349.228, 391.995, 440.223, 466.163, 523.251 }; //dorian
         static float scale6[] = { 195.998, 207.652, 220.000, 233.082, 246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228 }; // chromatic
         static float scale7[] = { 200, 200+200*1/8, 200+200*1/4, 200+200*1/2 }; // weird
         
         add("weird", scale7, 4);
         add("chromatic", scale6, 11);
-        add("dorian", scale5, 9);
-        add("iwato", scale4, 10);
-        add("Gong-Diao/Pentatonic", scale2, 9);
-        add("Zhi-Diao/Pentatonic", scale3, 9);
         add("hicaz kar", scale1, 9);
 #endif
         
