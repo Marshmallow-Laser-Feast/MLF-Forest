@@ -1,0 +1,266 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf470
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red255\green102\blue0;\red96\green96\blue96;
+\red0\green0\blue191;\red51\green51\blue191;\red0\green0\blue255;\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs18 \cf2 // Forest project - SC code\cf0 \
+\
+\cf2 /*\
+NOTE: This can receive the following OSC messages (type & ranges in brackets):\
+Message: '/forestAmp', rodNo (int 0-149), value (float 0.0-1.0)\
+Message: '/forestFreq', rodNo (int 0-149), value (float 0.0-20000.0)\
+Message: '/forestPos', rodNo (int 0-149), value (float 0.0-1.0)\
+Message: '/forestCentre', rodNo (int 0-149), value (float 0.0-1.0)\
+\
+e.g message: ['/forestAmp", 15, 0.33] means set the amp of rod 15 to 0.33\
+*/\cf0 \
+\
+(\
+	\cf2 // initialise\cf0 \
+	\cf3 ~globalVolumeInit\cf0  = 0.5;\
+	\cf3 ~synthCount\cf0  = 150;\
+	\cf3 ~windowTitle\cf0  = \cf4 "Forest - stereo sine waves"\cf0 ;\
+\
+\
+	\cf2 // start server\cf0 \
+	s.boot;\
+	\cf5 GUI\cf0 .cocoa; \
+	\cf3 ~synthsRunning\cf0  = \cf6 false\cf0 ;\
+	\cf3 ~globalVolumeBus\cf0  = \cf5 Bus\cf0 .control(s, 1);\
+\cf4 	""\cf0 .postln;\
+	(\cf4 "===  Listening to OSC messages on port: "\cf0  ++ \cf5 NetAddr\cf0 .langPort).postln;\
+\cf4 	""\cf0 .postln;\
+\
+	\
+	\cf2 // for testing\cf0 \
+	\cf3 ~loopBackNetAddr\cf0  = \cf5 NetAddr\cf0 (\cf4 "127.0.0.1"\cf0 , \cf5 NetAddr\cf0 .langPort); \cf2 // loopback\cf0 \
+	\
+	\cf2 // ~freqs = \{(50 + 60.rand).midicps\} ! ~synthCount;\cf0 \
+	\cf3 ~freqs\cf0  = \{(48 + [0,12,24].choose + [0, 7, 12, 0,4,7,9,10].choose).midicps\} ! \cf3 ~synthCount\cf0 ;\
+	\
+	\cf3 ~positions\cf0  = \cf3 ~synthCount\cf0 .collect(\{ \cf7 arg\cf0  i; (i / \cf3 ~synthCount\cf0 ); \});\
+	\
+	\cf3 ~centres\cf0  = \cf3 ~synthCount\cf0 .collect(\{ \cf7 arg\cf0  i; 0; \});\
+	\
+	\cf3 ~amps\cf0  = \cf3 ~synthCount\cf0 .collect(\{ \cf7 arg\cf0  i; 0; \});\
+	\
+	\cf3 ~funcQuit\cf0  = \{ \
+		if (\cf3 ~synthsRunning\cf0  == \cf6 true\cf0 ) \{\
+			\cf3 ~synthCount\cf0 .do(\{\cf7 arg\cf0  item, i;\
+				\cf3 ~synths\cf0 [i].free;\
+			\});\
+			\cf3 ~synthsRunning\cf0  = \cf6 false\cf0 ;\
+			\cf3 ~oscForestAmp\cf0 .remove(\cf3 ~ampFunc\cf0 );\
+			\cf3 ~oscForestFreq\cf0 .remove(\cf3 ~freqFunc\cf0 );\
+			\cf3 ~oscForestPos\cf0 .remove(\cf3 ~posFunc\cf0 );\
+			\cf3 ~oscForestCentre\cf0 .remove(\cf3 ~centreFunc\cf0 );\
+			\
+			\cf4 "All synths have been killed."\cf0 .postln;\
+			\cf4 ""\cf0 .postln;\
+		\};\
+		s.quit;\
+	\};	\
+	\
+	\cf3 ~funcStartSystem\cf0  = \{ \
+		if (\cf3 ~synthsRunning\cf0  == \cf6 false\cf0 ) \{\
+			\cf3 ~synthsRunning\cf0  = \cf6 true\cf0 ;\
+			fork\{\
+				\cf5 SynthDef\cf0 (\cf8 \\forest\cf0 , \{ \cf7 |outbus = 0, freq = 440, amp = 0.0, pos = 0.5, centre = 0.0|\cf0 \
+					\cf7 var\cf0  oscillator, panOut;\
+					\cf7 var\cf0  globalVol = \cf3 ~globalVolumeBus\cf0 .kr * 0.1;\
+					\cf2 // oscillator =  Pulse.ar(freq, 0.25, 0.75);\cf0 \
+					oscillator =  \cf5 SinOsc\cf0 .ar(freq, 0, globalVol);\
+					panOut = \cf5 PanAz\cf0 .ar(2, oscillator, pos-0.5, amp);\
+				\'a0 \'a0 \cf5 Out\cf0 .ar(outbus, panOut);\
+				\}).add; \'a0 \
+				s.sync;\
+				\
+				\cf4 "Forest Synth Def has been added."\cf0 .postln;\
+				\cf4 ""\cf0 .postln;\
+				\
+				\cf3 ~globalVolumeBus\cf0 .set(\cf3 ~globalVolumeInit\cf0 );\
+				\
+				\cf3 ~synths\cf0  = \cf3 ~synthCount\cf0 .collect(\{ \cf7 arg\cf0  i;\
+					x = \cf5 Synth\cf0 .new(\cf4 "forest"\cf0 );\
+					x.set(\cf4 "freq"\cf0 , \cf3 ~freqs\cf0 [i], \cf4 "out"\cf0 , 0, \cf4 "pos"\cf0 , \cf3 ~positions\cf0 [i], \cf4 "amp"\cf0 , \cf3 ~amps\cf0 [i]);\
+					x;\
+				\});					\
+\
+				\cf3 ~ampFunc\cf0  = \{ \cf7 arg\cf0  msg, time;\
+			\'a0 \'a0 		\cf2 // "time: % message: %\\n".postf(time, msg);\cf0 \
+					n = msg[1]; \cf2 // synth no\cf0 \
+					a = msg[2]; \cf2 // amp\cf0 \
+					\cf3 ~amps\cf0 [n] = a;\
+					\cf3 ~synths\cf0 [n].set (\cf4 "amp"\cf0 , a);\
+				\};\
+				\cf3 ~oscForestAmp\cf0  = \cf5 OSCFunc\cf0 .new(\cf3 ~ampFunc\cf0 , \cf8 '/forestAmp'\cf0 );\
+				\cf3 ~freqFunc\cf0  = \{ \cf7 arg\cf0  msg, time;\
+			\'a0 \'a0 		\cf2 // "time: % message: %\\n".postf(time, msg);\cf0 \
+					n = msg[1]; \cf2 // synth no\cf0 \
+					a = msg[2]; \cf2 // freq\cf0 \
+					\cf3 ~freqs\cf0 [n] = a;\
+					\cf3 ~synths\cf0 [n].set (\cf4 "freq"\cf0 , a);\
+				\};\
+				\cf3 ~oscForestFreq\cf0  = \cf5 OSCFunc\cf0 .new(\cf3 ~freqFunc\cf0 , \cf8 '/forestFreq'\cf0 );\
+				\cf3 ~posFunc\cf0  = \{ \cf7 arg\cf0  msg, time;\
+			\'a0 \'a0 		\cf2 // "time: % message: %\\n".postf(time, msg);\cf0 \
+					n = msg[1]; \cf2 // synth no\cf0 \
+					a = msg[2]; \cf2 // pos\cf0 \
+					\cf3 ~positions\cf0 [n] = a;\
+					\cf3 ~synths\cf0 [n].set (\cf4 "pos"\cf0 , a);\
+				\};\
+				\cf3 ~oscForestPos\cf0  = \cf5 OSCFunc\cf0 .new(\cf3 ~posFunc\cf0 , \cf8 '/forestPos'\cf0 );\
+				\cf3 ~centreFunc\cf0  = \{ \cf7 arg\cf0  msg, time;\
+			\'a0 \'a0 		\cf2 // "time: % message: %\\n".postf(time, msg);\cf0 \
+					n = msg[1]; \cf2 // synth no\cf0 \
+					a = msg[2]; \cf2 // centre\cf0 \
+					\cf3 ~centres\cf0 [n] = a;\
+					\cf3 ~synths\cf0 [n].set (\cf4 "centre"\cf0 , a);\
+				\};\
+				\cf3 ~oscForestCentre\cf0  = \cf5 OSCFunc\cf0 .new(\cf3 ~centreFunc\cf0 , \cf8 '/forestCentre'\cf0 );\
+			\
+				\cf4 "Forest system has been built."\cf0 .postln;\
+				\cf4 ""\cf0 .postln;\
+				\cf4 "=== OSC Message Types (ranges in brackets): "\cf0 .postln;\
+				\cf4 "Message: '/forestAmp', rodNo (int 0-149), value (float 0.0-1.0)"\cf0 .postln;\
+				\cf4 "Message: '/forestFreq', rodNo (int 0-149), value (float 0.0-20000.0)"\cf0 .postln;\
+				\cf4 "Message: '/forestPos', rodNo (int 0-149), value (float 0.0-1.0)"\cf0 .postln;\
+				\cf4 "Message: '/forestCentre', rodNo (int 0-149), value (float 0.0-1.0)"\cf0 .postln;\
+				\cf4 "(N.B. /forestCentre has no effect on Stereo Panning version of Forest)"\cf0 .postln;\
+				\cf4 ""\cf0 .postln;\
+			\};\
+		\};\
+	\};\
+	\
+	\cf3 ~funcRandomiseAmps\cf0  = \{ \
+		\cf3 ~synthCount\cf0 .do(\{\cf7 arg\cf0  item, i;\
+			q = 1.0.rand;\
+			if (q < 0.8) \{r = 0;\} \{r = 0.99.rand;\};\
+			\cf3 ~loopBackNetAddr\cf0 .sendMsg(\cf4 "/forestAmp"\cf0 , i, r);\
+		\});\
+		\
+		\cf4 "All amplitudes have been randomised."\cf0 .postln;\
+		\cf4 ""\cf0 .postln;\
+	\};\
+	\
+	\cf3 ~funcZeroAmps\cf0  = \{ \
+		\cf3 ~synthCount\cf0 .do(\{\cf7 arg\cf0  item, i;\
+			\cf3 ~loopBackNetAddr\cf0 .sendMsg(\cf4 "/forestAmp"\cf0 , i, 0);\
+		\});\
+		\
+		d.value_(0);\
+		\cf4 "All amplitudes have been set to zero."\cf0 .postln;\
+		\cf4 ""\cf0 .postln;\
+	\};\
+	\
+	\
+	\cf2 ////////////////////////////////////////////////////////////\cf0 \
+	\
+	\cf2 // GUI SETUP	\cf0 \
+	w = \cf5 Window\cf0 .new(\cf3 ~windowTitle\cf0 , \cf5 Rect\cf0 ( 300, 300, 400, 500));\
+	w.addToOnClose(\{ \
+		\cf3 ~funcQuit\cf0 .value;\
+	\});\
+	w.view.decorator = \cf5 FlowLayout\cf0 ( w.view.bounds, 10@10, 20@5 );\
+\
+	\cf2 // clear post window\cf0 \
+	\cf5 Document\cf0 .listener.string = \cf4 " "\cf0 ;\
+	\
+	a = \cf5 Button\cf0 (w, \cf5 Rect\cf0 (0, 0, 300, 30))\
+\'a0 \'a0 \'a0 \'a0 .states_([\
+\'a0 \'a0 \'a0 \'a0 \'a0 \'a0 [\cf4 "Start system"\cf0 , \cf5 Color\cf0 .black, \cf5 Color\cf0 .green],\
+\'a0 \'a0 \'a0 \'a0 ])\
+\'a0 \'a0 \'a0 \'a0 .action_(\{ \
+			\cf3 ~funcStartSystem\cf0 .value;\
+		\});\
+\
+	b = \cf5 Button\cf0 (w, \cf5 Rect\cf0 (0, 0, 300, 30))\
+\'a0 \'a0 \'a0 \'a0 .states_([\
+\'a0 \'a0 \'a0 \'a0 \'a0 \'a0 [\cf4 "Randomize all amplitudes"\cf0 , \cf5 Color\cf0 .black, \cf5 Color\cf0 .blue],\
+\'a0 \'a0 \'a0 \'a0 ])\
+\'a0 \'a0 \'a0 \'a0 .action_(\{ \
+			\cf3 ~funcRandomiseAmps\cf0 .value;\
+		\});\
+\
+	c = \cf5 Button\cf0 (w, \cf5 Rect\cf0 (0, 0, 300, 30))\
+\'a0 \'a0 \'a0 \'a0 .states_([\
+\'a0 \'a0 \'a0 \'a0 \'a0 \'a0 [\cf4 "Zero all amplitudes"\cf0 , \cf5 Color\cf0 .black, \cf5 Color\cf0 .white],\
+\'a0 \'a0 \'a0 \'a0 ])\
+\'a0 \'a0 \'a0 \'a0 .action_(\{ \
+			\cf3 ~funcZeroAmps\cf0 .value;\
+		\});\
+\
+	w.front;\
+	\
+	c = \cf5 Button\cf0 (w, \cf5 Rect\cf0 (0, 0, 300, 30))\
+\'a0 \'a0 \'a0 \'a0 .states_([\
+\'a0 \'a0 \'a0 \'a0 \'a0 \'a0 [\cf4 "Quit"\cf0 , \cf5 Color\cf0 .black, \cf5 Color\cf0 .red],\
+\'a0 \'a0 \'a0 \'a0 ])\
+\'a0 \'a0 \'a0 \'a0 .action_(\{ \
+			w.close;\
+		\});\
+		\
+	g = \cf5 EZSlider\cf0 ( w, \'a0 \'a0 \'a0 \'a0 \cf2 // parent\cf0 \
+		\cf5 Rect\cf0 (0, 0, 300, 20), \cf2 // bounds\cf0 \
+\'a0 \'a0 \'a0 	\cf4 "Master Vol"\cf0 , \cf2 // label\cf0 \
+\'a0 \'a0 		\cf8 \\amp\cf0 , \cf2 // controlSpec\cf0 \
+	\'a0 \'a0 \'a0\{ \cf7 arg\cf0  ez;\
+			\cf3 ~globalVolumeBus\cf0 .value = ez.value;\
+		\});\
+	g.value = \cf3 ~globalVolumeInit\cf0 ;\
+	\
+	l = \cf5 StaticText\cf0 (w, \cf5 Rect\cf0 (0, 0, 300, 20));\
+	l.string = \cf4 "For testing Rod 0 controls:"\cf0 ;\
+\
+	\
+	d = \cf5 EZSlider\cf0 ( w, \'a0 \'a0 \'a0 \'a0 \cf2 // parent\cf0 \
+		\cf5 Rect\cf0 (0, 0, 300, 20), \cf2 // bounds\cf0 \
+\'a0 \'a0 \'a0 	\cf4 "Amp 0"\cf0 , \cf2 // label\cf0 \
+\'a0 \'a0 		\cf8 \\amp\cf0 , \cf2 // controlSpec\cf0 \
+	\'a0 \'a0 \'a0\{ \cf7 arg\cf0  ez;\
+			\cf3 ~loopBackNetAddr\cf0 .sendMsg(\cf4 "/forestAmp"\cf0 , 0, ez.value);\
+		\});\
+	e = \cf5 EZSlider\cf0 ( w, \'a0 \'a0 \'a0 \'a0 \cf2 // parent\cf0 \
+		\cf5 Rect\cf0 (0, 0, 300, 20), \cf2 // bounds\cf0 \
+\'a0 \'a0 \'a0 	\cf4 " Freq 0"\cf0 , \cf2 // label\cf0 \
+\'a0 \'a0 		\cf5 ControlSpec\cf0 (48.midicps, 96.midicps, \cf8 \\exp\cf0 , 0, 440, units: \cf4 " Hz"\cf0 ), \cf2 // controlSpec\cf0 \
+	\'a0 \'a0 \'a0\{ \cf7 arg\cf0  ez;\
+			\cf3 ~loopBackNetAddr\cf0 .sendMsg(\cf4 "/forestFreq"\cf0 , 0, ez.value);\
+		\});\
+	f = \cf5 EZSlider\cf0 ( w, \'a0 \'a0 \'a0 \'a0 \cf2 // parent\cf0 \
+		\cf5 Rect\cf0 (0, 0, 300, 20), \cf2 // bounds\cf0 \
+\'a0 \'a0 \'a0 	\cf4 "Pos 0"\cf0 , \cf2 // label\cf0 \
+\'a0 \'a0 		\cf5 ControlSpec\cf0 (0, 1, \cf8 \\lin\cf0 , 0, 0.5), \cf2 // controlSpec\cf0 \
+	\'a0 \'a0 \'a0\{ \cf7 arg\cf0  ez;\
+			\cf3 ~loopBackNetAddr\cf0 .sendMsg(\cf4 "/forestPos"\cf0 , 0, ez.value);\
+		\});\
+\
+	h = \cf5 EZSlider\cf0 ( w, \'a0 \'a0 \'a0 \'a0 \cf2 // parent\cf0 \
+		\cf5 Rect\cf0 (0, 0, 300, 20), \cf2 // bounds\cf0 \
+\'a0 \'a0 \'a0 	\cf4 "Centre 0"\cf0 , \cf2 // label\cf0 \
+\'a0 \'a0 		\cf5 ControlSpec\cf0 (0, 1, \cf8 \\lin\cf0 , 0, 0.0), \cf2 // controlSpec\cf0 \
+	\'a0 \'a0 \'a0\{ \cf7 arg\cf0  ez;\
+			\cf3 ~loopBackNetAddr\cf0 .sendMsg(\cf4 "/forestCentre"\cf0 , 0, ez.value);\
+		\});\
+\
+	w.front;\
+)\
+\
+\cf2 /* PANNING NOTES\
+\
+SplayAz spreads an array of channels across a ring of channels. Optional spread and center controls, and levelComp(ensation) (equal power). numChans and orientation are as in PanAz.\
+\
+*ar (numChans: 4, inArray, spread: 1, level: 1, width: 2, center: 0, orientation: 0.5,levelComp: true)\
+\
+\
+numChans - Number of output channels.\
+\
+orientation - Should be zero if the front is a vertex of the polygon. The first speaker will be directly in front. Should be 0.5 if the front bisects a side of the polygon. Then the first speaker will be the one left of center.\
+\
+\
+*/\cf0 \
+\
+\
+\
+}
