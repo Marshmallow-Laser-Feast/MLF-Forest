@@ -9,9 +9,7 @@
 
 /*
  TODO:
- - load layout from 3D file - 2D file, use blob tracking.  opencv
- - load heights from 3D file (or 2D file)
- - load person 3d model for visulization
+ - load layout from 3D file
  
  */
 
