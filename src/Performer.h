@@ -5,17 +5,11 @@
 
 class Performer : public ofNode {
 public:
-    //    ofVec3f pos;
-    //    ofVec3f vel;
-    
     ofColor color;
     
     float speed;           // real value
     float speedNorm;       // normalized (0...1) based on min/max parameters
     
-    //    float agility;           // real value
-    //    float agilityNorm;       // normalized (0...1) based on min/max parameters
-    //
     float height;           // real value
     float heightNorm;       // normalized (0...1) based on min/max parameters
     
@@ -29,15 +23,16 @@ public:
     static ofVec3f worldMax;
     static float noiseAmount;
     static float noiseFreq;
+    static bool updateFromAnimation;
     
     //--------------------------------------------------------------
     void setup() {
         seed = ofRandomuf();
         
-        pan(ofRandom(360));
+//        pan(ofRandom(360));
         
         speedNorm = ofRandomuf();
-        //        agilityNorm = ofRandomuf();
+
         heightNorm = ofRandomuf();
         setPosition(ofRandom(worldMin.x, worldMax.x), 0, ofRandom(worldMin.z, worldMax.z));
         
@@ -46,7 +41,6 @@ public:
             model->loadModel("3d/person.dae");
             model->setScaleNomalization(false);
             model->setScale(0.01, -0.01, 0.01);
-            //            model->
         }
         
     }
@@ -93,17 +87,11 @@ public:
                 model->drawFaces();
             } ofPopMatrix();
             
-            //            ofPushMatrix(); {
             ofRotateX(90);
             ofFill();
             ofSetColor(50, 0, 0, 30);
             ofCircle(0, 0, -1.0f/height, affectRadiusNorm);
 
-//            ofNoFill();
-//            ofSetLineWidth(3);
-//            ofSetColor(0, 100);
-//            ofCircle(0, 0, -1.0f/height, affectRadiusNorm);
-            //            } ofPopMatrix();
         } restoreTransformGL();
         ofPopStyle();
     }

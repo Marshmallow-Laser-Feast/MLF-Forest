@@ -14,3 +14,4 @@ ofVec3f Performer::worldMin;
 ofVec3f Performer::worldMax;
 float Performer::noiseAmount;
 float Performer::noiseFreq;
+bool Performer::updateFromAnimation = false;
