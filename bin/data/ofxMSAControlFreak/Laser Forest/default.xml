@@ -57,7 +57,7 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserDiameter" value="10"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="performers">
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="count" value="9"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="count" value="4"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMin" value="66"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMax" value="150"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="speedMin" value="47"></Parameter>
@@ -70,6 +70,8 @@
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="animation">
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="laser" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="performance" value="0"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="blurAmount" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="threshold" value="123"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="sound">
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="volumeVariance" value="0.000000000"></Parameter>
