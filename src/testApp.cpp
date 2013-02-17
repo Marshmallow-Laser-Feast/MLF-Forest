@@ -544,6 +544,8 @@ void updatePerformanceAnimation() {
     
     // if video is loaded and a it's a performance animation
     if(animationVideo.isLoaded() && (int)paramNamedIndex > 0) {
+        Performer::updateFromAnimation = true;
+        
         animationVideo.update();
 
         ofxCvColorImage colorImage;
@@ -578,9 +580,8 @@ void updatePerformanceAnimation() {
             p.height = ofLerp(heightMin, heightMax, p.heightNorm);
 
         }
-
-        
-
+    } else {
+        Performer::updateFromAnimation = false;
     }
 }
 
