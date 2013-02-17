@@ -201,6 +201,8 @@ void testApp::setup() {
     params.startGroup("animation"); {
         params.addNamedIndex("laser").setTooltip("use a black & white PJPG quicktime for laser animation");
         params.addNamedIndex("performance").setTooltip("use a black & white PJPG quicktime for performance animation");
+        params.addInt("blurAmount").setClamp(true).setRange(1, 33).setIncrement(2).setSnap(true);
+        params.addInt("threshold").setRange(0, 255).setClamp(true);
     } params.endGroup();
     
     params.startGroup("sound"); {
@@ -391,8 +393,6 @@ void updatePerformers(bool bForceUpdate = false) {
             p.height = ofLerp(heightMin, heightMax, p.heightNorm);
             if(doVel) {
                 p.speed = ofLerp(speedMin, speedMax, p.speedNorm);
-                //                p.vel = ofVec3f(0, 0, p.speed);
-                //                p.vel.rotate(ofRandom(0, 1080), ofVec3f(0, 1, 0));
             }
             p.color = ofColor(color);
             p.affectRadiusNorm = affectRadius;
@@ -554,8 +554,8 @@ void updatePerformanceAnimation() {
         greyImage.allocate(animationVideo.getWidth(), animationVideo.getHeight());
         greyImage = colorImage;
         
-        greyImage.blurHeavily();
-        greyImage.threshold(50);
+        greyImage.blur(params["animation.blurAmount"]);
+        greyImage.threshold(params["animation.threshold"]);
         
         animationVideoContours.findContours(greyImage, 0, greyImage.getWidth() * greyImage.getHeight(), 100000, false);
         
