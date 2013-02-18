@@ -199,11 +199,33 @@ void testApp::setup() {
     } params.endGroup();
     
     params.startGroup("animation"); {
-        params.addNamedIndex("laser").setTooltip("use a black & white PJPG quicktime for laser animation");
+        params.startGroup("laser"); {
+            params.addNamedIndex("file").setTooltip("use a black & white PJPG quicktime for laser animation");
+            params.addBool("loop");
+            params.addFloat("speed").setRange(0, 4).setClamp(true).setSnap(true);
+        } params.endGroup();
         params.addNamedIndex("performance").setTooltip("use a black & white PJPG quicktime for performance animation");
         params.addInt("blurAmount").setClamp(true).setRange(1, 33).setIncrement(2).setSnap(true);
         params.addInt("threshold").setRange(0, 255).setClamp(true);
     } params.endGroup();
+    
+//    params.startGroup("sweeps"); {
+//        params.addNamedIndex("direction").setLabels(5, "radial in", "radial out", "left to right", "right to left", "front to back", "back to front");
+//        params.addBang("go");
+//        params.addFloat("speed").setRange(0, 5).setClamp(true);
+////        params.addBang("radial in");
+////        params.addFloat("radial in speed").setRange(0, 5).setClamp(true);
+////        params.addBang("radial out");
+////        params.addFloat("radial out speed").setRange(0, 5).setClamp(true);
+////        params.addBang("left to right");
+////        params.addFloat("left to right speed").setRange(0, 5).setClamp(true);
+////        params.addBang("right to left");
+////        params.addFloat("right to left speed").setRange(0, 5).setClamp(true);
+////        params.addBang("front to back");
+////        params.addFloat("front to back speed").setRange(0, 5).setClamp(true);
+////        params.addBang("back to front");
+////        params.addFloat("back to front speed").setRange(0, 5).setClamp(true);
+//    } params.endGroup();
     
     params.startGroup("sound"); {
         params.addFloat("volumeVariance").setClamp(true).set(1);
@@ -237,7 +259,7 @@ void testApp::setup() {
     
     updateFilesGroup("sound.local.file", "audio", false);
     updateFilesGroup("layout.image", "layout", true);
-    updateFilesGroup("animation.laser", "animations/laser", true);
+    updateFilesGroup("animation.laser.file", "animations/laser", true);
     updateFilesGroup("animation.performance", "animations/performance", true);
 
 //    updateSoundFiles();
@@ -494,7 +516,7 @@ void checkRodCollisions(ofVec3f p, float radius) {
 
 //--------------------------------------------------------------
 void updateLaserAnimation() {
-    msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.laser");
+    msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.laser.file");
     if(paramNamedIndex.hasChanged()) {
         if((int)paramNamedIndex == 0) {
             animationVideo.close();
@@ -503,7 +525,6 @@ void updateLaserAnimation() {
             params["animation.performance"].clearChanged();
             params["performers.count"] = 0;
             animationVideo.loadMovie(paramNamedIndex.getSelectedLabel());
-            animationVideo.setLoopState(OF_LOOP_NORMAL);
             animationVideo.play();
         }
     }
@@ -511,6 +532,9 @@ void updateLaserAnimation() {
     
     // if video is loaded and a it's a laser animation
     if(animationVideo.isLoaded() && (int)paramNamedIndex > 0) {
+        if(params["animation.laser.loop"].hasChanged()) animationVideo.setLoopState(params["animation.laser.loop"] ? OF_LOOP_NORMAL : OF_LOOP_NONE);
+        if(params["animation.laser.speed"].hasChanged()) animationVideo.setSpeed(params["animation.laser.speed"]);
+
         animationVideo.update();
         
         float outputPitchMult = params["sound.local.outputPitchMult"];
@@ -527,6 +551,7 @@ void updateLaserAnimation() {
             imagePos.x = ofMap(r.getX(), -installationSize.x/2, installationSize.x/2, 0, animationVideo.getWidth());
             imagePos.y = ofMap(r.getZ(), -installationSize.z/2, installationSize.z/2, 0, animationVideo.getHeight());
             if(pixels.getColor(imagePos.x, imagePos.y).r > 0) r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
+            else r.value = 0;
         }
     }
 }
@@ -539,8 +564,8 @@ void updatePerformanceAnimation() {
         if((int)paramNamedIndex == 0) {
             animationVideo.close();
         } else {
-            params["animation.laser"] = 0;
-            params["animation.laser"].clearChanged();
+            params["animation.laser.file"] = 0;
+            params["animation.laser.file"].clearChanged();
             params["performers.count"] = 0;
 
             //            animationVideo.loadMovie("animations/laser/" + paramNamedIndex.getSelectedLabel());
