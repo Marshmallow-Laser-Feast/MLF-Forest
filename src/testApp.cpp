@@ -332,8 +332,10 @@ void updateRodLayout(bool bForceUpdate = false) {
             
             layoutImageContours.findContours(greyImage, 0, greyImage.getWidth() * greyImage.getHeight(), 100000, false);
             
-            rods.resize(layoutImageContours.blobs.size());
+//            rods.resize(layoutImageContours.blobs.size());
+            rods.clear();
             for(int i=0; i<layoutImageContours.nBlobs; i++) {
+                rods.push_back(Rod());
                 Rod &r = rods[i];
                 ofxCvBlob &blob = layoutImageContours.blobs[i];
                 float x = ofMap(blob.centroid.x, 0, greyImage.getWidth(), -installationWidth/2, installationWidth/2);
@@ -344,9 +346,11 @@ void updateRodLayout(bool bForceUpdate = false) {
         } else {
             layoutImage.clear();
             
-            rods.resize(rodCountWidth * rodCountLength);
+//            rods.resize(rodCountWidth * rodCountLength);
+            rods.clear();
             for(int i=0; i<rodCountWidth; i++) {
                 for(int j=0; j<rodCountLength; j++) {
+                    rods.push_back(Rod());
                     Rod &r = rods[j*rodCountWidth + i];
                     float x = ofMap(i, 0, rodCountWidth-1, -installationWidth/2, installationWidth/2);
                     float z = ofMap(j, 0, rodCountLength-1, -installationLength/2, installationLength/2);
@@ -385,7 +389,12 @@ void updatePerformers(bool bForceUpdate = false) {
         
         bool doVel = paramsPerformers["speedMin"].hasChanged() || paramsPerformers["speedMax"];
         bool doSetup = paramsPerformers["count"].hasChanged();
-        if(doSetup) performers.resize(paramsPerformers["count"]);
+        if(bForceUpdate || doSetup) {
+//            performers.resize(paramsPerformers["count"]); // for some reason resize screws up the init somehow!
+            performers.clear();
+            int count = paramsPerformers["count"];
+            for(int i=0; i<count; i++) performers.push_back(Performer());
+        }
         
         for(int i=0; i<performers.size(); i++) {
             Performer &p = performers[i];
@@ -564,7 +573,6 @@ void updatePerformanceAnimation() {
         int numBlobs = animationVideoContours.blobs.size();
         if((int)params["performers.count"] != numBlobs) {
             params["performers.count"] = numBlobs;
-            performers.resize(numBlobs);
             updatePerformers(true);
         }
         float heightMin = params["performers.heightMin"];
@@ -796,7 +804,10 @@ void testApp::draw() {
     
     drawFloor();
     for(int i=0; i<rods.size(); i++) rods[i].draw();
-    for(int i=0; i<performers.size(); i++) performers[i].draw();
+    for(int i=0; i<performers.size(); i++) {
+        performers[i].draw();
+        ofVec3f v = performers[i].getOrientationEuler();
+    }
     for(int i=0; i<lights.size(); i++) lights[i]->draw();
 
     ofPopStyle();
