@@ -52,12 +52,12 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="diameterMax" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="color" value="46"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="angleAmp" value="1"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="fadeSpeed" value="0.018035714"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="fadeSpeed" value="0.027857143"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserHeight" value="10000"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserDiameter" value="10"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="performers">
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="count" value="4"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="count" value="7"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMin" value="66"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMax" value="150"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="speedMin" value="47"></Parameter>
@@ -71,7 +71,7 @@
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="laser" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="performance" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="blurAmount" value="1"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="threshold" value="123"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="threshold" value="50"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="sound">
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="volumeVariance" value="0.000000000"></Parameter>
@@ -84,8 +84,8 @@
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="osc">
                 <Parameter type="N3msa12controlfreak13ParameterBoolE" name="enabled" value="1"></Parameter>
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="port" value="57120"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="outputPitchMult" value="1.000000000"></Parameter>
-                <Parameter type="N3msa12controlfreak12ParameterIntE" name="volumePower" value="2"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="outputPitchMult" value="0.500000000"></Parameter>
+                <Parameter type="N3msa12controlfreak12ParameterIntE" name="volumePower" value="1"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">
