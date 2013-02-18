@@ -683,7 +683,7 @@ void sendRodOsc(bool bForce) {
         ofxOscBundle b;
         float outputPitchMult = params["sound.osc.outputPitchMult"];
         
-        bool doSendTuning = params["tuning"].hasChanged();
+        bool doSendTuning = params["tuning"].hasChanged() || params["sound.osc.outputPitchMult"].hasChanged();
 
         int volumePower = params["sound.osc.volumePower"];
         for(int i=0; i<rods.size(); i++){
@@ -693,7 +693,7 @@ void sendRodOsc(bool bForce) {
             if(bForce || doSendTuning) {
                 m.setAddress("/forestFreq");
                 m.addIntArg(i);
-                m.addFloatArg(scaleManager.currentFreq(r.pitchIndex * outputPitchMult));
+                m.addFloatArg(scaleManager.currentFreq(r.pitchIndex) * outputPitchMult);
                 b.addMessage(m);
             }
             
