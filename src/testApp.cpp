@@ -525,6 +525,8 @@ void updateLaserAnimation() {
             params["animation.performance"].clearChanged();
             params["performers.count"] = 0;
             animationVideo.loadMovie(paramNamedIndex.getSelectedLabel());
+            animationVideo.setLoopState(params["animation.laser.loop"] ? OF_LOOP_NORMAL : OF_LOOP_NONE);
+            animationVideo.setSpeed(params["animation.laser.speed"]);
             animationVideo.play();
         }
     }
