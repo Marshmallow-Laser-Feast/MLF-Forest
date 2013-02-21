@@ -691,15 +691,8 @@ void testApp::draw() {
     ofCamera &cam = *cameras[ (int)params["camera.view"] ];
     cam.setNearClip(500);
     updateCamera();
-    //    params["display.camera.pos.x"] = cam.getGlobalPosition().x;
-    //    params["display.camera.pos.y"] = cam.getGlobalPosition().y;
-    //    params["display.camera.pos.z"] = cam.getGlobalPosition().z;
-    //    if(params["display.camera.pos"].hasChanged()) {
-    //        cam.setGlobalPosition(params["display.camera.pos.x"], params["display.camera.pos.y"], params["display.camera.pos.z"]);
-    //    }
     cam.begin();
     
-    //    arcball.begin();
     ofTranslate(0, -100, 0);
     ofRotateX(params["camera.rotx"]);
     ofRotateY(params["camera.roty"]);
@@ -731,7 +724,6 @@ void testApp::draw() {
         ofPopStyle();
     }
     
-    //    arcball.end();
     cam.end();
     
     //    if(doSSAO) {
@@ -789,7 +781,6 @@ void testApp::keyPressed(int key){
             break;
             
         case ' ':
-            //            arcball.enabled = true;
             easyCam.enableMouseInput();
             break;
             
@@ -816,12 +807,10 @@ void testApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button){
-    //    arcball.mouseDragged(x, ofGetHeight()-y, button);
 }
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-    //    arcball.mousePressed(x, ofGetHeight()-y, button);
 }
 
 //--------------------------------------------------------------
