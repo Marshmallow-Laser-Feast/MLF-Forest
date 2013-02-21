@@ -6,6 +6,11 @@
 #include "ofxOpenCv.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofxOsc.h"
+#ifdef DOING_SERIAL
+#include "RodCommunicator.h"
+#endif
+
+
 
 /*
  TODO:
@@ -43,6 +48,12 @@ ofVec3f installationSize;
 //ofVec3f rodCount;
 
 ofxOscSender *oscSender = NULL;
+
+
+#ifdef DOING_SERIAL
+RodCommunicator *rodCommunicator;
+bool showRodGui = false;
+#endif
 
 
 
@@ -84,6 +95,12 @@ void sendRodOsc(bool bForce = false);
 
 //--------------------------------------------------------------
 void testApp::setup() {
+
+#ifdef DOING_SERIAL
+	rodCommunicator = new RodCommunicator();
+	rodCommunicator->start();
+#endif
+	
     ofSetVerticalSync(true);
     ofSetFrameRate(30);
     
@@ -358,7 +375,7 @@ void updateRodLayout(bool bForceUpdate = false) {
             r.setup();
             r.move(randomness * ofVec3f(ofRandomf(), 0, ofRandomf()));
         }
-        
+		
 //        updateRods(true);
         
         Performer::worldMin.set(-installationWidth/2, 0, -installationLength/2);
@@ -747,6 +764,13 @@ void drawFloor() {
 
 //--------------------------------------------------------------
 void testApp::draw() {
+#ifdef DOING_SERIAL
+
+	if(showRodGui) {
+		rodCommunicator->draw();
+		return;
+	}
+#endif
     glEnable(GL_DEPTH_TEST);
     ofEnableAlphaBlending();
     ofClear((int)params["display.backgroundColor"].getMappedTo(0, 255));
@@ -847,7 +871,16 @@ void testApp::draw() {
     ofSetColor(255);
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 2), ofGetWidth() - 100, 30);
     
-    
+	if(!rodCommunicator->doneDiscovering()) {
+		ofSetHexColor(0);
+		ofRectangle r(495, ofGetHeight()-20, ofGetWidth()-495, 20);
+		ofRect(r);
+		ofSetHexColor(0x990000);
+		r.width *= rodCommunicator->getProgress();
+		ofRect(r);
+		ofSetHexColor(0xFFFFFF);
+		ofDrawBitmapString(ofToString ((int)(rodCommunicator->getProgress()*100.f))+ "% done discovering nodes", r.x+5, r.y+15);
+	}
 }
 
 //--------------------------------------------------------------
@@ -879,7 +912,11 @@ void testApp::keyPressed(int key){
         case 'r':
             resetAll();
             break;
-            
+#ifdef DOING_SERIAL
+		case '\t':
+			showRodGui ^= true;
+			break;
+#endif
     }
 }
 
