@@ -248,8 +248,11 @@ void testApp::setup() {
         params.addBool("invert").setTooltip("invert pitch relationship from out to in");
         
     } params.endGroup();
+#ifdef DOING_SERIAL
+    params.startGroup("comms"); {
 
-    
+	} params.endGroup();
+#endif
     updateFilesGroup("sound.local.file", "audio", false);
     updateFilesGroup("layout.image", "layout", true);
     updateFilesGroup("animation.laser", "animations/laser", true);

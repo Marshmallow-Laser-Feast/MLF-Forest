@@ -108,7 +108,8 @@ struct ProcessedAccelerometerData {
 // END SERIAL READING STRUCTS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+float lookupXY(int i);
+float lookupZ(int i);
 
 // this is what a ForestSerialPort knows about each laser
 class RodInfo {
@@ -123,14 +124,19 @@ public:
 	RodInfo(unsigned char id = 0, unsigned char timeslot = 0) {
 		this->timeslot = timeslot;
 		this->id = id;
+		motion = 0;
+		motionSpare = 0;
 	}
 	
 	void setProcessedData(const ProcessedAccelerometerData &data) {
 		motion = data.motion;
 		motionSpare = data.motionSpare;
+		//printf("Processed: %f %f\n", motion, motionSpare);
 	}
 	
 	void setRawData(const RawAccelerometerData &data) {
-		rawData.set(data.x, data.y, data.z);
+
+		rawData.set(lookupXY(data.x), lookupXY(data.y), lookupZ(data.z));
+		//printf("Raw\n");
 	}
 };

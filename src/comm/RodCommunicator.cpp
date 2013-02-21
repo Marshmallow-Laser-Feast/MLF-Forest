@@ -51,12 +51,16 @@ float RodCommunicator::getProgress() {
 
 
 void RodCommunicator::draw() {
+	int xOffset = 400;
 	string report = "";
 	report += "# rods connected: " + ofToString(totalRodCount) + "\n";
 	report += "Update Rate:	     " + ofToString(updateRate,1) + " Hz\n";
 	ofBackground(0,0,0);
 	ofSetHexColor(0xFFFFFF);
-	ofDrawBitmapString(report, 400, 30);
+	ofDrawBitmapString(report, xOffset, 30);
+	for(int i = 0; i < ports.size(); i++) {
+		ports[i].draw(xOffset, 120 + i * 30);
+	}
 }
 
 
@@ -78,8 +82,8 @@ void RodCommunicator::threadedFunction() {
 		maxRodCount = MAX(maxRodCount, rodCount);
 		totalRodCount += rodCount;
 	}
-	float msPerFrame = maxRodCount*10; // this is wrong
-	msPerFrame = 0;
+	float msPerFrame = maxRodCount*40; // this is wrong
+	msPerFrame = 30;
 	
 	float t = 0;
 	// then run

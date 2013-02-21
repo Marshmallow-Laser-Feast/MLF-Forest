@@ -24,7 +24,7 @@
 // 250k baud for the forest
 #define SERIAL_PORT_SPEED 250000
 #define MAX_BOARDS_PER_NETWORK 10 // should be 255
-
+#define LASER_BITMAP_SIZE 24
 
 class ForestSerialPort {
 public:
@@ -58,16 +58,17 @@ public:
 	
 	// draw some debug info
 	void draw(int x, int y);
-	
+	void setLaser(int laserId, bool on);
+
 	
 private:
+	
 	bool setTimeslot(int boardId, int timeslot);
 	bool tryToRead(unsigned char *buff, int length, int timeout = 100);
+	
 	D2xxSerial serial;
 	string serialNo;
 
-	
-	
 	
 	map<int,RodInfo> rodInfos;
 
@@ -82,5 +83,5 @@ private:
 	
 	LaserCommandType currentCommandType;
 	
-	
+	static unsigned char laserBitmap[LASER_BITMAP_SIZE];
 };

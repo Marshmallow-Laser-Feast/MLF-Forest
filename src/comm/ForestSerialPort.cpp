@@ -6,9 +6,37 @@
 
 #include "ForestSerialPort.h"
 
+#define bitRead(value, bit) (((value) >> (bit)) & 0x01)
+#define bitSet(value, bit) ((value) |= (1UL << (bit)))
+#define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
+#define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
+
+
+
+bool hasInitedLaserBitmap = false;
+
+unsigned char ForestSerialPort::laserBitmap[LASER_BITMAP_SIZE];
+
+
 ForestSerialPort::ForestSerialPort() {
 	progress = 0;
+	if(!hasInitedLaserBitmap) {
+		memset(laserBitmap, 0, LASER_BITMAP_SIZE);
+		hasInitedLaserBitmap = true;
+	}
 }
+
+void ForestSerialPort::setLaser(int laserId, bool on) {
+	
+	// we're 1-indexed
+	laserId--;
+	int whichChar = laserId / 8;
+	int whichBit = laserId % 8;
+	if(on) bitSet(laserBitmap[whichChar], whichBit);
+	else bitClear(laserBitmap[whichChar], whichBit);
+}
+
+
 
 ForestSerialPort::~ForestSerialPort() {
 	close();
@@ -107,21 +135,35 @@ void ForestSerialPort::retrieve() {
 			RawAccelerometerData accel;
 			if(tryToRead((unsigned char*)&accel, sizeof(accel))) {
 				if(rodInfos.find(accel.id)!=rodInfos.end()) {
-					rodInfos[accel.id].setRawData(accel);
+					if(accel.x!=0x40) {
+						rodInfos[accel.id].setRawData(accel);
+					} else {
+						printf("Rod id %d accelerometer is faulty\n", accel.id);
+					}
 				}
 			}
 		}
 	} else if(currentCommandType==RETURN_PROCESSED_MOTION_DATA) {
-		
+		//printf("Coming in\n");
 		for(int i = 0; i < rodInfos.size(); i++) {
 			ProcessedAccelerometerData accel;
+			//printf("Trying for rod %d\n", i);
 			
 			if(tryToRead((unsigned char*)&accel, sizeof(accel))) {
-				
+				//printf("Reading\n");
 				if(rodInfos.find(accel.id)!=rodInfos.end()) {
+					//printf("Found rod in question\n");
+					if(accel.id==1) {
+						printf("%d\n", accel.motionSpare);
+					}
 					rodInfos[accel.id].setProcessedData(accel);
+
+				} else {
+					printf("Can't find the rod with that id (%d)\n", accel.id);
+					
 				}
-				
+			} else {
+				printf("Can't read accelerometer - no data\n");
 			}
 		}
 	}	
@@ -130,7 +172,7 @@ void ForestSerialPort::retrieve() {
 
 // reads the data back from the lasers
 void ForestSerialPort::request() {
-	currentCommandType = RETURN_PROCESSED_MOTION_DATA;
+	currentCommandType = RETURN_RAW_ACCELEROMETER;
 	unsigned char cmd[] = {
 		0xFF, // frame start marker
 		0x23, // command length
@@ -173,19 +215,72 @@ void ForestSerialPort::request() {
 		0x22,
 		0x23 // laser 192 - 185
 	};
+//	cmd[5] = param1;
+//	cmd[6] = param2;
+//	cmd[7] = param3;
+//	cmd[8] = tipOverTimeConstant; // [0-31], 31 = slowest
+//	cmd[9] = tipThreshold; // typically approx 40-50 - arbitary units
+//	cmd[10] = laserTimeoutValue; // units of 2.048 ms
+	
+	
+	
 	cmd[4] = currentCommandType;
+	memcpy(&cmd[12], laserBitmap, LASER_BITMAP_SIZE);
 	
 	serial.write(cmd, sizeof(cmd));
 }
 
 void ForestSerialPort::draw(int x, int y) {
+
 	int pos = 0;
-	float width = 30;
-	map<int,RodInfo>::iterator it = rodInfos.begin();
+	float width = 50;
 	ofSetHexColor(0xFFFFFF);
+	
+	ofDrawBitmapString(serialNo, x, y);
+	map<int,RodInfo>::iterator it = rodInfos.begin();
+
 	for( ; it != rodInfos.end(); it++) {
+		ofSetHexColor(0x666666);
+		ofRectangle r(x + width *pos, y+23, width, 50);
+		// make the rectangle's origin at the bottom left
+		r.y += r.height;
+		r.height *= -1;
+		ofRect(r);
 		
-		ofDrawBitmapString(ofToString((*it).second.id), x + width * pos, y);
+		ofRectangle meter = r;
+		if(currentCommandType==RETURN_PROCESSED_MOTION_DATA) {
+			meter.height *= (*it).second.motionSpare/90.f;
+			//if((*it).second.motionSpare==64) ofSetHexColor(0x00FF00);
+			//else
+				ofSetHexColor(0x990000);
+			ofRect(meter);
+		} else if(currentCommandType==RETURN_RAW_ACCELEROMETER) {
+			meter.width /= 3;
+			
+			ofSetHexColor(0x990000);
+			meter.height = r.height*(*it).second.rawData.x/90.f;
+			ofRect(meter);
+			
+			ofSetHexColor(0x009900);
+			meter.x += meter.width;
+			meter.height = r.height*(*it).second.rawData.y/90.f;
+			ofRect(meter);
+			
+			ofSetHexColor(0x000099);
+			meter.x += meter.width;
+			meter.height = r.height*(*it).second.rawData.z/90.f;
+			ofRect(meter);
+		}
+		
+		
+		
+		
+		
+		
+		//printf("[%d] = %f\n", (*it).second.id, (*it).second.motion);
+		ofSetHexColor(0xFFFFFF);
+		ofDrawBitmapString(ofToString((int)(*it).second.id), r.x, r.y+14);
+
 		pos++;
 	}
 }

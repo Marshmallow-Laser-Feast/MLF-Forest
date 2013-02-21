@@ -43,6 +43,7 @@
 		E7E077E515D3B63C0020DFD4 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */; };
 		E7E077E815D3B6510020DFD4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E077E715D3B6510020DFD4 /* QTKit.framework */; };
 		E7F985F815E0DEA3003869B5 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7F985F515E0DE99003869B5 /* Accelerate.framework */; };
+		EA5A55EC16D6BE540015C77B /* rodStructs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA5A55EB16D6BE540015C77B /* rodStructs.cpp */; };
 		EABA2ECB16D672EB00EAE855 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EABA2EC216D672EB00EAE855 /* main.cpp */; };
 		EABA2ECC16D672EB00EAE855 /* Performer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EABA2EC316D672EB00EAE855 /* Performer.cpp */; };
 		EABA2ECD16D672EB00EAE855 /* Rod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EABA2EC516D672EB00EAE855 /* Rod.cpp */; };
@@ -255,6 +256,7 @@
 		E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		E7E077E715D3B6510020DFD4 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		E7F985F515E0DE99003869B5 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
+		EA5A55EB16D6BE540015C77B /* rodStructs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rodStructs.cpp; sourceTree = "<group>"; };
 		EABA2EC116D672EB00EAE855 /* D2xxSerial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = D2xxSerial.h; sourceTree = "<group>"; };
 		EABA2EC216D672EB00EAE855 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		EABA2EC316D672EB00EAE855 /* Performer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Performer.cpp; sourceTree = "<group>"; };
@@ -828,6 +830,7 @@
 				EABA2F7D16D6768D00EAE855 /* ForestSerialPort.cpp */,
 				EABA2F7E16D6768D00EAE855 /* ForestSerialPort.h */,
 				EABA2F8416D699C100EAE855 /* rodStructs.h */,
+				EA5A55EB16D6BE540015C77B /* rodStructs.cpp */,
 			);
 			path = comm;
 			sourceTree = "<group>";
@@ -1345,6 +1348,7 @@
 				EABA2F7C16D675E500EAE855 /* RodCommunicator.cpp in Sources */,
 				EABA2F7F16D6768D00EAE855 /* ForestSerialPort.cpp in Sources */,
 				EABA2F8116D678F400EAE855 /* D2xxSerial.cpp in Sources */,
+				EA5A55EC16D6BE540015C77B /* rodStructs.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
