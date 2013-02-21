@@ -140,7 +140,7 @@ void testApp::setup() {
         params.addNamedIndex("view").setLabels(3, "perspective", "top", "first person");
         //            params.addBang("top view");
         //            params.addBool("orthogonal");
-        params.addInt("distance").setRange(0, 10000).setClamp(true).set(5000);
+//        params.addInt("distance").setRange(0, 10000).setClamp(true).set(5000);
         params.addInt("fov").setRange(1, 100).setClamp(true).set(40);
         params.addInt("trackPerson").setClamp(true);
         params.addInt("rotx").setRange(-360, 360).setClamp(true);
@@ -279,6 +279,7 @@ void testApp::setup() {
     cameras.resize(params.get<msa::controlfreak::ParameterNamedIndex>("camera.view").size());
     
     easyCam.disableMouseInput();
+    easyCam.setDistance(4400);
     cameras[0] = &easyCam;
     
     cameras[1] = new ofCamera;
@@ -478,7 +479,7 @@ void updateCamera() {
     //        //        cam.lookAt(ofVec3f(0, 0, 0));
     //    }
     
-    easyCam.setDistance(paramsCamera["distance"]);
+//    easyCam.setDistance(paramsCamera["distance"]);
     easyCam.setFov(paramsCamera["fov"]);
     
     //    cam.rotateAround(paramsCamera["yrot"], ofVec3f(0, 1, 0), ofVec3f(0, 0, 0));
