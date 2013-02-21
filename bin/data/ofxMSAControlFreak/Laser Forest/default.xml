@@ -51,13 +51,17 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="diameterMin" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="diameterMax" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="color" value="46"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="angleAmp" value="1"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="fadeSpeed" value="0.035714287"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserHeight" value="10000"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserDiameter" value="10"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="angleAmp" value="2"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="dampSpeed" value="0.026785715"></Parameter>
+        </Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterGroupE" name="laser">
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="height" value="10000"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="diameter" value="7"></Parameter>
+            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="alwaysOn" value="0"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="alphaThreshold" value="0.084821425"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="performers">
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="count" value="9"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="count" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMin" value="66"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMax" value="150"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="speedMin" value="47"></Parameter>

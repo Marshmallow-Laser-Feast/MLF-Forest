@@ -9,12 +9,15 @@
 #include "Rod.h"
 
 int Rod::angleAmp;
-int Rod::laserHeight;
-int Rod::laserDiameter;
-float Rod::fadeSpeed;
+float Rod::dampSpeed;
 bool Rod::showPitchIndex;
 int Rod::heightMin;
 int Rod::heightMax;
 int Rod::diameterMin;
 int Rod::diameterMax;
 int Rod::color;
+
+int Rod::laserHeight;
+int Rod::laserDiameter;
+bool Rod::bLaserAlwaysOn;
+float Rod::laserAlphaThreshold;

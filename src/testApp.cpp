@@ -6,6 +6,7 @@
 #include "ofxOpenCv.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofxOsc.h"
+#include "ofxMidi.h"
 
 /*
  TODO:
@@ -170,9 +171,13 @@ void testApp::setup() {
         params.addInt("diameterMax").setTooltip("maximum rod diamater (cm)").setRange(1, 50).setClamp(true).set(10).trackVariable(&Rod::diameterMax);;
         params.addInt("color").setRange(0, 255).setClamp(true).set(60).trackVariable(&Rod::color);
         params.addInt("angleAmp").setRange(0, 90).setClamp(true).trackVariable(&Rod::angleAmp);
-        params.addFloat("fadeSpeed").setClamp(true).trackVariable(&Rod::fadeSpeed);
-        params.addInt("laserHeight").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
-        params.addInt("laserDiameter").setRange(1, 50).setClamp(true).trackVariable(&Rod::laserDiameter);
+        params.addFloat("dampSpeed").setClamp(true).trackVariable(&Rod::dampSpeed);
+    } params.endGroup();
+    params.startGroup("laser"); {
+        params.addInt("height").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
+        params.addInt("diameter").setRange(1, 50).setClamp(true).trackVariable(&Rod::laserDiameter);
+        params.addBool("alwaysOn").trackVariable(&Rod::bLaserAlwaysOn);
+        params.addFloat("alphaThreshold").trackVariable(&Rod::laserAlphaThreshold).setClamp(true);;
     } params.endGroup();
     
     //    params.startGroup("ssao"); {
@@ -962,5 +967,11 @@ void testApp::gotMessage(ofMessage msg){
 
 //--------------------------------------------------------------
 void testApp::dragEvent(ofDragInfo dragInfo){
+    
+}
+
+
+//--------------------------------------------------------------
+void testApp::newMidiMessage(ofxMidiMessage& msg) {
     
 }

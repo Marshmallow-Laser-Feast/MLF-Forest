@@ -1,8 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxMidi.h"
 
-class testApp : public ofBaseApp{
+class testApp : public ofBaseApp, public ofxMidiListener {
     
 public:
     void setup();
@@ -20,4 +21,6 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
+    virtual void newMidiMessage(ofxMidiMessage& msg);
+
 };
