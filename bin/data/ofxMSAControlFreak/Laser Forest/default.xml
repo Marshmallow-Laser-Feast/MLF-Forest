@@ -94,6 +94,7 @@
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="port" value="57120"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="outputPitchMult" value="1.000000000"></Parameter>
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="volumePower" value="1"></Parameter>
+                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="forceSend" value="0"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">

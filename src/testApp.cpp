@@ -245,6 +245,7 @@ void testApp::setup() {
             params.addInt("port").setRange(0, 100000).setClamp(true).set(57120);
             params.addFloat("outputPitchMult").setRange(0, 2).setClamp(true).setIncrement(0.005).setSnap(true).set(1);
             params.addInt("volumePower").setRange(1, 8).setClamp(true).set(1);
+            params.addBang("forceSend");
         } params.endGroup();
         
     } params.endGroup();
@@ -258,9 +259,7 @@ void testApp::setup() {
         params.addInt("maxNoteCount").setRange(0, 50).setClamp(true).set(0);
         params.addFloat("volumePitchMult").setTooltip("make higher sounds lower volume").setClamp(true);
         params.addBool("invert").setTooltip("invert pitch relationship from out to in");
-        
     } params.endGroup();
-
     
     updateFilesGroup("sound.local.file", "audio", false);
     updateFilesGroup("layout.image", "layout", true);
@@ -558,7 +557,7 @@ void updateLaserAnimation() {
             imagePos.x = ofMap(r.getX(), -installationSize.x/2, installationSize.x/2, 0, animationVideo.getWidth());
             imagePos.y = ofMap(r.getZ(), -installationSize.z/2, installationSize.z/2, 0, animationVideo.getHeight());
             if(pixels.getColor(imagePos.x, imagePos.y).r > 0) r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
-            else r.value = 0;
+            else r.amp = 0;
         }
     }
 }
@@ -704,8 +703,6 @@ void sendRodOsc(bool bForce) {
         updateRodLayout(true);  // force zero if enabled state has changed
     }
     
-    
-    
     if(bForce || params["sound.osc.enabled"]) {
         if(params["sound.osc.port"].hasChanged() || oscSender == NULL) {
             if(oscSender) delete oscSender;
@@ -715,14 +712,14 @@ void sendRodOsc(bool bForce) {
         ofxOscBundle b;
         float outputPitchMult = params["sound.osc.outputPitchMult"];
         
-        bool doSendTuning = params["tuning"].hasChanged() || params["sound.osc.outputPitchMult"].hasChanged();
+        bool doSendTuning = bForce || params["tuning"].hasChanged() || params["sound.osc.outputPitchMult"].hasChanged();
 
         int volumePower = params["sound.osc.volumePower"];
         for(int i=0; i<rods.size(); i++){
             Rod &r = rods[i];
             
             ofxOscMessage m;
-            if(bForce || doSendTuning) {
+            if(doSendTuning) {
                 m.setAddress("/forestFreq");
                 m.addIntArg(i);
                 m.addFloatArg(scaleManager.currentFreq(r.pitchIndex) * outputPitchMult);
@@ -734,8 +731,7 @@ void sendRodOsc(bool bForce) {
             m.addIntArg(i);
             float amp = 1;
             for(int i=0; i<volumePower; i++) {
-                amp *= r.value;
-                
+                amp *= r.amp;
             }
             m.addFloatArg(amp);
             b.addMessage(m);
@@ -766,7 +762,7 @@ void testApp::update(){
         checkRodCollisions(p.getGlobalPosition(), p.affectRadius);
     }
     
-    sendRodOsc();
+    sendRodOsc(params["sound.osc.forceSend"]);  // send OSC, force if nessecary
     //    updateSSAO();
 }
 

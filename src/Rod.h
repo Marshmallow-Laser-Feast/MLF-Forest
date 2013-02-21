@@ -14,8 +14,8 @@ public:
     float radius;           // real value (in cm)
     float radiusNorm;       // normalized (0...1) based on min/max parameters
     
-    float value;
-    float oldValue;
+    float amp;              // the current amplitude of vibration (0...1)
+    float oldAmp;
     
     int pitchIndex;
     
@@ -40,14 +40,14 @@ public:
         heightNorm = ofRandomuf();
         radiusNorm = ofRandomuf();
         //        color.set(ofRandom(255), ofRandom(255), ofRandom(255));
-        value = 0;
+        amp = 0;
     }
     
     //--------------------------------------------------------------
     void update() {
-        if(value > 0.001) value *= (1-dampSpeed);
-        else value = 0;
-        oldValue = value;
+        if(amp > 0.001) amp *= (1-dampSpeed);
+        else amp = 0;
+        oldAmp = amp;
         
         height = ofLerp(heightMin, heightMax, heightNorm);
         radius = ofLerp(diameterMin, diameterMax, radiusNorm)/2;
@@ -55,10 +55,10 @@ public:
     
     //--------------------------------------------------------------
     bool trigger(float retriggerThreshold, ScaleManager &scaleManager, float outputPitchMult, int maxNoteCount, float volumePitchMult, float volumeVariance, ofSoundPlayer *sound) {
-        if(oldValue < retriggerThreshold) value = ofRandom(1 - volumeVariance, 1);
+        if(oldAmp < retriggerThreshold) amp = ofRandom(1 - volumeVariance, 1);
         
         // if trigger
-        if(oldValue < value/2) {
+        if(oldAmp < amp/2) {
             if(sound) {
                 float speedMult = scaleManager.currentMult(pitchIndex) * outputPitchMult;
                 float volume = ofRandom(0.5, 1);
@@ -80,9 +80,9 @@ public:
         transformGL(); {
             ofPushMatrix(); {
                 //            ofTranslate(pos.x, 0, pos.z);
-                ofRotateX(ofRandom(-angleAmp, angleAmp) * value);
-                ofRotateY(ofRandom(-angleAmp, angleAmp) * value);
-                ofRotateZ(ofRandom(-angleAmp, angleAmp) * value);
+                ofRotateX(ofRandom(-angleAmp, angleAmp) * amp);
+                ofRotateY(ofRandom(-angleAmp, angleAmp) * amp);
+                ofRotateZ(ofRandom(-angleAmp, angleAmp) * amp);
                 
                 ofPushMatrix(); {
                     ofSetColor(color);
@@ -90,12 +90,12 @@ public:
                     ofScale(radius*2, height, radius*2);
                     ofBox(1);
                 } ofPopMatrix();
-                //            if(value > 0.01) {
+                //            if(amp > 0.01) {
                 ofPushStyle();
                 ofDisableLighting();
                 if(bLaserAlwaysOn) laserAlpha = 1;
-                else laserAlpha = value > laserAlphaThreshold;
-                //                        laserAlpha = value;
+                else laserAlpha = amp > laserAlphaThreshold;
+                //                        laserAlpha = amp;
                 //                        laserAlpha = 1-laserAlpha;
                 //                        laserAlpha *= laserAlpha * laserAlpha * laserAlpha;
                 //                        laserAlpha = 1-laserAlpha;
