@@ -28,9 +28,8 @@
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="camera">
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="view" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="distance" value="4642"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="fov" value="40"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotx" value="45"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="roty" value="32"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotz" value="0"></Parameter>

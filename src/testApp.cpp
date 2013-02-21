@@ -8,11 +8,6 @@
 #include "ofxOsc.h"
 #include "ofxMidi.h"
 
-/*
- TODO:
- - load layout from 3D file
- 
- */
 
 msa::controlfreak::ParameterGroup params;
 msa::controlfreak::gui::Gui gui;
@@ -41,10 +36,10 @@ ofxCvContourFinder animationVideoContours;
 
 
 ofVec3f installationSize;
-//ofVec3f rodCount;
 
 ofxOscSender *oscSender = NULL;
-
+bool bSendRodPositionsOsc = false;
+bool bSendRodTuningOsc = false;
 
 
 //--------------------------------------------------------------
@@ -94,20 +89,7 @@ void testApp::setup() {
         lights[i] = new ofLight();
         lights[i]->setSpecularColor(ofColor(0, 0, 0));
     }
-//    lights[0]->setGlobalPosition(-1294, 41, 4199);
-//    lights[0]->setDiffuseColor(ofFloatColor(0.7, 0.7, 0.7));
-//    lights[1]->setGlobalPosition(294, 133, 7176);
-//    lights[1]->setDiffuseColor(ofFloatColor(0.4, 0.4, 0.4));
-//    lights[2]->setGlobalPosition(1716, 836, -1773);
-//    lights[2]->setDiffuseColor(ofFloatColor(0.9, 0.9, 0.9));
-    
-    
-//    // sound
-//    sound.loadSound("audio/vibe2.wav");
-//    //    sound.loadSound("audio/sinfade.wav");
-////    sound.loadSound("audio/sinfade2.wav");
-//    sound.setMultiPlay(true);
-//    sound.setLoop(false);
+
     scaleManager.setup();
     
     params.setName("Laser Forest");
@@ -138,19 +120,11 @@ void testApp::setup() {
     
     params.startGroup("camera").close(); {
         params.addNamedIndex("view").setLabels(3, "perspective", "top", "first person");
-        //            params.addBang("top view");
-        //            params.addBool("orthogonal");
-//        params.addInt("distance").setRange(0, 10000).setClamp(true).set(5000);
         params.addInt("fov").setRange(1, 100).setClamp(true).set(40);
         params.addInt("trackPerson").setClamp(true);
         params.addInt("rotx").setRange(-360, 360).setClamp(true);
         params.addInt("roty").setRange(-360, 360).setClamp(true);
         params.addInt("rotz").setRange(-360, 360).setClamp(true);
-        //            params.startGroup("pos").close(); {
-        //                params.addFloat("x");//.trackVariable(&cam.xRot);
-        //                params.addFloat("y");//.trackVariable(&cam.yRot);
-        //                params.addFloat("z");//.trackVariable(&cam.zRot);
-        //            } params.endGroup();
     } params.endGroup();
     
     params.startGroup("layout").close(); {
@@ -214,24 +188,6 @@ void testApp::setup() {
         params.addInt("threshold").setRange(0, 255).setClamp(true);
     } params.endGroup();
     
-//    params.startGroup("sweeps"); {
-//        params.addNamedIndex("direction").setLabels(5, "radial in", "radial out", "left to right", "right to left", "front to back", "back to front");
-//        params.addBang("go");
-//        params.addFloat("speed").setRange(0, 5).setClamp(true);
-////        params.addBang("radial in");
-////        params.addFloat("radial in speed").setRange(0, 5).setClamp(true);
-////        params.addBang("radial out");
-////        params.addFloat("radial out speed").setRange(0, 5).setClamp(true);
-////        params.addBang("left to right");
-////        params.addFloat("left to right speed").setRange(0, 5).setClamp(true);
-////        params.addBang("right to left");
-////        params.addFloat("right to left speed").setRange(0, 5).setClamp(true);
-////        params.addBang("front to back");
-////        params.addFloat("front to back speed").setRange(0, 5).setClamp(true);
-////        params.addBang("back to front");
-////        params.addFloat("back to front speed").setRange(0, 5).setClamp(true);
-//    } params.endGroup();
-    
     params.startGroup("sound"); {
         params.addFloat("volumeVariance").setClamp(true).set(1);
         params.addFloat("retriggerThreshold").setClamp(true).set(1);
@@ -266,10 +222,6 @@ void testApp::setup() {
     updateFilesGroup("animation.laser.file", "animations/laser", true);
     updateFilesGroup("animation.performance", "animations/performance", true);
 
-//    updateSoundFiles();
-//    updatelayout();
-//    updateLaserAnimations();
-    
     params.loadXmlValues();
     
     gui.addPage(params);
@@ -291,7 +243,6 @@ void testApp::setup() {
     cameras[2] = new ofCamera;
     
     
-    
     venueModel.loadModel("3d/venue.dae");
     venueModel.setScaleNomalization(false);
     venueModel.setScale(1, -1, 1);
@@ -301,50 +252,21 @@ void testApp::setup() {
 
 
 //--------------------------------------------------------------
-//void updateRods(bool bForceUpdate = false) {
-//    msa::controlfreak::ParameterGroup &paramsRods = params.getGroup("rods");
-//    if(bForceUpdate || paramsRods.hasChanged()) {
-//        ofLogNotice() << "updateRods at frame " << ofGetFrameNum();
-//        
-////        float heightMin = paramsRods["heightMin"];
-////        float heightMax = paramsRods["heightMax"];
-////        float diameterMin = paramsRods["diameterMin"];
-////        float diameterMax = paramsRods["diameterMax"];
-//        float color = paramsRods["color"].getMappedTo(0, 255);
-//        
-//        Rod::fadeSpeed = paramsRods["fadeSpeed"];
-//        Rod::angleAmp = paramsRods["angleAmp"];
-//        Rod::laserHeight = paramsRods["laserHeight"];
-//        Rod::laserDiameter = paramsRods["laserDiameter"];
-//        
-//        for(int i=0; i<rods.size(); i++) {
-//            Rod &r = rods[i];
-////            r.height = ofLerp(heightMin, heightMax, r.heightNorm);
-////            r.radius = ofLerp(diameterMin, diameterMax, r.radiusNorm)/2;
-//            r.color = ofColor(color);
-//        }
-//    }
-//}
-
-
-//--------------------------------------------------------------
 void updateRodLayout(bool bForceUpdate = false) {
     msa::controlfreak::ParameterGroup &paramsLayout = params.getGroup("layout");
     if(bForceUpdate || paramsLayout.hasChanged())  {
         ofLogNotice() << "updateRodLayout at frame " << ofGetFrameNum();
         
-//        updatelayout();
+        bSendRodPositionsOsc = true;
         
         int installationWidth = paramsLayout["installationWidth"];
         int installationLength = paramsLayout["installationLength"];
         int rodCountWidth = paramsLayout["rodCountWidth"];
         int rodCountLength = paramsLayout["rodCountLength"];
         float randomness = paramsLayout["randomness"];
-//        bool useImage = paramsLayout["useImage"];
         int useImageIndex = paramsLayout["image"];
         
         if(useImageIndex > 0) {
-//            layoutImage.loadImage("layout/" + paramsLayout.get<msa::controlfreak::ParameterNamedIndex>("layoutImage").getSelectedLabel());
             layoutImage.loadImage(paramsLayout.get<msa::controlfreak::ParameterNamedIndex>("image").getSelectedLabel());
             
             ofxCvColorImage colorImage;
@@ -391,8 +313,6 @@ void updateRodLayout(bool bForceUpdate = false) {
             r.setup();
             r.move(randomness * ofVec3f(ofRandomf(), 0, ofRandomf()));
         }
-        
-//        updateRods(true);
         
         Performer::worldMin.set(-installationWidth/2, 0, -installationLength/2);
         Performer::worldMax.set( installationWidth/2, 0, installationLength/2);
@@ -458,37 +378,9 @@ void updateFbo(bool bForceUpdate = false) {
 //--------------------------------------------------------------
 void updateCamera() {
     msa::controlfreak::ParameterGroup &paramsCamera = params.getGroup("camera");
-    
     if(params["performers.count"].hasChanged()) paramsCamera["trackPerson"].setRange(1, (int)params["performers.count"]);
-    
     if(paramsCamera["trackPerson"].hasChanged()) cameras[2]->setParent(performers[paramsCamera["trackPerson"]]);
-    
-    //    if(paramsCamera["top view"]) {
-    //        cam.setGlobalPosition(0, 100, 0);
-    //        //        arcball.curRot = ofQuaternion();
-    //    }
-    //
-    //    if(paramsCamera["orthogonal"].hasChanged()) {
-    //        if(paramsCamera["orthogonal"]) {
-    //            cam.enableOrtho();
-    //            //            cam.setGlobalPosition(-ofGetWidth()/2, paramsCamera["distance"],-ofGetHeight()/2);
-    //        } else {
-    //            cam.disableOrtho();
-    //            //            cam.setGlobalPosition(0, paramsCamera["distance"], 0);
-    //        }
-    //        //        cam.lookAt(ofVec3f(0, 0, 0));
-    //    }
-    
-//    easyCam.setDistance(paramsCamera["distance"]);
     easyCam.setFov(paramsCamera["fov"]);
-    
-    //    cam.rotateAround(paramsCamera["yrot"], ofVec3f(0, 1, 0), ofVec3f(0, 0, 0));
-    //    cam.rotateAround(paramsCamera["xrot"], ofVec3f(1, 0, 0), ofVec3f(0, 0, 0));
-    
-    //    cam.move(paramsCamera["x"], paramsCamera["y"], 0);
-    
-    //    ofTranslate(ofGetWidth()/2, ofGetHeight()/2, -(float)paramsCamera["distance"]);
-    //    ofTranslate(0, 0, -(float)paramsCamera["distance"]);
 }
 
 //--------------------------------------------------------------
@@ -515,7 +407,6 @@ void checkRodCollisions(ofVec3f p, float radius) {
         Rod &r = rods[i];
         if((p - r.getGlobalPosition()).lengthSquared() < radius * radius) r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
     }
-//    return bRet;
 }
 
 
@@ -628,26 +519,16 @@ void updatePerformanceAnimation() {
 
 //--------------------------------------------------------------
 void updateSound() {
-    //    sound.loadSound("audio/vibe2.wav");
-    //    //    sound.loadSound("audio/sinfade.wav");
-    ////    sound.loadSound("audio/sinfade2.wav");
-    //    sound.setMultiPlay(true);
-    //    sound.setLoop(false);
-
-    
     msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("sound.local.file");
     if(paramNamedIndex.hasChanged()) {
-            //            animationVideo.loadMovie("animations/laser/" + paramNamedIndex.getSelectedLabel());
         sound.loadSound(paramNamedIndex.getSelectedLabel());
         sound.setMultiPlay(true);
         sound.setLoop(false);
     }
-    
 }
 
 //--------------------------------------------------------------
 void updateRodTuning() {
-//    ofVec3f installationSize(params["layout.installationWidth"], 0, params["layout.installationLength"]);
     ofVec3f noteCount(params["tuning.noteCountWidth"], 0, params["tuning.noteCountLength"]);
     int noteCountRadial = params["tuning.noteCountRadial"];
     int noteCountDistance = params["tuning.noteCountDistance"];
@@ -659,15 +540,7 @@ void updateRodTuning() {
     bool bRet = false;
     for(int i=0; i<rods.size(); i++) {
         Rod &r = rods[i];
-//        ofVec3f normPos = r.getGlobalPosition()  / (installationSize/2);
-//        if(invert) {
-//            normPos.x = ofSign(normPos.x) * (1 - fabsf(normPos.x));
-//            normPos.y = ofSign(normPos.y) * (1 - fabsf(normPos.y));
-//            normPos.z = ofSign(normPos.z) * (1 - fabsf(normPos.z));
-//        }
-//        ofVec3f vpitchIndex = normPos * noteCount;
         r.pitchIndex = 0;
-//        r.pitchIndex += fabs(vpitchIndex.x) + fabs(vpitchIndex.z);
         float distRatio = r.getGlobalPosition().length() / halfInstallationLength;
         if(invert) distRatio = 1-distRatio;
         r.pitchIndex += distRatio * noteCountDistance;
@@ -744,6 +617,9 @@ void sendRodOsc(bool bForce) {
 
 //--------------------------------------------------------------
 void testApp::update(){
+    bSendRodPositionsOsc = false;
+    bSendRodTuningOsc = false;
+    
     msa::controlfreak::update();
     
     updateRodLayout();
