@@ -82,5 +82,6 @@ Desktop.ini
 # Miscellaneous
 .mailmap
 
-
 bin/data/animations/performance/layout_v7_anim3.mov
+serial-test/serial
+
