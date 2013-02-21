@@ -89,7 +89,7 @@ void testApp::setup() {
         lights[i] = new ofLight();
         lights[i]->setSpecularColor(ofColor(0, 0, 0));
     }
-
+    
     scaleManager.setup();
     
     params.setName("Laser Forest");
@@ -132,7 +132,7 @@ void testApp::setup() {
         params.addInt("floorLength").setTooltip("total floor length (cm)").setClamp(true).setRange(100, 10000).set(3000);
         params.addFloat("installationWidth").setTooltip("installation width (cm)").setClamp(true).setRange(100, 10000).set(3000).trackVariable(&installationSize.x);
         params.addFloat("installationLength").setTooltip("installation length (cm)").setClamp(true).setRange(100, 10000).set(1500).trackVariable(&installationSize.z);
-//        params.addBool("useImage").setTooltip("use a black & white image for rod layout (rodCountWidth & rodCountLength will be ignored)");
+        //        params.addBool("useImage").setTooltip("use a black & white image for rod layout (rodCountWidth & rodCountLength will be ignored)");
         params.addInt("rodCountWidth").setTooltip("number of rods in width (ignored if an image is used)").setClamp(true).setRange(1, 60).set(20);//.trackVariable(&rodCount.x);
         params.addInt("rodCountLength").setTooltip("number of rods in length (ignored if an image is used)").setClamp(true).setRange(1, 60).set(10);//.trackVariable(&rodCount.z);
         params.addInt("randomness").setTooltip("amount of randomness in position (cm)").setRange(0, 1000).setClamp(true);
@@ -202,7 +202,7 @@ void testApp::setup() {
             params.addFloat("outputPitchMult").setTooltip("multiply final tunings by this much").setRange(0, 2).setClamp(true).setIncrement(0.005).setSnap(true).set(1);
             params.addInt("volumePower").setTooltip("mapping curve between amp of rod and volume").setRange(1, 8).setClamp(true).set(1);
             params.addBang("forceSend").setTooltip("send full osc of all rod tunings and positions");
-            params.addInt("sendFullFrameCount").setTooltip("if this is non-zero, send full OSC every this many frames").setClamp(true);
+            params.addInt("sendFullFrameCount").setTooltip("if this is non-zero, send full OSC every this many seconds").setRange(0, 60*10).setClamp(true);
         } params.endGroup();
         
     } params.endGroup();
@@ -222,7 +222,7 @@ void testApp::setup() {
     updateFilesGroup("layout.image", "layout", true);
     updateFilesGroup("animation.laser.file", "animations/laser", true);
     updateFilesGroup("animation.performance", "animations/performance", true);
-
+    
     params.loadXmlValues();
     
     gui.addPage(params);
@@ -282,7 +282,7 @@ void updateRodLayout(bool bForceUpdate = false) {
             
             layoutImageContours.findContours(greyImage, 0, greyImage.getWidth() * greyImage.getHeight(), 100000, false);
             
-//            rods.resize(layoutImageContours.blobs.size());
+            //            rods.resize(layoutImageContours.blobs.size());
             rods.clear();
             for(int i=0; i<layoutImageContours.nBlobs; i++) {
                 rods.push_back(Rod());
@@ -296,7 +296,7 @@ void updateRodLayout(bool bForceUpdate = false) {
         } else {
             layoutImage.clear();
             
-//            rods.resize(rodCountWidth * rodCountLength);
+            //            rods.resize(rodCountWidth * rodCountLength);
             rods.clear();
             for(int i=0; i<rodCountWidth; i++) {
                 for(int j=0; j<rodCountLength; j++) {
@@ -338,7 +338,7 @@ void updatePerformers(bool bForceUpdate = false) {
         bool doVel = paramsPerformers["speedMin"].hasChanged() || paramsPerformers["speedMax"];
         bool doSetup = paramsPerformers["count"].hasChanged();
         if(bForceUpdate || doSetup) {
-//            performers.resize(paramsPerformers["count"]); // for some reason resize screws up the init somehow!
+            //            performers.resize(paramsPerformers["count"]); // for some reason resize screws up the init somehow!
             performers.clear();
             int count = paramsPerformers["count"];
             for(int i=0; i<count; i++) performers.push_back(Performer());
@@ -433,7 +433,7 @@ void updateLaserAnimation() {
     if(animationVideo.isLoaded() && (int)paramNamedIndex > 0) {
         if(params["animation.laser.loop"].hasChanged()) animationVideo.setLoopState(params["animation.laser.loop"] ? OF_LOOP_NORMAL : OF_LOOP_NONE);
         if(params["animation.laser.speed"].hasChanged()) animationVideo.setSpeed(params["animation.laser.speed"]);
-
+        
         animationVideo.update();
         
         float outputPitchMult = params["sound.local.outputPitchMult"];
@@ -442,7 +442,7 @@ void updateLaserAnimation() {
         int maxNoteCount = params["tuning.maxNoteCount"];
         float volumePitchMult = params["tuning.volumePitchMult"];
         ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
-
+        
         ofPixelsRef pixels = animationVideo.getPixelsRef();
         for(int i=0; i<rods.size(); i++) {
             Rod &r = rods[i];
@@ -466,7 +466,7 @@ void updatePerformanceAnimation() {
             params["animation.laser.file"] = 0;
             params["animation.laser.file"].clearChanged();
             params["performers.count"] = 0;
-
+            
             //            animationVideo.loadMovie("animations/laser/" + paramNamedIndex.getSelectedLabel());
             animationVideo.loadMovie(paramNamedIndex.getSelectedLabel());
             animationVideo.setLoopState(OF_LOOP_NORMAL);
@@ -480,7 +480,7 @@ void updatePerformanceAnimation() {
         Performer::updateFromAnimation = true;
         
         animationVideo.update();
-
+        
         ofxCvColorImage colorImage;
         colorImage.allocate(animationVideo.getWidth(), animationVideo.getHeight());
         colorImage.setFromPixels(animationVideo.getPixelsRef());
@@ -501,7 +501,7 @@ void updatePerformanceAnimation() {
         }
         float heightMin = params["performers.heightMin"];
         float heightMax = params["performers.heightMax"];
-
+        
         for(int i=0; i<numBlobs; i++) {
             Performer &p = performers[i];
             ofxCvBlob &blob = animationVideoContours.blobs[i];
@@ -510,7 +510,7 @@ void updatePerformanceAnimation() {
             p.setGlobalPosition(x, 0, z);
             p.heightNorm = 0.5;
             p.height = ofLerp(heightMin, heightMax, p.heightNorm);
-
+            
         }
     } else {
         Performer::updateFromAnimation = false;
@@ -585,42 +585,18 @@ void sendRodOsc(bool bForce) {
             oscSender = new ofxOscSender;
             oscSender->setup("127.0.0.1", params["sound.osc.port"]);
         }
-        ofxOscBundle b;
         float outputPitchMult = params["sound.osc.outputPitchMult"];
         
         bSendRodTuningOsc = bSendRodTuningOsc || bForce || params["tuning"].hasChanged() || params["sound.osc.outputPitchMult"].hasChanged();
         bSendRodPositionsOsc = bSendRodPositionsOsc || bForce;
-
+        
         int volumePower = params["sound.osc.volumePower"];
         float installationRadius = sqrt(installationSize.x * installationSize.x + installationSize.z * installationSize.z);
-        for(int i=0; i<rods.size(); i++){
-            Rod &r = rods[i];
-            
-            ofxOscMessage m;
-            
-            if(bForce || bSendRodPositionsOsc) {
-                m.clear();
-                m.setAddress("/forestPos");
-                m.addIntArg(i);
-                m.addFloatArg(ofMap(atan2(r.getZ(), r.getX()), -PI, PI, 0.0f, 1.0f));
-                b.addMessage(m);
-                
-                m.clear();
-                m.setAddress("/forestCentre");
-                m.addIntArg(i);
-                m.addFloatArg(r.getPosition().length() / installationRadius);
-                b.addMessage(m);
-            }
-            
-            if(bForce || bSendRodTuningOsc) {
-                m.clear();
-                m.setAddress("/forestFreq");
-                m.addIntArg(i);
-                m.addFloatArg(scaleManager.currentFreq(r.pitchIndex) * outputPitchMult);
-                b.addMessage(m);
-            }
 
-            
+        ofxOscBundle b;
+        for(int i=0; i<rods.size(); i++) {
+            Rod &r = rods[i];
+            ofxOscMessage m;
             m.clear();
             m.setAddress("/forestAmp");
             m.addIntArg(i);
@@ -632,6 +608,39 @@ void sendRodOsc(bool bForce) {
             b.addMessage(m);
         }
         oscSender->sendBundle(b);
+        
+        if(bSendRodPositionsOsc) {
+            b.clear();
+            for(int i=0; i<rods.size(); i++) {
+                Rod &r = rods[i];
+                ofxOscMessage m;
+                m.setAddress("/forestPos");
+                m.addIntArg(i);
+                m.addFloatArg(ofMap(atan2(r.getZ(), r.getX()), -PI, PI, 0.0f, 1.0f));
+                b.addMessage(m);
+                
+                m.clear();
+                m.setAddress("/forestCentre");
+                m.addIntArg(i);
+                m.addFloatArg(r.getPosition().length() / installationRadius);
+                b.addMessage(m);
+            }
+            oscSender->sendBundle(b);
+        }
+        
+        if(bSendRodTuningOsc) {
+            b.clear();
+            for(int i=0; i<rods.size(); i++) {
+                Rod &r = rods[i];
+                ofxOscMessage m;
+                m.setAddress("/forestFreq");
+                m.addIntArg(i);
+                m.addFloatArg(scaleManager.currentFreq(r.pitchIndex) * outputPitchMult);
+                b.addMessage(m);
+            }
+            oscSender->sendBundle(b);
+        }
+        
     }
     
     bSendRodPositionsOsc = false;
@@ -644,12 +653,12 @@ void testApp::update(){
     msa::controlfreak::update();
     
     updateRodLayout();
-//    updateRods();
+    //    updateRods();
     updatePerformers();
     updateFbo();
     updateSound();
     updateRodTuning();
-
+    
     updateLaserAnimation();
     updatePerformanceAnimation();
     
@@ -662,7 +671,7 @@ void testApp::update(){
     
     bool bForce = params["sound.osc.forceSend"];
     int sendFullFrameCount = params["sound.osc.sendFullFrameCount"];
-    if(sendFullFrameCount && (ofGetFrameNum() % sendFullFrameCount == 1)) bForce = true;
+    if(sendFullFrameCount && (ofGetFrameNum() % (sendFullFrameCount * 30) == 0)) bForce = true;
     sendRodOsc(bForce);  // send OSC, force if nessecary
     //    updateSSAO();
 }
@@ -731,7 +740,7 @@ void testApp::draw() {
         ofVec3f v = performers[i].getOrientationEuler();
     }
     for(int i=0; i<lights.size(); i++) lights[i]->draw();
-
+    
     ofPopStyle();
     
     
@@ -763,7 +772,7 @@ void testApp::draw() {
     {
         ofDisableLighting();
         glDisable(GL_DEPTH_TEST);
-
+        
         int w = 256;
         if(layoutImage.isAllocated()) {
             ofSetColor(255);
@@ -775,7 +784,7 @@ void testApp::draw() {
             animationVideo.draw(ofGetWidth()-w, w, w, w);
             animationVideoContours.draw(ofGetWidth()-w, w, w, w);
         }
-
+        
     }
     ofSetColor(255);
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 2), ofGetWidth() - 100, 30);
