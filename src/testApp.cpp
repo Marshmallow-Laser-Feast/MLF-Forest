@@ -199,9 +199,10 @@ void testApp::setup() {
         params.startGroup("osc"); {
             params.addBool("enabled").set(true);
             params.addInt("port").setRange(0, 100000).setClamp(true).set(57120);
-            params.addFloat("outputPitchMult").setRange(0, 2).setClamp(true).setIncrement(0.005).setSnap(true).set(1);
-            params.addInt("volumePower").setRange(1, 8).setClamp(true).set(1);
-            params.addBang("forceSend");
+            params.addFloat("outputPitchMult").setTooltip("multiply final tunings by this much").setRange(0, 2).setClamp(true).setIncrement(0.005).setSnap(true).set(1);
+            params.addInt("volumePower").setTooltip("mapping curve between amp of rod and volume").setRange(1, 8).setClamp(true).set(1);
+            params.addBang("forceSend").setTooltip("send full osc of all rod tunings and positions");
+            params.addInt("sendFullFrameCount").setTooltip("if this is non-zero, send full OSC every this many frames").setClamp(true);
         } params.endGroup();
         
     } params.endGroup();
@@ -576,6 +577,7 @@ void sendRodOsc(bool bForce) {
         bForce = true;
         updateRodLayout(true);  // force zero if enabled state has changed
     }
+    if(bForce) ofLogNotice() << "sending full osc";
     
     if(bForce || params["sound.osc.enabled"]) {
         if(params["sound.osc.port"].hasChanged() || oscSender == NULL) {
@@ -586,19 +588,38 @@ void sendRodOsc(bool bForce) {
         ofxOscBundle b;
         float outputPitchMult = params["sound.osc.outputPitchMult"];
         
-        bool doSendTuning = bForce || params["tuning"].hasChanged() || params["sound.osc.outputPitchMult"].hasChanged();
+        bSendRodTuningOsc = bSendRodTuningOsc || bForce || params["tuning"].hasChanged() || params["sound.osc.outputPitchMult"].hasChanged();
+        bSendRodPositionsOsc = bSendRodPositionsOsc || bForce;
 
         int volumePower = params["sound.osc.volumePower"];
+        float installationRadius = sqrt(installationSize.x * installationSize.x + installationSize.z * installationSize.z);
         for(int i=0; i<rods.size(); i++){
             Rod &r = rods[i];
             
             ofxOscMessage m;
-            if(doSendTuning) {
+            
+            if(bForce || bSendRodPositionsOsc) {
+                m.clear();
+                m.setAddress("/forestPos");
+                m.addIntArg(i);
+                m.addFloatArg(ofMap(atan2(r.getZ(), r.getX()), -PI, PI, 0.0f, 1.0f));
+                b.addMessage(m);
+                
+                m.clear();
+                m.setAddress("/forestCentre");
+                m.addIntArg(i);
+                m.addFloatArg(r.getPosition().length() / installationRadius);
+                b.addMessage(m);
+            }
+            
+            if(bForce || bSendRodTuningOsc) {
+                m.clear();
                 m.setAddress("/forestFreq");
                 m.addIntArg(i);
                 m.addFloatArg(scaleManager.currentFreq(r.pitchIndex) * outputPitchMult);
                 b.addMessage(m);
             }
+
             
             m.clear();
             m.setAddress("/forestAmp");
@@ -612,14 +633,14 @@ void sendRodOsc(bool bForce) {
         }
         oscSender->sendBundle(b);
     }
+    
+    bSendRodPositionsOsc = false;
+    bSendRodTuningOsc = false;
 }
 
 
 //--------------------------------------------------------------
 void testApp::update(){
-    bSendRodPositionsOsc = false;
-    bSendRodTuningOsc = false;
-    
     msa::controlfreak::update();
     
     updateRodLayout();
@@ -639,7 +660,10 @@ void testApp::update(){
         checkRodCollisions(p.getGlobalPosition(), p.affectRadius);
     }
     
-    sendRodOsc(params["sound.osc.forceSend"]);  // send OSC, force if nessecary
+    bool bForce = params["sound.osc.forceSend"];
+    int sendFullFrameCount = params["sound.osc.sendFullFrameCount"];
+    if(sendFullFrameCount && (ofGetFrameNum() % sendFullFrameCount == 1)) bForce = true;
+    sendRodOsc(bForce);  // send OSC, force if nessecary
     //    updateSSAO();
 }
 
