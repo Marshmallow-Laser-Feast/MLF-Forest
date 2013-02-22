@@ -43,6 +43,7 @@
 		E7E077E515D3B63C0020DFD4 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */; };
 		E7E077E815D3B6510020DFD4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E077E715D3B6510020DFD4 /* QTKit.framework */; };
 		E7F985F815E0DEA3003869B5 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7F985F515E0DE99003869B5 /* Accelerate.framework */; };
+		EA58CA5116D7BA7100221204 /* RodMapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA58CA4F16D7BA7100221204 /* RodMapper.cpp */; };
 		EA5A55EC16D6BE540015C77B /* rodStructs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA5A55EB16D6BE540015C77B /* rodStructs.cpp */; };
 		EA91AAA216D7919D0041CA34 /* ofxRtMidiIn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA91AA5E16D7919C0041CA34 /* ofxRtMidiIn.cpp */; };
 		EA91AAA316D7919D0041CA34 /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA91AA6016D7919C0041CA34 /* ofxRtMidiOut.cpp */; };
@@ -265,6 +266,8 @@
 		E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		E7E077E715D3B6510020DFD4 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		E7F985F515E0DE99003869B5 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
+		EA58CA4F16D7BA7100221204 /* RodMapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RodMapper.cpp; sourceTree = "<group>"; };
+		EA58CA5016D7BA7100221204 /* RodMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RodMapper.h; sourceTree = "<group>"; };
 		EA5A55EB16D6BE540015C77B /* rodStructs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rodStructs.cpp; sourceTree = "<group>"; };
 		EA91AA5E16D7919C0041CA34 /* ofxRtMidiIn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxRtMidiIn.cpp; sourceTree = "<group>"; };
 		EA91AA5F16D7919C0041CA34 /* ofxRtMidiIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxRtMidiIn.h; sourceTree = "<group>"; };
@@ -838,6 +841,8 @@
 				EABA2EC616D672EB00EAE855 /* Rod.h */,
 				EABA2EC716D672EB00EAE855 /* Scale.h */,
 				EABA2EC816D672EB00EAE855 /* ScaleManager.h */,
+				EA58CA4F16D7BA7100221204 /* RodMapper.cpp */,
+				EA58CA5016D7BA7100221204 /* RodMapper.h */,
 				EABA2EC916D672EB00EAE855 /* testApp.cpp */,
 				EABA2ECA16D672EB00EAE855 /* testApp.h */,
 			);
@@ -1442,6 +1447,7 @@
 				EA91AAAF16D7919D0041CA34 /* ofxMidiIn.cpp in Sources */,
 				EA91AAB016D7919D0041CA34 /* ofxMidiMessage.cpp in Sources */,
 				EA91AAB116D7919D0041CA34 /* ofxMidiOut.cpp in Sources */,
+				EA58CA5116D7BA7100221204 /* RodMapper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

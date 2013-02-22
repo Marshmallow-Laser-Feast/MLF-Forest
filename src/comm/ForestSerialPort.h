@@ -58,7 +58,7 @@ public:
 	
 	// draw some debug info
 	void draw(int x, int y);
-	void setLaser(int laserId, bool on);
+	static void setLaser(int laserId, bool on);
 	
 	static int param1;
 	static int param2;

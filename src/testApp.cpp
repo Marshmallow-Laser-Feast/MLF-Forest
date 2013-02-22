@@ -7,6 +7,7 @@
 #include "ofxAssimpModelLoader.h"
 #include "ofxOsc.h"
 #include "ofxMidi.h"
+#include "RodMapper.h"
 
 #ifdef DOING_SERIAL
 #include "RodCommunicator.h"
@@ -48,6 +49,8 @@ bool bSendRodTuningOsc = false;
 #ifdef DOING_SERIAL
 RodCommunicator *rodCommunicator;
 bool showRodGui = false;
+RodMapper rodMapper;
+
 #endif
 
 
@@ -120,7 +123,10 @@ void testApp::setup() {
     params.startGroup("display").close(); {
         params.addInt("backgroundColor").setClamp(true).set(60);
         params.addInt("floorColor").setClamp(true).set(60);
-        params.addBool("showPitchIndex").trackVariable(&Rod::showPitchIndex);
+//        params.addBool("showPitchIndex").trackVariable(&Rod::showPitchIndex);
+		params.addNamedIndex("idDisplayType").setLabels(4, "None", "Pitch Index", "Device ID", "Blob Id").trackVariable(&Rod::idDisplayType);
+
+		
         params.startGroup("lighting"); {
             params.addBool("enabled");
             for(int i=0; i<lights.size(); i++) {
@@ -162,6 +168,7 @@ void testApp::setup() {
         params.addInt("color").setRange(0, 255).setClamp(true).set(60).trackVariable(&Rod::color);
         params.addInt("angleAmp").setRange(0, 90).setClamp(true).trackVariable(&Rod::angleAmp);
         params.addFloat("dampSpeed").setClamp(true).trackVariable(&Rod::dampSpeed);
+		
     } params.endGroup();
     params.startGroup("laser"); {
         params.addInt("height").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
@@ -343,6 +350,7 @@ void updateRodLayout(bool bForceUpdate = false) {
             for(int i=0; i<layoutImageContours.nBlobs; i++) {
                 rods.push_back(Rod());
                 Rod &r = rods[i];
+				r.blobId = i;
                 ofxCvBlob &blob = layoutImageContours.blobs[i];
                 float x = ofMap(blob.centroid.x, 0, greyImage.getWidth(), -installationWidth/2, installationWidth/2);
                 float z = ofMap(blob.centroid.y, 0, greyImage.getHeight(), -installationLength/2, installationLength/2);
@@ -704,18 +712,6 @@ void sendRodOsc(bool bForce) {
     bSendRodTuningOsc = false;
 }
 
-map<int,Rod*> rodCommmunicationMapping;
-
-void updateRodCommunicationMapping() {
-	// check nothing's changed.
-	
-	// if it has, set the rod class id's
-	// and rebuild the id table
-}
-void updateRodsFromSerial() {
-	// set whether the laser is on
-	// read amplitude
-}
 
 //--------------------------------------------------------------
 void testApp::update(){
@@ -743,13 +739,13 @@ void testApp::update(){
     }
     
 	
-	// this reorganizes the mapping from the
-	// physical mapping of the rods to the
-	// Rod objects if anything has changed
-	updateRodCommunicationMapping();
+	// don't talk to the lasers until
+	// the forest has been scanned.
+	if(rodCommunicator->doneDiscovering()) {
+		rodMapper.update(rodCommunicator, rods);
+	}
 	
-	// this sends and receives the physical rod data
-	updateRodsFromSerial();
+	
 	
 	// update the rod values
 	for(int i = 0; i < rods.size(); i++) {

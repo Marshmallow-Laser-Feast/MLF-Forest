@@ -23,7 +23,18 @@ public:
     
     static int angleAmp;
     static float dampSpeed;
-    static bool showPitchIndex;
+    
+	//static bool showPitchIndex;
+	//static bool showDeviceIds;
+	
+	enum IDDisplayType {
+		DISPLAY_NONE,
+		DISPLAY_PITCH_INDEX,
+		DISPLAY_DEVICE_ID,
+		DISPLAY_BLOB_ID
+	};
+	static IDDisplayType idDisplayType;
+	
     static int heightMin;
     static int heightMax;
     static int diameterMin;
@@ -43,6 +54,12 @@ public:
 	// this is the id of the board
 	// as programmed in its firmware.
 	int deviceId;
+	
+	// this is the id of the opencv
+	// blob from the layout file.
+	// we need this to be able to
+	// assign it a device id.
+	int blobId;
 	
 	//--------------------------------------------------------------
     void setup() {
@@ -68,6 +85,14 @@ public:
 		// decide whether the laser is on.
 		if(bLaserAlwaysOn) laserAlpha = 1;
 		else laserAlpha = amp > laserAlphaThreshold;
+		
+		//                        laserAlpha = amp;
+		//                        laserAlpha = 1-laserAlpha;
+		//                        laserAlpha *= laserAlpha * laserAlpha * laserAlpha;
+		//                        laserAlpha = 1-laserAlpha;
+		//                        ofSetColor(0, 255, 0, 255 * laserAlpha);
+		//                    }
+		
 		
         oldAmp = amp;
         
@@ -116,12 +141,7 @@ public:
                 ofPushStyle();
                 ofDisableLighting();
                 
-                //                        laserAlpha = amp;
-                //                        laserAlpha = 1-laserAlpha;
-                //                        laserAlpha *= laserAlpha * laserAlpha * laserAlpha;
-                //                        laserAlpha = 1-laserAlpha;
-                //                        ofSetColor(0, 255, 0, 255 * laserAlpha);
-                //                    }
+            
                 if(laserAlpha>0) {
                     ofPushMatrix(); {
                         ofSetColor(0, 255, 0, 255 * laserAlpha);
@@ -132,7 +152,15 @@ public:
                     ofPopStyle();
                 }
             } ofPopMatrix();
-            if(showPitchIndex) {
+			if(idDisplayType==DISPLAY_DEVICE_ID) {
+				if(deviceId==0) ofSetHexColor(0xFF0000);
+				else ofSetHexColor(0x00FF00);
+				ofDrawBitmapString(ofToString(deviceId), 30, 0);
+            } else if(idDisplayType==DISPLAY_BLOB_ID) {
+				ofSetHexColor(0x0000FF);
+				ofDrawBitmapString(ofToString(blobId), 30, 0);
+				
+			} else if(idDisplayType==DISPLAY_PITCH_INDEX) {
                 ofSetColor(0, 100);
                 ofDrawBitmapString(ofToString(pitchIndex), 30, 0);
             }

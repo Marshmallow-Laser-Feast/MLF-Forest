@@ -10,55 +10,29 @@
  *    \  \:\        \  \:\         |  |:/       \  \::/       \  \::/        |  |:|   
  *     \__\/         \__\/         |__|/         \__\/         \__\/         |__|/   
  *
- *  Description: The serial thread that reads and writes all the laser serial ports.
+ *  Description: This facilitates looking up device id's for rods in software
  *				 
- *  RodCommunicator.h, created by Marek Bereza on 21/02/2013.
+ *  RodMapper.h, created by Marek Bereza on 22/02/2013.
  */
 
 #pragma once
 
 #include "ofMain.h"
-#include "ForestSerialPort.h"
-
-class RodCommunicator: public ofThread {
+#include "Rod.h"
+#include "RodCommunicator.h"
+class RodMapper {
 public:
-	RodCommunicator();
+	
+	void update(RodCommunicator *comms, vector<Rod> &rods);
 	
 	
-	// call this in your setup
-	void start();
+	// this maps device id's to rod object pointers
+	// if there is no mapping for a rod, it's not
+	// in the list
+	map<int,Rod*> rodCommunicationMapping;
 	
-	//
-	bool doneDiscovering();
-	
-	
-	float getProgress();
-	
-	void setLaser(int deviceId, bool on);
-	
-	float getAmplitude(int deviceId);
-	
-	
-	// draws debug info
-	void draw();
-	
-protected:
-	void threadedFunction();
-	
-private:
-
-
-	void discover();
-	
-	
-	enum CommunicatorMode {
-		DISCOVERING,
-		RUNNING
-	};
-	vector<ForestSerialPort> ports;
-	CommunicatorMode MODE;
-	int totalRodCount;
-	
-	// reported update rate in hz
-	float updateRate;
+	int findIdForRod(Rod &rod);
+	void updateRodCommunicationMapping(vector<Rod> &rods);
+	void updateRodsFromSerial(RodCommunicator *comms);
+	void loadRodMapFile();
 };
