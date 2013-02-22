@@ -8,6 +8,10 @@
 #include "ofxOsc.h"
 #include "ofxMidi.h"
 
+#ifdef DOING_SERIAL
+#include "RodCommunicator.h"
+#endif
+
 
 msa::controlfreak::ParameterGroup params;
 msa::controlfreak::gui::Gui gui;
@@ -40,6 +44,12 @@ ofVec3f installationSize;
 ofxOscSender *oscSender = NULL;
 bool bSendRodPositionsOsc = false;
 bool bSendRodTuningOsc = false;
+
+#ifdef DOING_SERIAL
+RodCommunicator *rodCommunicator;
+bool showRodGui = false;
+#endif
+
 
 
 //--------------------------------------------------------------
@@ -80,6 +90,12 @@ void sendRodOsc(bool bForce = false);
 
 //--------------------------------------------------------------
 void testApp::setup() {
+
+#ifdef DOING_SERIAL
+	rodCommunicator = new RodCommunicator();
+	rodCommunicator->start();
+#endif
+	
     ofSetVerticalSync(true);
     ofSetFrameRate(30);
     
@@ -217,7 +233,33 @@ void testApp::setup() {
         params.addFloat("volumePitchMult").setTooltip("make higher sounds lower volume").setClamp(true);
         params.addBool("invert").setTooltip("invert pitch relationship from out to in");
     } params.endGroup();
-    
+
+    params.startGroup("comms"); {
+		params.addInt("param1").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param1);
+		params.addInt("param2").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param2);
+		params.addInt("param3").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param3);
+		
+		params.addInt("tipOverTimeConstant")
+				.setTooltip("[0-31], 31 = slowest")
+				.setRange(0, 255).setClamp(true)
+				.trackVariable(&ForestSerialPort::tipOverTimeConstant);
+		
+		params.addInt("tipThreshold")
+				.setTooltip("typically approx 40-50 - arbitary units")
+				.setRange(0, 255)
+				.setClamp(true)
+				.trackVariable(&ForestSerialPort::tipThreshold);
+		
+		params.addInt("laserTimeoutValue")
+				.setTooltip("units of 2.048 ms")
+				.setRange(0, 255)
+				.setClamp(true)
+				.trackVariable(&ForestSerialPort::laserTimeoutValue);
+		
+		
+	} params.endGroup();
+#endif
+
     updateFilesGroup("sound.local.file", "audio", false);
     updateFilesGroup("layout.image", "layout", true);
     updateFilesGroup("animation.laser.file", "animations/laser", true);
@@ -314,6 +356,7 @@ void updateRodLayout(bool bForceUpdate = false) {
             r.setup();
             r.move(randomness * ofVec3f(ofRandomf(), 0, ofRandomf()));
         }
+
         
         Performer::worldMin.set(-installationWidth/2, 0, -installationLength/2);
         Performer::worldMax.set( installationWidth/2, 0, installationLength/2);
@@ -694,6 +737,13 @@ void drawFloor() {
 
 //--------------------------------------------------------------
 void testApp::draw() {
+#ifdef DOING_SERIAL
+
+	if(showRodGui) {
+		rodCommunicator->draw();
+		return;
+	}
+#endif
     glEnable(GL_DEPTH_TEST);
     ofEnableAlphaBlending();
     ofClear((int)params["display.backgroundColor"].getMappedTo(0, 255));
@@ -788,8 +838,19 @@ void testApp::draw() {
     }
     ofSetColor(255);
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 2), ofGetWidth() - 100, 30);
-    
-    
+#ifdef DOING_SERIAL
+	if(!rodCommunicator->doneDiscovering()) {
+		ofSetHexColor(0);
+		ofRectangle r(495, ofGetHeight()-20, ofGetWidth()-495, 20);
+		ofRect(r);
+		ofSetHexColor(0x990000);
+		r.width *= rodCommunicator->getProgress();
+		ofRect(r);
+		ofSetHexColor(0xFFFFFF);
+		ofDrawBitmapString(ofToString ((int)(rodCommunicator->getProgress()*100.f))+ "% done discovering nodes", r.x+5, r.y+15);
+	}
+#endif
+	
 }
 
 //--------------------------------------------------------------
@@ -820,7 +881,11 @@ void testApp::keyPressed(int key){
         case 'r':
             resetAll();
             break;
-            
+#ifdef DOING_SERIAL
+		case '\t':
+			showRodGui ^= true;
+			break;
+#endif
     }
 }
 
