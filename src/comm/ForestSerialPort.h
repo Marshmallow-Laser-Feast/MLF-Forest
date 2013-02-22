@@ -67,7 +67,7 @@ public:
 	static int tipOverTimeConstant; // [0-31], 31 = slowest
 	static int tipThreshold; // typically approx 40-50 - arbitary units
 	static int laserTimeoutValue; // units of 2.048 ms
-	
+	static int laserHoldoff;
 	
 private:
 	

@@ -8,7 +8,6 @@
 
 
 // begin: laser parameters
-
 int ForestSerialPort::param1 = 0;
 int ForestSerialPort::param2 = 0;
 int ForestSerialPort::param3 = 0;
@@ -16,7 +15,9 @@ int ForestSerialPort::param3 = 0;
 int ForestSerialPort::tipOverTimeConstant = 10;
 int ForestSerialPort::tipThreshold = 45;
 int ForestSerialPort::laserTimeoutValue = 10; // ??
+int ForestSerialPort::laserHoldoff = 10; // ??
 // end: laser parameters
+
 
 
 
@@ -201,8 +202,7 @@ void ForestSerialPort::request() {
 		0x00, // Tip-over threshold (typ approx 40-50), arbitary units, not degrees!
 		0x0A, // laser timeout value. Laser will blank if now new commands recieved
 			  // before timeout. units of 2.048 ms
-		0xC0, // number of lasers specified in following bitmap.
-			  // not currently used - for upward compatability
+		0xC0, // Time laser must be vertical before turning on after tip-over condition cleared, units of 16mS
 		
 		0x0C, // bitmap of laser states for IDs 8 (bit 7) to 1 (bit 0). 1=On
 			  // (ID 0 does not exist so laser IDs start at 1)
@@ -236,7 +236,7 @@ void ForestSerialPort::request() {
 	cmd[8] = tipOverTimeConstant; // [0-31], 31 = slowest
 	cmd[9] = tipThreshold; // typically approx 40-50 - arbitary units
 	cmd[10] = laserTimeoutValue; // units of 2.048 ms
-	
+	cmd[11] = laserHoldoff;
 	
 	
 	cmd[4] = currentCommandType;

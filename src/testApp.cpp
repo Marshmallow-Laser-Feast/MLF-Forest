@@ -235,26 +235,32 @@ void testApp::setup() {
     } params.endGroup();
 
     params.startGroup("comms"); {
-		params.addInt("param1").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param1);
-		params.addInt("param2").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param2);
-		params.addInt("param3").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param3);
-		
+		params.addInt("param1").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param1).setTooltip("Haven't got info on this from Mike yet");
+		params.addInt("param2").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param2).setTooltip("Haven't got info on this from Mike yet");
+		params.addInt("param3").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param3).setTooltip("Haven't got info on this from Mike yet");
+
 		params.addInt("tipOverTimeConstant")
-				.setTooltip("[0-31], 31 = slowest")
-				.setRange(0, 255).setClamp(true)
-				.trackVariable(&ForestSerialPort::tipOverTimeConstant);
-		
+		.setTooltip("Tip-over filter time constant. 0-31, 31 = slowest")
+		.setRange(0, 255).setClamp(true)
+		.trackVariable(&ForestSerialPort::tipOverTimeConstant);
+
 		params.addInt("tipThreshold")
-				.setTooltip("typically approx 40-50 - arbitary units")
-				.setRange(0, 255)
-				.setClamp(true)
-				.trackVariable(&ForestSerialPort::tipThreshold);
-		
+		.setTooltip("Tip-over threshold (typ approx 40-50), arbitary units,not degrees!")
+		.setRange(0, 255)
+		.setClamp(true)
+		.trackVariable(&ForestSerialPort::tipThreshold);
+
 		params.addInt("laserTimeoutValue")
-				.setTooltip("units of 2.048 ms")
-				.setRange(0, 255)
-				.setClamp(true)
-				.trackVariable(&ForestSerialPort::laserTimeoutValue);
+		.setTooltip("Laser timeout value. Laser will blank if no new command is received before timeout. Units of 2.048mS")
+		.setRange(0, 255)
+		.setClamp(true)
+		.trackVariable(&ForestSerialPort::laserTimeoutValue);
+		
+		params.addInt("laserHoldoff")
+		.setTooltip("Time laser must be vertical before turning on after tip-over condition cleared, units of 16mS")
+		.setRange(0, 255)
+		.setClamp(true)
+		.trackVariable(&ForestSerialPort::laserHoldoff);
 		
 		
 	} params.endGroup();
