@@ -6,10 +6,18 @@
 
 #include "ForestSerialPort.h"
 
-#define bitRead(value, bit) (((value) >> (bit)) & 0x01)
-#define bitSet(value, bit) ((value) |= (1UL << (bit)))
-#define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
-#define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
+
+// begin: laser parameters
+
+int ForestSerialPort::param1 = 0;
+int ForestSerialPort::param2 = 0;
+int ForestSerialPort::param3 = 0;
+
+int ForestSerialPort::tipOverTimeConstant = 10;
+int ForestSerialPort::tipThreshold = 45;
+int ForestSerialPort::laserTimeoutValue = 10; // ??
+// end: laser parameters
+
 
 
 
@@ -19,6 +27,10 @@ unsigned char ForestSerialPort::laserBitmap[LASER_BITMAP_SIZE];
 
 
 ForestSerialPort::ForestSerialPort() {
+	
+//	currentCommandType = RETURN_RAW_ACCELEROMETER;
+	currentCommandType = RETURN_PROCESSED_MOTION_DATA;
+	
 	progress = 0;
 	if(!hasInitedLaserBitmap) {
 		memset(laserBitmap, 0, LASER_BITMAP_SIZE);
@@ -47,6 +59,9 @@ void ForestSerialPort::open(string portSerialNumber) {
 	this->serialNo = portSerialNumber;
 	if(serial.open(portSerialNumber, SERIAL_PORT_SPEED)) {
 		printf("Connected to '%s' successfully\n", portSerialNumber.c_str());
+		
+		// this is supposed to be good
+		serial.setLatencyTimer(2);
 	}
 }
 
@@ -74,7 +89,7 @@ void ForestSerialPort::discover() {
 
 bool ForestSerialPort::tryToRead(unsigned char *buff, int length, int timeout) {
 	// wait for buffer to fill up, or timeout
-	while(serial.available()<length && --timeout>0) usleep(1000);
+	while(serial.available()<length && --timeout>0) usleep(100);
 	if(serial.available()>=length) {
 		if(serial.read(buff, length)==length) {
 			return true;
@@ -154,7 +169,7 @@ void ForestSerialPort::retrieve() {
 				if(rodInfos.find(accel.id)!=rodInfos.end()) {
 					//printf("Found rod in question\n");
 					if(accel.id==1) {
-						printf("%d\n", accel.motionSpare);
+						printf("%d\n", accel.tip);
 					}
 					rodInfos[accel.id].setProcessedData(accel);
 
@@ -172,7 +187,7 @@ void ForestSerialPort::retrieve() {
 
 // reads the data back from the lasers
 void ForestSerialPort::request() {
-	currentCommandType = RETURN_RAW_ACCELEROMETER;
+	
 	unsigned char cmd[] = {
 		0xFF, // frame start marker
 		0x23, // command length
@@ -215,12 +230,12 @@ void ForestSerialPort::request() {
 		0x22,
 		0x23 // laser 192 - 185
 	};
-//	cmd[5] = param1;
-//	cmd[6] = param2;
-//	cmd[7] = param3;
-//	cmd[8] = tipOverTimeConstant; // [0-31], 31 = slowest
-//	cmd[9] = tipThreshold; // typically approx 40-50 - arbitary units
-//	cmd[10] = laserTimeoutValue; // units of 2.048 ms
+	cmd[5] = param1;
+	cmd[6] = param2;
+	cmd[7] = param3;
+	cmd[8] = tipOverTimeConstant; // [0-31], 31 = slowest
+	cmd[9] = tipThreshold; // typically approx 40-50 - arbitary units
+	cmd[10] = laserTimeoutValue; // units of 2.048 ms
 	
 	
 	
@@ -241,22 +256,34 @@ void ForestSerialPort::draw(int x, int y) {
 
 	for( ; it != rodInfos.end(); it++) {
 		ofSetHexColor(0x666666);
-		ofRectangle r(x + width *pos, y+23, width, 50);
+		ofRectangle r(x + width * pos, y+23, width-10, 50);
 		// make the rectangle's origin at the bottom left
 		r.y += r.height;
 		r.height *= -1;
 		ofRect(r);
 		
 		ofRectangle meter = r;
+		meter.width /= 3;
 		if(currentCommandType==RETURN_PROCESSED_MOTION_DATA) {
-			meter.height *= (*it).second.motionSpare/90.f;
-			//if((*it).second.motionSpare==64) ofSetHexColor(0x00FF00);
-			//else
-				ofSetHexColor(0x990000);
+
+			meter.height = r.height * (*it).second.motion/255;
+			ofSetHexColor(0x999900);
 			ofRect(meter);
-		} else if(currentCommandType==RETURN_RAW_ACCELEROMETER) {
-			meter.width /= 3;
 			
+			meter.x += meter.width;
+			meter.height = r.height*(*it).second.motionSpare/255;
+			ofSetHexColor(0x009999);
+			ofRect(meter);
+			
+			meter.x += meter.width;
+			meter.height = r.height*(*it).second.tip/255;
+			ofSetHexColor(0x990099);
+			ofRect(meter);
+			
+		} else if(currentCommandType==RETURN_RAW_ACCELEROMETER) {
+			
+			
+			meter.y -= meter.height/2;
 			ofSetHexColor(0x990000);
 			meter.height = r.height*(*it).second.rawData.x/90.f;
 			ofRect(meter);
@@ -271,7 +298,7 @@ void ForestSerialPort::draw(int x, int y) {
 			meter.height = r.height*(*it).second.rawData.z/90.f;
 			ofRect(meter);
 		}
-		
+
 		
 		
 		
@@ -279,8 +306,27 @@ void ForestSerialPort::draw(int x, int y) {
 		
 		//printf("[%d] = %f\n", (*it).second.id, (*it).second.motion);
 		ofSetHexColor(0xFFFFFF);
-		ofDrawBitmapString(ofToString((int)(*it).second.id), r.x, r.y+14);
-
+		string status = " ";
+		if((*it).second.getStatus(ROD_STATUS_BAD_ACCELEROMETER)) {
+			status += "A";
+		} else {
+			status += " ";
+		}
+		
+		if((*it).second.getStatus(ROD_STATUS_RESET)) {
+			status += "R";
+		} else {
+			status += " ";
+		}
+		
+		if((*it).second.getStatus(ROD_STATUS_TIPPED)) {
+			status += "T";
+		} else {
+			status += " ";
+		}
+		
+		ofDrawBitmapString(ofToString((int)(*it).second.id)+status, r.x, r.y+14);
+		
 		pos++;
 	}
 }

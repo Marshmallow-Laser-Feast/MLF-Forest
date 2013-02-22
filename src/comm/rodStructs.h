@@ -18,10 +18,25 @@
 #pragma once
 
 #include "ofMain.h"
-#define ROD_STATUS_OK				0
-#define ROD_STATUS_TIPPED 			1
-#define ROD_STATUS_RESET 			2
-#define ROD_STATUS_TIPPED_AND_RESET 3
+
+
+
+#define bitRead(value, bit) (((value) >> (bit)) & 0x01)
+#define bitSet(value, bit) ((value) |= (1UL << (bit)))
+#define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
+#define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
+
+
+enum RodStatus {
+	ROD_STATUS_OK = 0,
+	ROD_STATUS_TIPPED = 1,
+	ROD_STATUS_RESET = 2,
+	ROD_STATUS_BAD_ACCELEROMETER = 4
+};
+
+
+
+
 
 
 
@@ -120,23 +135,30 @@ public:
 	
 	float motion;
 	float motionSpare;
-	
+	float tip;
+	unsigned char status;
 	RodInfo(unsigned char id = 0, unsigned char timeslot = 0) {
 		this->timeslot = timeslot;
 		this->id = id;
 		motion = 0;
 		motionSpare = 0;
+
 	}
+	bool getStatus(RodStatus statusType) {
+		return status & statusType;
+	}
+	
 	
 	void setProcessedData(const ProcessedAccelerometerData &data) {
 		motion = data.motion;
 		motionSpare = data.motionSpare;
-		//printf("Processed: %f %f\n", motion, motionSpare);
+		tip = data.tip;
+		status = data.status;
 	}
 	
 	void setRawData(const RawAccelerometerData &data) {
 
 		rawData.set(lookupXY(data.x), lookupXY(data.y), lookupZ(data.z));
-		//printf("Raw\n");
+		status = data.status;
 	}
 };

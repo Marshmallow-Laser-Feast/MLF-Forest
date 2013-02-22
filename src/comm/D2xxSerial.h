@@ -35,6 +35,10 @@ public:
 	
 	int read();
 	
+	
+	int getLatencyTimer();
+	
+	void setLatencyTimer(int ms);
 		
 private:
 	bool opened;	

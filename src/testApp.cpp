@@ -250,7 +250,28 @@ void testApp::setup() {
     } params.endGroup();
 #ifdef DOING_SERIAL
     params.startGroup("comms"); {
-
+		params.addInt("param1").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param1);
+		params.addInt("param2").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param2);
+		params.addInt("param3").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param3);
+		
+		params.addInt("tipOverTimeConstant")
+				.setTooltip("[0-31], 31 = slowest")
+				.setRange(0, 255).setClamp(true)
+				.trackVariable(&ForestSerialPort::tipOverTimeConstant);
+		
+		params.addInt("tipThreshold")
+				.setTooltip("typically approx 40-50 - arbitary units")
+				.setRange(0, 255)
+				.setClamp(true)
+				.trackVariable(&ForestSerialPort::tipThreshold);
+		
+		params.addInt("laserTimeoutValue")
+				.setTooltip("units of 2.048 ms")
+				.setRange(0, 255)
+				.setClamp(true)
+				.trackVariable(&ForestSerialPort::laserTimeoutValue);
+		
+		
 	} params.endGroup();
 #endif
     updateFilesGroup("sound.local.file", "audio", false);
@@ -873,7 +894,7 @@ void testApp::draw() {
     }
     ofSetColor(255);
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 2), ofGetWidth() - 100, 30);
-    
+#ifdef DOING_SERIAL
 	if(!rodCommunicator->doneDiscovering()) {
 		ofSetHexColor(0);
 		ofRectangle r(495, ofGetHeight()-20, ofGetWidth()-495, 20);
@@ -884,6 +905,8 @@ void testApp::draw() {
 		ofSetHexColor(0xFFFFFF);
 		ofDrawBitmapString(ofToString ((int)(rodCommunicator->getProgress()*100.f))+ "% done discovering nodes", r.x+5, r.y+15);
 	}
+#endif
+	
 }
 
 //--------------------------------------------------------------

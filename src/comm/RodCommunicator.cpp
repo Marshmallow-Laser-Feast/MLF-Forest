@@ -95,14 +95,14 @@ void RodCommunicator::threadedFunction() {
 		t = tm;
 		
 		// this is also wrong - should be a proper timer
-		ofSleepMillis(msPerFrame);
+		//ofSleepMillis(msPerFrame);
 		
 		// ask the rods for data
 		for(int i = 0; i < ports.size(); i++) {
 			ports[i].request();
 		}
 		
-		usleep(10000);
+		//usleep(10000);
 		
 		// read the data back
 		for(int i = 0; i < ports.size(); i++) {

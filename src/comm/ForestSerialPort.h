@@ -59,7 +59,15 @@ public:
 	// draw some debug info
 	void draw(int x, int y);
 	void setLaser(int laserId, bool on);
-
+	
+	static int param1;
+	static int param2;
+	static int param3;
+	
+	static int tipOverTimeConstant; // [0-31], 31 = slowest
+	static int tipThreshold; // typically approx 40-50 - arbitary units
+	static int laserTimeoutValue; // units of 2.048 ms
+	
 	
 private:
 	

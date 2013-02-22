@@ -171,3 +171,21 @@ int D2xxSerial::read() {
 		return -1;
 	}
 }
+
+void D2xxSerial::setLatencyTimer(int ms) {
+	UCHAR latency = ms;
+	FT_STATUS err = FT_SetLatencyTimer(handle, latency);
+	if(err!=FT_OK) {
+		printf("Couldn't get latency timer, error: %s\n", getError(err));
+	}
+}
+
+
+int D2xxSerial::getLatencyTimer() {
+	UCHAR ms;
+	FT_STATUS err = FT_GetLatencyTimer(handle, &ms);
+	if(err!=FT_OK) {
+		printf("Couldn't set latency timer, error: %s\n", getError(err));
+	}
+	return ms;
+}
