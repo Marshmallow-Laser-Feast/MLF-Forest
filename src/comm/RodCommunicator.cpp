@@ -11,7 +11,11 @@ RodCommunicator::RodCommunicator() {
 	totalRodCount = 0;
 }
 
-
+void RodCommunicator::reset() {
+	running = false;
+	waitForThread();
+	start();
+}
 
 void RodCommunicator::start() {
 
@@ -20,6 +24,7 @@ void RodCommunicator::start() {
 	printf("Found %d serial ports\n", (int) serialNos.size());
 	ports.resize(serialNos.size());
 	for(int i = 0; i < serialNos.size(); i++) {
+		ports[i].close();
 		ports[i].open(serialNos[i]);
 	}
 	startThread();
@@ -51,7 +56,7 @@ float RodCommunicator::getProgress() {
 
 
 void RodCommunicator::draw() {
-	int xOffset = 400;
+	int xOffset = 330;
 	string report = "";
 	report += "# rods connected: " + ofToString(totalRodCount) + "\n";
 	report += "Update Rate:	     " + ofToString(updateRate,1) + " Hz\n";
@@ -59,7 +64,7 @@ void RodCommunicator::draw() {
 	ofSetHexColor(0xFFFFFF);
 	ofDrawBitmapString(report, xOffset, 30);
 	for(int i = 0; i < ports.size(); i++) {
-		ports[i].draw(xOffset, 120 + i * 30);
+		ports[i].draw(xOffset, 100 + i * 85);
 	}
 }
 
@@ -72,9 +77,9 @@ void RodCommunicator::setLaser(int deviceId, bool on) {
 
 
 float RodCommunicator::getAmplitude(int deviceId) {
-	
-	
-	return 0;
+	// TODO: this
+	return ofGetMousePressed()?1:0;
+//	return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +88,7 @@ float RodCommunicator::getAmplitude(int deviceId) {
 
 
 void RodCommunicator::threadedFunction() {
+	running = true;
 	discover();
 	
 	
@@ -99,7 +105,7 @@ void RodCommunicator::threadedFunction() {
 	
 	float t = 0;
 	// then run
-	while(1) {
+	while(running) {
 		
 		float tm = ofGetElapsedTimef();
 		// timer for reporting

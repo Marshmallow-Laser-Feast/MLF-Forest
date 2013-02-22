@@ -6,6 +6,11 @@
 
 #include "RodMapper.h"
 
+#define ROD_MAP_FILE "layout/rodMap.txt"
+
+RodMapper::RodMapper() {
+	hasLoaded = false;
+}
 
 
 void RodMapper::update(RodCommunicator *comms, vector<Rod> &rods) {
@@ -18,17 +23,42 @@ void RodMapper::update(RodCommunicator *comms, vector<Rod> &rods) {
 	updateRodsFromSerial(comms);
 }
 
-int RodMapper::findIdForRod(Rod &rod) {
+int RodMapper::findDeviceIdForRod(Rod &rod) {
+	if(blobToDevice.find(rod.blobId)!=blobToDevice.end()) {
+
+		return blobToDevice[rod.blobId];
+	} else {
+		printf("Couldn't find device for rod with blob ID %d\n", rod.blobId);
+	}
 	return 0;
 }
 
+void RodMapper::saveRodMapFile() {
+	string path = ROD_MAP_FILE;
+	ofstream rodMapFile;
+	
+	rodMapFile.open (ofToDataPath(path).c_str());
+	
+	rodMapFile << "";
+	map<int,int>::iterator it;
+	for(it = blobToDevice.begin(); it != blobToDevice.end(); it++) {
+		rodMapFile << ofToString((*it).first) + ":" + ofToString((*it).second) + "\n";
+	}
+	
+	rodMapFile.close();
+}
+
+
 void RodMapper::loadRodMapFile() {
-	string path = "rodMap.txt";
+	string path = ROD_MAP_FILE;
 	string line;
 	
 	if(!ofFile(path).exists()) {
-		// make a dummy
+		// make a dummy?
+		return;
 	}
+	
+	blobToDevice.clear();
 	
 	ifstream rodMapFile(ofToDataPath(path).c_str());
 	
@@ -36,11 +66,14 @@ void RodMapper::loadRodMapFile() {
 		
 		while(rodMapFile.good()) {
 			getline (rodMapFile,line);
+			if(line.size()>0 && line[0]=='#') continue;
 			// parse line here
 			vector<string> parts = ofSplitString(line, ":");
 			if(parts.size()==2) {
 				int blobId = ofToInt(parts[0]);
 				int deviceId = ofToInt(parts[1]);
+				blobToDevice[blobId] = deviceId;
+				printf("Blob ID: %d  =>  Device ID: %d\n", blobId, deviceId);
 			}
 		
 		}
@@ -49,39 +82,74 @@ void RodMapper::loadRodMapFile() {
 }
 
 
+
 void RodMapper::updateRodCommunicationMapping(vector<Rod> &rods) {
 	
 	// check nothing's changed.
 	
 	// if it has, set the rod class id's
 	// and rebuild the id table
-	if(rodCommunicationMapping.size()!=rods.size()) {
+	if(!hasLoaded) {
+		hasLoaded = true;
+
 		loadRodMapFile();
+		
 		rodCommunicationMapping.clear();
 		
 		for(int i = 0; i < rods.size(); i++) {
+
 			// try to find a mapping for each rod
-			int id = findIdForRod(rods[i]);
-			if(id>0) {
-				rods[i].deviceId = id;
-				rodCommunicationMapping[id] = &rods[i];
+			int deviceId = findDeviceIdForRod(rods[i]);
+			
+			rods[i].deviceId = deviceId;
+			
+			blobToDevice[rods[i].blobId] = deviceId;
+
+			if(deviceId>0) {
+				rodCommunicationMapping[deviceId] = &rods[i];
+			} else {
+				rodCommunicationMapping[deviceId] = NULL;
 			}
+		}
+	}
+}
+
+
+
+
+void RodMapper::updateRodsFromSerial(RodCommunicator *comms) {
+	
+	map<int,Rod*>::iterator it;
+
+	for(it = rodCommunicationMapping.begin(); it != rodCommunicationMapping.end(); it++) {
+//		printf("rodComms[%d] = 0x%x\n", (*it).first, (*it).second);
+		if((*it).second!=NULL) {
+			// set whether the laser is on
+			comms->setLaser((*it).first, (*it).second->laserAlpha?true:false);
+//			printf("%d\n", (*it).first);
+			// read amplitude
+			(*it).second->ampFromSerial = comms->getAmplitude((*it).first);
 		}
 	}
 	
 }
-void RodMapper::updateRodsFromSerial(RodCommunicator *comms) {
-	
-	map<int,Rod*>::iterator it;
-	for(it = rodCommunicationMapping.begin(); it != rodCommunicationMapping.end(); it++) {
-		// set whether the laser is on
-		comms->setLaser((*it).first, (*it).second->laserAlpha?true:false);
-		
-		// read amplitude
-		(*it).second->ampFromSerial = comms->getAmplitude((*it).first);
-	}
-	
+
+void RodMapper::reset() {
+	hasLoaded = false;
+	rodCommunicationMapping.clear();
+	blobToDevice.clear();
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

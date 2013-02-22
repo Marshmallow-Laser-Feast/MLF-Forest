@@ -1,0 +1,24 @@
+<ofxMSAControlFreak version="1.000000000" bFullSchema="1">
+    <Parameter type="N3msa12controlfreak14ParameterGroupE" name="layout" path="Laser Forest.layout" tooltip="">
+        <Parameter type="N3msa12controlfreak12ParameterIntE" name="floorWidth" value="6000" min="100" max="10000" doClamp="1" inc="1" doSnap="0" path="Laser Forest.layout.floorWidth" tooltip="total floor width (cm)"></Parameter>
+        <Parameter type="N3msa12controlfreak12ParameterIntE" name="floorLength" value="3000" min="100" max="10000" doClamp="1" inc="1" doSnap="0" path="Laser Forest.layout.floorLength" tooltip="total floor length (cm)"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="installationWidth" value="1900.000000000" min="100.000000000" max="10000.000000000" doClamp="1" inc="0.010000000" doSnap="0" path="Laser Forest.layout.installationWidth" tooltip="installation width (cm)"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="installationLength" value="1900.000000000" min="100.000000000" max="10000.000000000" doClamp="1" inc="0.010000000" doSnap="0" path="Laser Forest.layout.installationLength" tooltip="installation length (cm)"></Parameter>
+        <Parameter type="N3msa12controlfreak12ParameterIntE" name="rodCountWidth" value="10" min="1" max="60" doClamp="1" inc="1" doSnap="0" path="Laser Forest.layout.rodCountWidth" tooltip="number of rods in width (ignored if an image is used)"></Parameter>
+        <Parameter type="N3msa12controlfreak12ParameterIntE" name="rodCountLength" value="10" min="1" max="60" doClamp="1" inc="1" doSnap="0" path="Laser Forest.layout.rodCountLength" tooltip="number of rods in length (ignored if an image is used)"></Parameter>
+        <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomness" value="0" min="0" max="1000" doClamp="1" inc="1" doSnap="0" path="Laser Forest.layout.randomness" tooltip="amount of randomness in position (cm)"></Parameter>
+        <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="image" value="7" min="0" max="100" doClamp="1" inc="1" doSnap="0" path="Laser Forest.layout.image" tooltip="use a black &amp; white image for rod layout (rodCountWidth &amp; rodCountLength will be ignored)" selectedLabel="layout/layout_v6.png">
+            <label0>&lt;NONE&gt;</label0>
+            <label1>layout/layout_v0.png</label1>
+            <label2>layout/layout_v1.png</label2>
+            <label3>layout/layout_v2.png</label3>
+            <label4>layout/layout_v3.png</label4>
+            <label5>layout/layout_v4.png</label5>
+            <label6>layout/layout_v5.png</label6>
+            <label7>layout/layout_v6.png</label7>
+            <label8>layout/layout_v7-.png</label8>
+            <label9>layout/layout_v7.png</label9>
+            <label10>layout/rodMap.txt</label10>
+        </Parameter>
+    </Parameter>
+</ofxMSAControlFreak>

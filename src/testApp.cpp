@@ -925,6 +925,10 @@ void testApp::keyPressed(int key){
 		case '\t':
 			showRodGui ^= true;
 			break;
+		case '=':
+			rodCommunicator->reset();
+			rodMapper.reset();
+			break;
 #endif
     }
 }

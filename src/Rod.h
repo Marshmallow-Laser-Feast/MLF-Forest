@@ -51,6 +51,8 @@ public:
 	// as returned by the serial interface
 	float ampFromSerial;
 	
+	float ampFromMouse;
+	
 	// this is the id of the board
 	// as programmed in its firmware.
 	int deviceId;
@@ -68,33 +70,26 @@ public:
         radiusNorm = ofRandomuf();
         //        color.set(ofRandom(255), ofRandom(255), ofRandom(255));
         amp = 0;
+		ampFromMouse;
     }
     
     //--------------------------------------------------------------
     void update() {
-        if(amp > 0.001) amp *= (1-dampSpeed);
-        else amp = 0;
+        if(ampFromMouse > 0.001) ampFromMouse *= (1-dampSpeed);
+        else ampFromMouse = 0;
+
+		oldAmp = ampFromMouse;
+		
 		
 		// add the amplitude from serial instead of replacing it
 		// so both are interactive
-		amp += ampFromSerial;
-
-		// clamp audio to 1
-		amp = MIN(amp, 1);
+		amp = MAX(ampFromMouse, ampFromSerial);
 		
 		// decide whether the laser is on.
 		if(bLaserAlwaysOn) laserAlpha = 1;
 		else laserAlpha = amp > laserAlphaThreshold;
 		
-		//                        laserAlpha = amp;
-		//                        laserAlpha = 1-laserAlpha;
-		//                        laserAlpha *= laserAlpha * laserAlpha * laserAlpha;
-		//                        laserAlpha = 1-laserAlpha;
-		//                        ofSetColor(0, 255, 0, 255 * laserAlpha);
-		//                    }
-		
-		
-        oldAmp = amp;
+
         
         height = ofLerp(heightMin, heightMax, heightNorm);
         radius = ofLerp(diameterMin, diameterMax, radiusNorm)/2;
@@ -102,10 +97,10 @@ public:
     
     //--------------------------------------------------------------
     bool trigger(float retriggerThreshold, ScaleManager &scaleManager, float outputPitchMult, int maxNoteCount, float volumePitchMult, float volumeVariance, ofSoundPlayer *sound) {
-        if(oldAmp < retriggerThreshold) amp = ofRandom(1 - volumeVariance, 1);
+        if(oldAmp < retriggerThreshold) ampFromMouse = ofRandom(1 - volumeVariance, 1);
         
         // if trigger
-        if(oldAmp < amp/2) {
+        if(oldAmp < ampFromMouse/2) {
             if(sound) {
                 float speedMult = scaleManager.currentMult(pitchIndex) * outputPitchMult;
                 float volume = ofRandom(0.5, 1);

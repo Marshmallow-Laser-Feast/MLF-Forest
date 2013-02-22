@@ -22,17 +22,26 @@
 #include "RodCommunicator.h"
 class RodMapper {
 public:
-	
+	RodMapper();
 	void update(RodCommunicator *comms, vector<Rod> &rods);
 	
+	void reset();
 	
 	// this maps device id's to rod object pointers
 	// if there is no mapping for a rod, it's not
 	// in the list
 	map<int,Rod*> rodCommunicationMapping;
 	
-	int findIdForRod(Rod &rod);
+	map<int,int> blobToDevice;
+	
+	
+	
+	int findDeviceIdForRod(Rod &rod);
 	void updateRodCommunicationMapping(vector<Rod> &rods);
 	void updateRodsFromSerial(RodCommunicator *comms);
 	void loadRodMapFile();
+	void saveRodMapFile();
+	void setMapping(int blobId, int deviceId);
+	
+	bool hasLoaded;
 };

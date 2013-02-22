@@ -25,6 +25,8 @@ public:
 	RodCommunicator();
 	
 	
+	void reset();
+	
 	// call this in your setup
 	void start();
 	
@@ -61,4 +63,5 @@ private:
 	
 	// reported update rate in hz
 	float updateRate;
+	bool running;
 };

@@ -42,7 +42,7 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rodCountWidth" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rodCountLength" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomness" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="image" value="8"></Parameter>
+            <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="image" value="7"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="rods">
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMin" value="250"></Parameter>

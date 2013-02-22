@@ -73,6 +73,7 @@ void ForestSerialPort::discover() {
 	progress = 0;
 	float progressIncrement = 1.f/MAX_BOARDS_PER_NETWORK;
 	for(int id = 1; id <= MAX_BOARDS_PER_NETWORK; id++) {
+
 		bool success = setTimeslot(id, slotId);
 		if(success) {
 			slotId++;
@@ -143,9 +144,6 @@ bool ForestSerialPort::setTimeslot(int boardId, int timeslot) {
 // and also asks each laser to be on or off according
 // to a bitmap
 void ForestSerialPort::retrieve() {
-	
-
-
 	if(currentCommandType==RETURN_RAW_ACCELEROMETER) {
 		for(int i = 0; i < rodInfos.size(); i++) {
 			RawAccelerometerData accel;
@@ -160,18 +158,11 @@ void ForestSerialPort::retrieve() {
 			}
 		}
 	} else if(currentCommandType==RETURN_PROCESSED_MOTION_DATA) {
-		//printf("Coming in\n");
 		for(int i = 0; i < rodInfos.size(); i++) {
 			ProcessedAccelerometerData accel;
-			//printf("Trying for rod %d\n", i);
 			
 			if(tryToRead((unsigned char*)&accel, sizeof(accel))) {
-				//printf("Reading\n");
 				if(rodInfos.find(accel.id)!=rodInfos.end()) {
-					//printf("Found rod in question\n");
-					if(accel.id==1) {
-						printf("%d\n", accel.tip);
-					}
 					rodInfos[accel.id].setProcessedData(accel);
 
 				} else {
@@ -256,7 +247,7 @@ void ForestSerialPort::draw(int x, int y) {
 
 	for( ; it != rodInfos.end(); it++) {
 		ofSetHexColor(0x666666);
-		ofRectangle r(x + width * pos, y+23, width-10, 50);
+		ofRectangle r(x + width * pos, y+5, width-10, 40);
 		// make the rectangle's origin at the bottom left
 		r.y += r.height;
 		r.height *= -1;
