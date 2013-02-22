@@ -35,8 +35,18 @@ public:
     static bool bLaserAlwaysOn;
     static float laserAlphaThreshold;
     
-    //--------------------------------------------------------------
+	
+	// this is the amplitude of the rod
+	// as returned by the serial interface
+	float ampFromSerial;
+	
+	// this is the id of the board
+	// as programmed in its firmware.
+	int deviceId;
+	
+	//--------------------------------------------------------------
     void setup() {
+		ampFromSerial = 0;
         heightNorm = ofRandomuf();
         radiusNorm = ofRandomuf();
         //        color.set(ofRandom(255), ofRandom(255), ofRandom(255));
@@ -47,6 +57,18 @@ public:
     void update() {
         if(amp > 0.001) amp *= (1-dampSpeed);
         else amp = 0;
+		
+		// add the amplitude from serial instead of replacing it
+		// so both are interactive
+		amp += ampFromSerial;
+
+		// clamp audio to 1
+		amp = MIN(amp, 1);
+		
+		// decide whether the laser is on.
+		if(bLaserAlwaysOn) laserAlpha = 1;
+		else laserAlpha = amp > laserAlphaThreshold;
+		
         oldAmp = amp;
         
         height = ofLerp(heightMin, heightMax, heightNorm);
@@ -74,7 +96,7 @@ public:
     
     //--------------------------------------------------------------
     void draw() {
-        update();
+        // update();
         
         ofPushStyle();
         transformGL(); {
@@ -93,8 +115,7 @@ public:
                 //            if(amp > 0.01) {
                 ofPushStyle();
                 ofDisableLighting();
-                if(bLaserAlwaysOn) laserAlpha = 1;
-                else laserAlpha = amp > laserAlphaThreshold;
+                
                 //                        laserAlpha = amp;
                 //                        laserAlpha = 1-laserAlpha;
                 //                        laserAlpha *= laserAlpha * laserAlpha * laserAlpha;

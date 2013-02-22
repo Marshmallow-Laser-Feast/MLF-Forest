@@ -234,10 +234,20 @@ void testApp::setup() {
         params.addBool("invert").setTooltip("invert pitch relationship from out to in");
     } params.endGroup();
 
+
+#ifdef DOING_SERIAL
     params.startGroup("comms"); {
-		params.addInt("param1").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param1).setTooltip("Haven't got info on this from Mike yet");
-		params.addInt("param2").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param2).setTooltip("Haven't got info on this from Mike yet");
-		params.addInt("param3").setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param3).setTooltip("Haven't got info on this from Mike yet");
+		params.addInt("param1")
+		.setTooltip("Haven't got info on this from Mike yet")
+		.setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param1);
+		
+		params.addInt("param2")
+		.setTooltip("Haven't got info on this from Mike yet")
+		.setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param2);
+		
+		params.addInt("param3")
+		.setTooltip("Haven't got info on this from Mike yet")
+		.setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param3);
 
 		params.addInt("tipOverTimeConstant")
 		.setTooltip("Tip-over filter time constant. 0-31, 31 = slowest")
@@ -261,8 +271,6 @@ void testApp::setup() {
 		.setRange(0, 255)
 		.setClamp(true)
 		.trackVariable(&ForestSerialPort::laserHoldoff);
-		
-		
 	} params.endGroup();
 #endif
 
@@ -696,12 +704,28 @@ void sendRodOsc(bool bForce) {
     bSendRodTuningOsc = false;
 }
 
+map<int,Rod*> rodCommmunicationMapping;
+
+void updateRodCommunicationMapping() {
+	// check nothing's changed.
+	
+	// if it has, set the rod class id's
+	// and rebuild the id table
+}
+void updateRodsFromSerial() {
+	// set whether the laser is on
+	// read amplitude
+}
 
 //--------------------------------------------------------------
 void testApp::update(){
     msa::controlfreak::update();
     
     updateRodLayout();
+	
+	
+	
+	
     //    updateRods();
     updatePerformers();
     updateFbo();
@@ -718,6 +742,20 @@ void testApp::update(){
         checkRodCollisions(p.getGlobalPosition(), p.affectRadius);
     }
     
+	
+	// this reorganizes the mapping from the
+	// physical mapping of the rods to the
+	// Rod objects if anything has changed
+	updateRodCommunicationMapping();
+	
+	// this sends and receives the physical rod data
+	updateRodsFromSerial();
+	
+	// update the rod values
+	for(int i = 0; i < rods.size(); i++) {
+		rods[i].update();
+	}
+	
     bool bForce = params["sound.osc.forceSend"];
     int sendFullFrameCount = params["sound.osc.sendFullFrameCount"];
     if(sendFullFrameCount && (ofGetFrameNum() % (sendFullFrameCount * 30) == 0)) bForce = true;
