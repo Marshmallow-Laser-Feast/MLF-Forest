@@ -178,6 +178,7 @@ void testApp::setup() {
 		
     } params.endGroup();
     params.startGroup("laser"); {
+        params.addBool("displayLaser").trackVariable(&Rod::displayLaser);
         params.addInt("height").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
         params.addInt("diameter").setRange(1, 50).setClamp(true).trackVariable(&Rod::laserDiameter);
         params.addBool("alwaysOn").trackVariable(&Rod::bLaserAlwaysOn);

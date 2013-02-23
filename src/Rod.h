@@ -36,6 +36,7 @@ public:
     static int diameterMax;
 //    static int brightness;
     
+    static bool displayLaser;
     static int laserHeight;
     static int laserDiameter;
     static bool bLaserAlwaysOn;
@@ -105,7 +106,7 @@ public:
     
     //--------------------------------------------------------------
     float getSortScore() const {
-        return round(polarCoordinates.x/100) * 10000 + round(polarCoordinates.y);
+        return round(polarCoordinatesNorm.x * 100) * 10000 + round(polarCoordinates.y);
     }
 
 
@@ -169,6 +170,7 @@ public:
         s += "pitchIndex: " + ofToString(pitchIndex) + "\n";
         s += "polarCoordinates: " + ofToString(polarCoordinates.x, 2) + ", " + ofToString(polarCoordinates.y, 2) + "\n";
         s += "polarCoordinatesNorm: " + ofToString(polarCoordinatesNorm.x, 2) + ", " + ofToString(polarCoordinatesNorm.y, 2) + "\n";
+        s += "sortScore: " + ofToString(getSortScore(), 2);
         return s;
     }
     
@@ -196,7 +198,7 @@ public:
                 ofDisableLighting();
                 
                 
-                if(laserAlpha>0) {
+                if(laserAlpha>0 && displayLaser) {
                     ofPushMatrix(); {
                         ofSetColor(0, 255, 0, 255 * laserAlpha);
                         ofTranslate(0, laserHeight/2, 0);

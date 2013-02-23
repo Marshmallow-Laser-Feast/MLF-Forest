@@ -17,6 +17,7 @@ int Rod::diameterMin;
 int Rod::diameterMax;
 //int Rod::brightness;
 
+bool Rod::displayLaser;
 int Rod::laserHeight;
 int Rod::laserDiameter;
 bool Rod::bLaserAlwaysOn;
