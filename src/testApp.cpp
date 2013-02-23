@@ -172,7 +172,7 @@ void testApp::setup() {
         params.addInt("heightMax").setTooltip("maximum rod height (cm)").setRange(1, 1000).setClamp(true).set(300).trackVariable(&Rod::heightMax);
         params.addInt("diameterMin").setTooltip("minimum rod diamater (cm)").setRange(1, 50).setClamp(true).set(3).trackVariable(&Rod::diameterMin);
         params.addInt("diameterMax").setTooltip("maximum rod diamater (cm)").setRange(1, 50).setClamp(true).set(10).trackVariable(&Rod::diameterMax);;
-        params.addInt("color").setRange(0, 255).setClamp(true).set(60).trackVariable(&Rod::color);
+        params.addInt("color").setRange(0, 255).setClamp(true).set(60);//.trackVariable(&Rod::brightness);
         params.addInt("angleAmp").setRange(0, 90).setClamp(true).trackVariable(&Rod::angleAmp);
         params.addFloat("dampSpeed").setClamp(true).trackVariable(&Rod::dampSpeed);
 		
@@ -757,6 +757,7 @@ void testApp::update(){
         Rod &r = rods[i];
         r.setLaser(0);
         r.fadeAmp();
+        r.color = ofColor((float)params["rods.color"]);
     }
     
     // update rod laser values based on animation pixel values (if animation loaded)
@@ -783,11 +784,7 @@ void testApp::update(){
 
 		for(int i=0; i<rods.size(); i++) {
 			Rod &r = rods[i];
-			if(r.getDeviceId()==83) {
-//				printf("SDfklsjdf\n");
-			}
 			r.setAmp(MAX(r.getAmp(), rodCommunicator->getAmplitude( r.getDeviceId() )));
-//			r.setAmp(rodCommunicator->getAmplitude( r.getDeviceId() ));
 		}
 	}
 #endif
@@ -802,6 +799,7 @@ void testApp::update(){
         // check mouse-rod collision
         vector<Rod*> hitRods = checkRodCollisions(mouse3d, mouseRadius);
         mouseRod = hitRods.size() ? hitRods[0] : NULL;
+        for(int i=0; i<hitRods.size(); i++) hitRods[i]->color.set(255, 0, 0);
     }
 
 	

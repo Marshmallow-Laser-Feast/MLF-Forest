@@ -15,7 +15,7 @@ int Rod::heightMin;
 int Rod::heightMax;
 int Rod::diameterMin;
 int Rod::diameterMax;
-int Rod::color;
+//int Rod::brightness;
 
 int Rod::laserHeight;
 int Rod::laserDiameter;

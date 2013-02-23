@@ -5,6 +5,8 @@
 
 class Rod : public ofNode {
 public:
+    ofColor color;
+    
     float height;           // real value (in cm)
     float heightNorm;       // normalized (0...1) based on min/max parameters
     
@@ -14,9 +16,6 @@ public:
     static int angleAmp;
     static float dampSpeed;
     
-	//static bool showPitchIndex;
-	//static bool showDeviceIds;
-	
 	enum IDDisplayType {
 		DISPLAY_NONE,
 		DISPLAY_PITCH_INDEX,
@@ -35,7 +34,7 @@ public:
     static int heightMax;
     static int diameterMin;
     static int diameterMax;
-    static int color;
+//    static int brightness;
     
     static int laserHeight;
     static int laserDiameter;
@@ -214,7 +213,7 @@ public:
                     else ofSetHexColor(0x00FF00);
                     ofDrawBitmapString(ofToString(deviceId), 30, 0);
                 } else if(idDisplayType==DISPLAY_INDEX) {
-                    ofSetHexColor(0xFF0000);
+                    ofSetColor(255);
                     ofDrawBitmapString(ofToString(index), 30, 0);
                 } else if(idDisplayType==DISPLAY_PITCH_INDEX) {
                     ofSetColor(0, 100);
