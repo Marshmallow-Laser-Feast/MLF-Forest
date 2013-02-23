@@ -128,7 +128,7 @@ void testApp::setup() {
         params.addInt("backgroundColor").setClamp(true).set(60);
         params.addInt("floorColor").setClamp(true).set(60);
         //        params.addBool("showPitchIndex").trackVariable(&Rod::showPitchIndex);
-		params.addNamedIndex("idDisplayType").setLabels(6, "None", "Pitch Index", "Device ID", "Index", "Polar Coordinates", "ID").trackVariable(&Rod::idDisplayType);
+		params.addNamedIndex("idDisplayType").setLabels(8, "None", "Pitch Index", "Device ID", "Index", "Polar Coordinates", "Radius", "Angle", "Name").trackVariable(&Rod::idDisplayType);
         params.addBool("bDisplaySelectedId").trackVariable(&Rod::bDisplaySelectedId);
 		
         params.startGroup("lighting"); {
@@ -376,11 +376,15 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
             }
         }
         
+        
         for(int i=0; i<rods.size(); i++) {
             Rod &r = rods[i];
-            r.setup();
             r.move(randomness * ofVec3f(ofRandomf(), 0, ofRandomf()));
+            r.setup();
         }
+        
+        sort(rods.begin(), rods.end());
+        for(int i=0; i<rods.size(); i++) rods[i].setIndex(i);
         
         
         Performer::worldMin.set(-installationWidth/2, 0, -installationLength/2);
@@ -618,10 +622,10 @@ void updateRodTuning() {
         float distRatio = distanceToCenter / halfInstallationLength;
         if(invert) distRatio = 1-distRatio;
         pitchIndex += distRatio * noteCountDistance;
-        angle = fabsf(angle);
-        if(angle > PI/2) angle = PI - angle;
+//        angle = fabsf(angle);
+        if(angle > 180) angle = 360 - angle;
         if(distanceToCenter > 100) {  // hack to include radial only in rods not in center
-            pitchIndex += ofMap(angle, 0, PI, 0, noteCountRadial);
+            pitchIndex += ofMap(angle, 0, 360, 0, noteCountRadial);
         }
         if(maxNoteCount > 0) {
             pitchIndex %= 2 * maxNoteCount;
@@ -810,6 +814,11 @@ void drawFloor() {
     ofEndShape(true);
     
     venueModel.drawFaces();
+    
+    ofSetColor(100, 0, 0);
+    ofLine(-floorWidth/2, 0, 0, floorWidth/2, 0, 0);
+    ofSetColor(0, 0, 100);
+    ofLine(0, 0, -floorLength/2, 0, 0, floorLength/2);
 }
 
 //--------------------------------------------------------------

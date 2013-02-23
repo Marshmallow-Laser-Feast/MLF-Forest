@@ -23,7 +23,9 @@ public:
 		DISPLAY_DEVICE_ID,
 		DISPLAY_INDEX,
         DISPLAY_POLAR_COORDS,
-        DISPLAY_ID
+        DISPLAY_RADIUS,
+        DISPLAY_ANGLE,
+        DISPLAY_NAME
 	};
 	static IDDisplayType idDisplayType;
     static bool bDisplaySelectedId;
@@ -50,7 +52,7 @@ public:
     }
     
     //--------------------------------------------------------------
-    void updateId() {
+    void updateName() {
         
     }
     
@@ -93,6 +95,17 @@ public:
         return polarCoordinates;
     }
     
+    //--------------------------------------------------------------
+    float getSortScore() const {
+        return round(polarCoordinates.x/100) * 10000 + round(polarCoordinates.y);
+    }
+
+
+    //--------------------------------------------------------------
+    void setIndex(int index) {
+        this->index = index;
+    }
+
     //--------------------------------------------------------------
     //    int getIndex() {
     //        return index;
@@ -186,17 +199,29 @@ public:
                 } else if(idDisplayType==DISPLAY_PITCH_INDEX) {
                     ofSetColor(0, 100);
                     ofDrawBitmapString(ofToString(pitchIndex), 30, 0);
-                } else if(idDisplayType==DISPLAY_ID) {
+                } else if(idDisplayType==DISPLAY_NAME) {
                     ofSetColor(0, 100);
-                    ofDrawBitmapString(id, 30, 0);
+                    ofDrawBitmapString(name, 30, 0);
                 } else if(idDisplayType==DISPLAY_POLAR_COORDS) {
                     ofSetColor(0, 100);
                     ofDrawBitmapString(ofToString(polarCoordinates.x) + ", " + ofToString(polarCoordinates.y), 30, 0);
+                } else if(idDisplayType==DISPLAY_RADIUS) {
+                    ofSetColor(0, 100);
+                    ofDrawBitmapString(ofToString(polarCoordinates.x), 30, 0);
+                } else if(idDisplayType==DISPLAY_ANGLE) {
+                    ofSetColor(0, 100);
+                    ofDrawBitmapString(ofToString(polarCoordinates.y), 30, 0);
                 }
             }
             
         } restoreTransformGL();
         ofPopStyle();
+    }
+    
+    
+    //--------------------------------------------------------------
+    bool operator< (const Rod &rhs) const {
+        return getSortScore() < rhs.getSortScore();
     }
     
     
@@ -221,8 +246,8 @@ private:
 	// this is the id of the rod in the vector of rods
 	int index;
     
-    // this is the string id of the rod (circle letter, number)
-    string id;
+    // this is the string name of the rod (circle letter, number, e.g. A6)
+    string name;
     
     // each rod has polar coordinates, distance first, and then angle
     ofVec2f polarCoordinates;
