@@ -61,7 +61,7 @@ public:
 	// blob from the layout file.
 	// we need this to be able to
 	// assign it a device id.
-	int blobId;
+	int index;
 	
 	//--------------------------------------------------------------
     void setup() {
@@ -153,7 +153,7 @@ public:
 				ofDrawBitmapString(ofToString(deviceId), 30, 0);
             } else if(idDisplayType==DISPLAY_BLOB_ID) {
 				ofSetHexColor(0x0000FF);
-				ofDrawBitmapString(ofToString(blobId), 30, 0);
+				ofDrawBitmapString(ofToString(index), 30, 0);
 				
 			} else if(idDisplayType==DISPLAY_PITCH_INDEX) {
                 ofSetColor(0, 100);

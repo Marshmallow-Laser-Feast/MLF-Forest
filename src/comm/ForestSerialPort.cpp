@@ -19,6 +19,8 @@ int ForestSerialPort::laserHoldoff = 10; // ??
 // end: laser parameters
 
 
+map<int,RodInfo*> ForestSerialPort::allRodInfos;
+
 
 
 
@@ -29,8 +31,8 @@ unsigned char ForestSerialPort::laserBitmap[LASER_BITMAP_SIZE];
 
 ForestSerialPort::ForestSerialPort() {
 	
-//	currentCommandType = RETURN_RAW_ACCELEROMETER;
-	currentCommandType = RETURN_PROCESSED_MOTION_DATA;
+	currentCommandType = RETURN_RAW_ACCELEROMETER;
+//	currentCommandType = RETURN_PROCESSED_MOTION_DATA;
 	
 	progress = 0;
 	if(!hasInitedLaserBitmap) {
@@ -60,9 +62,18 @@ void ForestSerialPort::open(string portSerialNumber) {
 	this->serialNo = portSerialNumber;
 	if(serial.open(portSerialNumber, SERIAL_PORT_SPEED)) {
 		printf("Connected to '%s' successfully\n", portSerialNumber.c_str());
-		
+		ofSleepMillis(100);
 		// this is supposed to be good
-		serial.setLatencyTimer(2);
+		serial.setLatencyTimer(16);
+		ofSleepMillis(100);
+		int a = serial.available();
+		if(a) printf("found %d still in buffer\n");
+		unsigned char buff[256];
+		while(a>0) {
+			serial.read(buff, MAX(a, 256));
+			a = serial.available();
+		}
+		ofSleepMillis(100);
 	}
 }
 
@@ -79,6 +90,7 @@ void ForestSerialPort::discover() {
 			slotId++;
 		}
 		progress += progressIncrement;
+		ofSleepMillis(100);
 	}
 	printf("=================================\n");
 	printf("Forest Serial Port '%s'\n", serialNo.c_str());
@@ -111,8 +123,18 @@ bool ForestSerialPort::tryToRead(unsigned char *buff, int length, int timeout) {
 bool ForestSerialPort::setTimeslot(int boardId, int timeslot) {
 	unsigned char buff[] = {0xFF, 0x06, 0x01, 0x01, 0x00, 0x00, 0x00};
 	buff[3] = boardId;
-	serial.write(buff, 7);
 	
+	int a = serial.available();
+	unsigned char s[256];
+	if(a) {
+		printf("Found stuff in the buffer (%d bytes)\n", a);
+		serial.read(s, MIN(a, 256));
+		a = serial.available();
+	}
+	
+	ofSleepMillis(60);
+	serial.write(buff, 7);
+	ofSleepMillis(70);
 	RodIdentity ident;
 	
 	
@@ -127,12 +149,13 @@ bool ForestSerialPort::setTimeslot(int boardId, int timeslot) {
 		// read the acknowledgement
 		if(tryToRead((unsigned char *)&ident, sizeof(ident))) {
 			rodInfos[ident.deviceId] = RodInfo(ident.deviceId, ident.timeslot);
+			allRodInfos[ident.deviceId] = &rodInfos[ident.deviceId];
 			return true;
 		} else {
 			printf("Didn't get a response from rod with id %d\n", boardId);
 		}
 	} else {
-		printf("Couldn't find rod with id %d\n", boardId);
+		//printf("Couldn't find rod with id %d\n", boardId);
 	}
 	
 	return false;
@@ -152,7 +175,7 @@ void ForestSerialPort::retrieve() {
 					if(accel.x!=0x40) {
 						rodInfos[accel.id].setRawData(accel);
 					} else {
-						printf("Rod id %d accelerometer is faulty\n", accel.id);
+						printf("'%s' Rod id %d accelerometer is faulty\n", serialNo.c_str(), accel.id);
 					}
 				}
 			}
@@ -166,11 +189,11 @@ void ForestSerialPort::retrieve() {
 					rodInfos[accel.id].setProcessedData(accel);
 
 				} else {
-					printf("Can't find the rod with that id (%d)\n", accel.id);
+					printf("'%s' Can't find the rod with that id (%d)\n", serialNo.c_str(), accel.id);
 					
 				}
 			} else {
-				printf("Can't read accelerometer - no data\n");
+				printf("'%s' Can't read accelerometer - no data\n", serialNo.c_str());
 			}
 		}
 	}	
@@ -273,7 +296,7 @@ void ForestSerialPort::draw(int x, int y) {
 			
 		} else if(currentCommandType==RETURN_RAW_ACCELEROMETER) {
 			
-			
+
 			meter.y -= meter.height/2;
 			ofSetHexColor(0x990000);
 			meter.height = r.height*(*it).second.rawData.x/90.f;
@@ -323,8 +346,8 @@ void ForestSerialPort::draw(int x, int y) {
 }
 
 // close the serial port
-void ForestSerialPort::close() {
-	serial.close();
+bool ForestSerialPort::close() {
+	return serial.close();
 }
 
 int ForestSerialPort::getRodCount() {

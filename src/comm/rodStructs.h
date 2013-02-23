@@ -78,12 +78,12 @@ struct RodIdentity {
 
 struct RawAccelerometerData {
 	unsigned char id;
-	unsigned char x;
-	unsigned char y;
-	unsigned char z;
+	signed char x;
+	signed char y;
+	signed char z;
 	unsigned char status;
 	
-	void printDebug() {
+	void printDebug() const {
 		printf("-----------------------------\n");
 		printf("RAW ACCELEROMETER READING\n");
 		printf("Device ID: 0x%x\n", id);
@@ -105,7 +105,7 @@ struct ProcessedAccelerometerData {
 	unsigned char tip;
 	unsigned char status;
 	
-	void printDebug() {
+	void printDebug() const {
 		printf("-----------------------------\n");
 		printf("PROCESSED ACCELEROMETER READING\n");
 		printf("Device ID: 0x%x\n", id);
@@ -126,6 +126,7 @@ struct ProcessedAccelerometerData {
 float lookupXY(int i);
 float lookupZ(int i);
 
+
 // this is what a ForestSerialPort knows about each laser
 class RodInfo {
 public:
@@ -140,8 +141,7 @@ public:
 	RodInfo(unsigned char id = 0, unsigned char timeslot = 0) {
 		this->timeslot = timeslot;
 		this->id = id;
-		motion = 0;
-		motionSpare = 0;
+		resetMotion();
 
 	}
 	bool getStatus(RodStatus statusType) {
@@ -156,9 +156,58 @@ public:
 		status = data.status;
 	}
 	
+	void resetMotion() {
+		motion = 0;
+		motionSpare = 0;
+		lastX = 0;
+		lastZ = 0;
+		avg = 0;
+		peak = 0;
+		curr = 0;
+		cnt = 0;
+		printf("Reseting motion\n");
+	}
+	
+	
 	void setRawData(const RawAccelerometerData &data) {
 
-		rawData.set(lookupXY(data.x), lookupXY(data.y), lookupZ(data.z));
+//		data.printDebug();
+		if(data.x==0x40) return;
+		// this is the raw data, normalized and wrapped.
+		rawData.set(lookupXY(data.x), lookupZ(data.y), lookupXY(data.z));//lookupXY(data.x), lookupXY(data.y), lookupZ(data.z));
+		
+		if(rawData.y<0) {
+			rawData.y += 180;
+		}
+		rawData.y -= 90;
+		
+		
+		
+		motion = processRawAccelerometerData(data.x, data.y);
+		if(motion!=motion || motion>100) resetMotion();
+		rawData.z = motion;
 		status = data.status;
+		// do yer filterin' ere innit.
 	}
+	int processRawAccelerometerData(int x, int z);
+
+
+	int lastX;
+	int lastZ;
+
+	int avg;
+	int peak;
+	int curr;
+	int cnt;
+
+
+	// goes from 1-100 - 1 is most powerful
+	static int dcFilterStrength ;
+
+	// how long to hold amplitude once we've seen a peak
+	static int holdAmt ;
+
+	// threshold for the noise gate ~ [0-8000]
+	static int threshold ;
+
 };

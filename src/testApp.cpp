@@ -48,7 +48,7 @@ bool bSendRodTuningOsc = false;
 
 #ifdef DOING_SERIAL
 RodCommunicator *rodCommunicator;
-bool showRodGui = false;
+bool showRodGui = true;
 RodMapper rodMapper;
 
 #endif
@@ -93,7 +93,9 @@ void sendRodOsc(bool bForce = false);
 
 //--------------------------------------------------------------
 void testApp::setup() {
-
+	// TODO: remove log level set here
+	#pragma warning we'll want to get rid of this line
+	ofSetLogLevel(OF_LOG_ERROR);
 #ifdef DOING_SERIAL
 	rodCommunicator = new RodCommunicator();
 	rodCommunicator->start();

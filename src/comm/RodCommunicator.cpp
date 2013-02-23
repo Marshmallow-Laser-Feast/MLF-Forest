@@ -13,7 +13,9 @@ RodCommunicator::RodCommunicator() {
 
 void RodCommunicator::reset() {
 	running = false;
+
 	waitForThread();
+	ForestSerialPort::allRodInfos.clear();
 	start();
 }
 
@@ -24,7 +26,10 @@ void RodCommunicator::start() {
 	printf("Found %d serial ports\n", (int) serialNos.size());
 	ports.resize(serialNos.size());
 	for(int i = 0; i < serialNos.size(); i++) {
-		ports[i].close();
+		if(!ports[i].close()) {
+			printf("Couldn't close port '%s'\n", serialNos[i].c_str());
+		}
+		ofSleepMillis(100);
 		ports[i].open(serialNos[i]);
 	}
 	startThread();
@@ -77,9 +82,12 @@ void RodCommunicator::setLaser(int deviceId, bool on) {
 
 
 float RodCommunicator::getAmplitude(int deviceId) {
-	// TODO: this
-	return ofGetMousePressed()?1:0;
-//	return 0;
+	// TODO: this - actually I think this is done
+//	return ofGetMousePressed()?1:0;
+	if(ForestSerialPort::allRodInfos.find(deviceId)!=ForestSerialPort::allRodInfos.end()) {
+		return ForestSerialPort::allRodInfos[deviceId]->rawData.z/90.f;
+	}
+	return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +109,7 @@ void RodCommunicator::threadedFunction() {
 		totalRodCount += rodCount;
 	}
 	float msPerFrame = maxRodCount*40; // this is wrong
-	msPerFrame = 30;
+	msPerFrame = 10;
 	
 	float t = 0;
 	// then run
@@ -113,7 +121,7 @@ void RodCommunicator::threadedFunction() {
 		t = tm;
 		
 		// this is also wrong - should be a proper timer
-		//ofSleepMillis(msPerFrame);
+		ofSleepMillis(msPerFrame);
 		
 		// ask the rods for data
 		for(int i = 0; i < ports.size(); i++) {

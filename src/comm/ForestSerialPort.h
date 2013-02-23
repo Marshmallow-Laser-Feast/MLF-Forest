@@ -47,7 +47,7 @@ public:
 	void retrieve();
 	
 	// close the serial port
-	void close();
+	bool close();
 	
 	
 	// how much progress has been made in
@@ -68,7 +68,7 @@ public:
 	static int tipThreshold; // typically approx 40-50 - arbitary units
 	static int laserTimeoutValue; // units of 2.048 ms
 	static int laserHoldoff;
-	
+	static map<int,RodInfo*> allRodInfos;
 private:
 	
 	bool setTimeslot(int boardId, int timeslot);
@@ -79,7 +79,6 @@ private:
 
 	
 	map<int,RodInfo> rodInfos;
-
 	
 	enum LaserCommandType {
 		RETURN_NOTHING = 0,

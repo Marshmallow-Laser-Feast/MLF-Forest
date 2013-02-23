@@ -28,7 +28,7 @@ int RodMapper::findDeviceIdForRod(Rod &rod) {
 
 		return blobToDevice[rod.blobId];
 	} else {
-		printf("Couldn't find device for rod with blob ID %d\n", rod.blobId);
+		//printf("Couldn't find device for rod with blob ID %d\n", rod.blobId);
 	}
 	return 0;
 }
@@ -122,11 +122,11 @@ void RodMapper::updateRodsFromSerial(RodCommunicator *comms) {
 	map<int,Rod*>::iterator it;
 
 	for(it = rodCommunicationMapping.begin(); it != rodCommunicationMapping.end(); it++) {
-//		printf("rodComms[%d] = 0x%x\n", (*it).first, (*it).second);
+
 		if((*it).second!=NULL) {
 			// set whether the laser is on
 			comms->setLaser((*it).first, (*it).second->laserAlpha?true:false);
-//			printf("%d\n", (*it).first);
+
 			// read amplitude
 			(*it).second->ampFromSerial = comms->getAmplitude((*it).first);
 		}
