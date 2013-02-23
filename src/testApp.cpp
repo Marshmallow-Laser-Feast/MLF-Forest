@@ -128,8 +128,8 @@ void testApp::setup() {
         params.addInt("backgroundColor").setClamp(true).set(60);
         params.addInt("floorColor").setClamp(true).set(60);
         //        params.addBool("showPitchIndex").trackVariable(&Rod::showPitchIndex);
-		params.addNamedIndex("idDisplayType").setLabels(4, "None", "Pitch Index", "Device ID", "Blob Id").trackVariable(&Rod::idDisplayType);
-        
+		params.addNamedIndex("idDisplayType").setLabels(6, "None", "Pitch Index", "Device ID", "Index", "Polar Coordinates", "ID").trackVariable(&Rod::idDisplayType);
+        params.addBool("bDisplaySelectedId").trackVariable(&Rod::bDisplaySelectedId);
 		
         params.startGroup("lighting"); {
             params.addBool("enabled");
@@ -378,7 +378,7 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
         
         for(int i=0; i<rods.size(); i++) {
             Rod &r = rods[i];
-            r.setup(i);
+            r.setup();
             r.move(randomness * ofVec3f(ofRandomf(), 0, ofRandomf()));
         }
         
@@ -611,14 +611,16 @@ void updateRodTuning() {
     bool bRet = false;
     for(int i=0; i<rods.size(); i++) {
         Rod &r = rods[i];
+        float distanceToCenter = r.getPolarCoordinates().x;
+        float angle = r.getPolarCoordinates().y;
+        
         int pitchIndex = 0;
-        float distRatio = r.getGlobalPosition().length() / halfInstallationLength;
+        float distRatio = distanceToCenter / halfInstallationLength;
         if(invert) distRatio = 1-distRatio;
         pitchIndex += distRatio * noteCountDistance;
-        float angle = atan2(r.getX(), r.getZ());
         angle = fabsf(angle);
         if(angle > PI/2) angle = PI - angle;
-        if(r.getGlobalPosition().length() > 100) {  // hack to include radial only in rods not in center
+        if(distanceToCenter > 100) {  // hack to include radial only in rods not in center
             pitchIndex += ofMap(angle, 0, PI, 0, noteCountRadial);
         }
         if(maxNoteCount > 0) {
@@ -683,16 +685,19 @@ void sendRodOsc(bool bForce) {
             b.clear();
             for(int i=0; i<rods.size(); i++) {
                 Rod &r = rods[i];
+                float distanceToCenter = r.getPolarCoordinates().x;
+                float angle = r.getPolarCoordinates().y;
+
                 ofxOscMessage m;
                 m.setAddress("/forestPos");
                 m.addIntArg(i);
-                m.addFloatArg(ofMap(atan2(r.getZ(), r.getX()), -PI, PI, 0.0f, 1.0f));
+                m.addFloatArg(angle / 360.0f);
                 b.addMessage(m);
                 
                 m.clear();
                 m.setAddress("/forestCentre");
                 m.addIntArg(i);
-                m.addFloatArg(r.getPosition().length() / installationRadius);
+                m.addFloatArg(distanceToCenter / installationRadius);
                 b.addMessage(m);
             }
             oscSender->sendBundle(b);
