@@ -117,7 +117,7 @@ public:
     }
     
     //--------------------------------------------------------------
-    int getDeviceId(int deviceId) const {
+    int getDeviceId() const {
         return deviceId;
     }
 
@@ -131,12 +131,6 @@ public:
     int getPitchIndex() const {
         return pitchIndex;
     }
-    
-    //--------------------------------------------------------------
-    int getDeviceId() const {
-        return deviceId;
-    }
-    
     
     //--------------------------------------------------------------
     void setAmp(float amp) {

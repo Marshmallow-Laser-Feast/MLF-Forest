@@ -17,7 +17,7 @@ int ForestSerialPort::tipThreshold = 45;
 int ForestSerialPort::laserTimeoutValue = 10; // ??
 int ForestSerialPort::laserHoldoff = 10; // ??
 // end: laser parameters
-
+bool ForestSerialPort::forceLasersOn = false;
 
 map<int,RodInfo*> ForestSerialPort::allRodInfos;
 
@@ -42,7 +42,8 @@ ForestSerialPort::ForestSerialPort() {
 }
 
 void ForestSerialPort::setLaser(int laserId, bool on) {
-	
+//	if(laserId>129 && laserId<140)
+	//	printf("Set laser: %d %d\n", laserId, on);
 	// we're 1-indexed
 	laserId--;
 	int whichChar = laserId / 8;
@@ -208,7 +209,7 @@ void ForestSerialPort::retrieve() {
 					if(accel.x!=0x40) {
 						rodInfos[accel.id].setRawData(accel);
 					} else {
-						printf("'%s' Rod id %d accelerometer is faulty\n", serialNo.c_str(), accel.id);
+//						printf("'%s' Rod id %d accelerometer is faulty\n", serialNo.c_str(), accel.id);	// TODO: re-enable
 					}
 				}
 			}
@@ -287,8 +288,18 @@ void ForestSerialPort::request() {
 	
 	
 	cmd[4] = currentCommandType;
-	memcpy(&cmd[12], laserBitmap, LASER_BITMAP_SIZE);
+	if(forceLasersOn) {
+		
+		for(int i = 0; i < LASER_BITMAP_SIZE; i++) {
+			cmd[12+i] = 0xFF;
+		}
+	} else {
+		memcpy(&cmd[12], laserBitmap, LASER_BITMAP_SIZE);
+	}
 	
+//	for(int i = 0; i < LASER_BITMAP_SIZE; i++) {
+//		cout<<ofToString(i)<< ": "  <<ofToBinary(cmd[12+i])<<endl;
+//	}
 	serial.write(cmd, sizeof(cmd));
 }
 

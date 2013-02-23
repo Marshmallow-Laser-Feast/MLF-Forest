@@ -248,6 +248,8 @@ void testApp::setup() {
     
 #ifdef DOING_SERIAL
     params.startGroup("comms"); {
+		params.addBool("forceLasersOn").set(false).trackVariable(&ForestSerialPort::forceLasersOn);
+		
 		params.addInt("param1")
 		.setTooltip("Haven't got info on this from Mike yet")
 		.setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param1);
@@ -766,8 +768,19 @@ void testApp::update(){
 #ifdef DOING_SERIAL
 	// don't talk to the lasers until
 	// the forest has been scanned.
+//	if(rodCommunicator->doneDiscovering()) {
+//		rodMapper.update(rodCommunicator, rods);
+//	}
 	if(rodCommunicator->doneDiscovering()) {
-		rodMapper.update(rodCommunicator, rods);
+
+		for(int i=0; i<rods.size(); i++) {
+			Rod &r = rods[i];
+			if(r.getDeviceId()==83) {
+//				printf("SDfklsjdf\n");
+			}
+			r.setAmp(MAX(r.getAmp(), rodCommunicator->getAmplitude( r.getDeviceId() )));
+//			r.setAmp(rodCommunicator->getAmplitude( r.getDeviceId() ));
+		}
 	}
 #endif
     
@@ -790,10 +803,16 @@ void testApp::update(){
     
     // send laser value back down serial
 #ifdef DOING_SERIAL
-    
+	
+	for(int i=0; i<rods.size(); i++) {
+		
+		rodCommunicator->setLaser(rods[i].getDeviceId(), rods[i].getLaser());
+	}
+	
 #endif
     
     
+	cout << rods[83].getAmp() << endl;
     
 	// send OSC
     bool bForce = params["sound.osc.forceSend"];
@@ -824,12 +843,27 @@ void drawFloor() {
     ofLine(0, 0, -floorLength/2, 0, 0, floorLength/2);
 }
 
+#ifdef DOING_SERIAL
+void drawSerialProgress() {
+	if(!rodCommunicator->doneDiscovering()) {
+		ofSetHexColor(0);
+		ofRectangle r(495, ofGetHeight()-20, ofGetWidth()-495, 20);
+		ofRect(r);
+		ofSetHexColor(0x990000);
+		r.width *= rodCommunicator->getProgress();
+		ofRect(r);
+		ofSetHexColor(0xFFFFFF);
+		ofDrawBitmapString(ofToString ((int)(rodCommunicator->getProgress()*100.f))+ "% done discovering nodes", r.x+5, r.y+15);
+	}
+}
+#endif
 //--------------------------------------------------------------
 void testApp::draw() {
 #ifdef DOING_SERIAL
     
 	if(showRodGui) {
 		rodCommunicator->draw();
+		drawSerialProgress();
 		return;
 	}
 #endif
@@ -924,16 +958,7 @@ void testApp::draw() {
     ofSetColor(255);
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 2), ofGetWidth() - 100, 30);
 #ifdef DOING_SERIAL
-	if(!rodCommunicator->doneDiscovering()) {
-		ofSetHexColor(0);
-		ofRectangle r(495, ofGetHeight()-20, ofGetWidth()-495, 20);
-		ofRect(r);
-		ofSetHexColor(0x990000);
-		r.width *= rodCommunicator->getProgress();
-		ofRect(r);
-		ofSetHexColor(0xFFFFFF);
-		ofDrawBitmapString(ofToString ((int)(rodCommunicator->getProgress()*100.f))+ "% done discovering nodes", r.x+5, r.y+15);
-	}
+	drawSerialProgress();
 #endif
 	
 }
