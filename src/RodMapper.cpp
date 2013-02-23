@@ -24,12 +24,12 @@ void RodMapper::update(RodCommunicator *comms, vector<Rod> &rods) {
 }
 
 int RodMapper::findDeviceIdForRod(Rod &rod) {
-	if(blobToDevice.find(rod.index)!=blobToDevice.end()) {
+	/*if(blobToDevice.find(rod.index)!=blobToDevice.end()) {
 
 		return blobToDevice[rod.index];
 	} else {
 		//printf("Couldn't find device for rod with blob ID %d\n", rod.blobId);
-	}
+	}*/
 	return 0;
 }
 
@@ -84,7 +84,7 @@ void RodMapper::loadRodMapFile() {
 
 
 void RodMapper::updateRodCommunicationMapping(vector<Rod> &rods) {
-	
+	/*
 	// check nothing's changed.
 	
 	// if it has, set the rod class id's
@@ -111,14 +111,14 @@ void RodMapper::updateRodCommunicationMapping(vector<Rod> &rods) {
 				rodCommunicationMapping[deviceId] = NULL;
 			}
 		}
-	}
+	}*/
 }
 
 
 
 
 void RodMapper::updateRodsFromSerial(RodCommunicator *comms) {
-	
+	/*
 	map<int,Rod*>::iterator it;
 
 	for(it = rodCommunicationMapping.begin(); it != rodCommunicationMapping.end(); it++) {
@@ -131,7 +131,7 @@ void RodMapper::updateRodsFromSerial(RodCommunicator *comms) {
 			(*it).second->ampFromSerial = comms->getAmplitude((*it).first);
 		}
 	}
-	
+	*/
 }
 
 void RodMapper::reset() {

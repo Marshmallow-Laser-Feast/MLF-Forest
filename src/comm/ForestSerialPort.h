@@ -71,6 +71,7 @@ public:
 	static map<int,RodInfo*> allRodInfos;
 	void inspect();
 	string report;
+	static bool forceLasersOn;
 private:
 	
 	bool setTimeslot(int boardId, int timeslot, bool set = true);
