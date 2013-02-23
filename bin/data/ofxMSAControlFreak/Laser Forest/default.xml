@@ -10,6 +10,7 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="backgroundColor" value="45"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="floorColor" value="40"></Parameter>
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="idDisplayType" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="bDisplaySelectedId" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="lighting">
                 <Parameter type="N3msa12controlfreak13ParameterBoolE" name="enabled" value="1"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterGroupE" name="0">
