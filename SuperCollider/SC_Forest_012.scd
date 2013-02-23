@@ -13,7 +13,7 @@ e.g message: ['/forestAmp", 15, 0.33] means set the amp of rod 15 to 0.33
 (
 // initialise
 ~rodCount = 151;
-~surroundSpeakerCount = 6;
+~surroundSpeakerCount = 8;
 
 ~recordingsFolder = "~/Desktop";
 ~recChannels = 2;  // default is stereo recording
