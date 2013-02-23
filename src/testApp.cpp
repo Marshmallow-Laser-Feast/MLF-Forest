@@ -660,6 +660,7 @@ void resetAll() {
     checkAndInitRodLayout(true);
     checkAndInitPerformers(true);
     checkAndInitFbo(true);
+    selectedRod = NULL;
 }
 
 //--------------------------------------------------------------
@@ -799,8 +800,15 @@ void testApp::update(){
         
         // check mouse-rod collision
         vector<Rod*> hitRods = checkRodCollisions(mouse3d, mouseRadius);
-        selectedRod = hitRods.size() ? hitRods[0] : NULL;
-        for(int i=0; i<hitRods.size(); i++) hitRods[i]->color.set(255, 0, 0);
+//        selectedRod = hitRods.size() ? hitRods[0] : selectedRod;//NULL;
+        
+//        for(int i=0; i<hitRods.size(); i++) hitRods[i]->color.set(255, 0, 0);
+        if(hitRods.size()) selectedRod = hitRods[0];
+    }
+    
+    if(selectedRod) {
+        selectedRod->color.set(255, 0, 0);
+        selectedRod->setLaser(1);
     }
 
 	
@@ -1001,13 +1009,27 @@ void testApp::keyPressed(int key){
             easyCam.enableMouseInput();
             break;
             
+        case '>':
+        case '.':
+            if(selectedRod &&  selectedRod->getIndex() < rods.size()-1) selectedRod = &rods[selectedRod->getIndex()+1];
+            else selectedRod = &rods[0];
+            break;
+            
+        case '<':
+        case ',':
+            if(selectedRod && selectedRod->getIndex() > 0) selectedRod = &rods[selectedRod->getIndex()-1];
+            else selectedRod = &rods[rods.size()-1];
+            break;
+            
         case 'r':
             resetAll();
             break;
+            
 #ifdef DOING_SERIAL
 		case '\t':
 			showRodGui ^= true;
 			break;
+            
 		case '=':
 			rodCommunicator->reset();
 			rodMapper.reset();
@@ -1036,6 +1058,7 @@ void testApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
+    selectedRod = NULL;
 }
 
 //--------------------------------------------------------------
