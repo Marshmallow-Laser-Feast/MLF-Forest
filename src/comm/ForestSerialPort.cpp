@@ -62,19 +62,28 @@ void ForestSerialPort::open(string portSerialNumber) {
 	this->serialNo = portSerialNumber;
 	if(serial.open(portSerialNumber, SERIAL_PORT_SPEED)) {
 		printf("Connected to '%s' successfully\n", portSerialNumber.c_str());
-		ofSleepMillis(100);
+		ofSleepMillis(10);
 		// this is supposed to be good
-		serial.setLatencyTimer(16);
-		ofSleepMillis(100);
+		serial.setLatencyTimer(2);
+		ofSleepMillis(10);
 		int a = serial.available();
-		if(a) printf("found %d still in buffer\n");
+		if(a) printf("found %d still in buffer\n", a);
 		unsigned char buff[256];
 		while(a>0) {
 			serial.read(buff, MAX(a, 256));
 			a = serial.available();
 		}
-		ofSleepMillis(100);
+		ofSleepMillis(10);
 	}
+}
+
+string padMe(int num, int space) {
+	string out = ofToString(num);
+	int numSpaces = space - out.size();
+	for(int i = 0; i < numSpaces; i++) {
+		out += " ";
+	}
+	return out;
 }
 
 // discover lasers on the network and give them timeslots
@@ -85,17 +94,36 @@ void ForestSerialPort::discover() {
 	float progressIncrement = 1.f/MAX_BOARDS_PER_NETWORK;
 	for(int id = 1; id <= MAX_BOARDS_PER_NETWORK; id++) {
 
+
 		bool success = setTimeslot(id, slotId);
+		
 		if(success) {
+			printf("DEVICE ID: %d - TIMESLOT: %d\n", id, slotId);
 			slotId++;
 		}
+		
+		
+		
 		progress += progressIncrement;
-		ofSleepMillis(100);
+		ofSleepMillis(10);
 	}
-	printf("=================================\n");
-	printf("Forest Serial Port '%s'\n", serialNo.c_str());
-	printf("Scanned for %d boards, found: %d\n", MAX_BOARDS_PER_NETWORK, slotId-1);
-	printf("=================================\n");
+	report = "=================================\n";
+	report += "Forest Serial Port " + serialNo + "\n";
+	report += "Scanned for " +ofToString(MAX_BOARDS_PER_NETWORK) + " boards, found: " + ofToString(rodInfos.size()) + "\n";
+
+	string top =    "DEVICE ID: ";
+	string bottom = "TIMESLOT:  ";
+	map<int,RodInfo>::iterator it = rodInfos.begin();
+	
+	for( ; it != rodInfos.end(); it++) {
+	
+		top += padMe((*it).second.id, 5);
+		bottom += padMe((*it).second.timeslot, 5);
+	}
+	report += top + "\n" + bottom + "\n";
+	report += "=================================\n";
+	printf("%s\n", report.c_str());
+	printf("There are %d rodInfos\n", rodInfos.size());
 }
 
 
@@ -120,7 +148,7 @@ bool ForestSerialPort::tryToRead(unsigned char *buff, int length, int timeout) {
 
 
 
-bool ForestSerialPort::setTimeslot(int boardId, int timeslot) {
+bool ForestSerialPort::setTimeslot(int boardId, int timeslot, bool set) {
 	unsigned char buff[] = {0xFF, 0x06, 0x01, 0x01, 0x00, 0x00, 0x00};
 	buff[3] = boardId;
 	
@@ -132,28 +160,33 @@ bool ForestSerialPort::setTimeslot(int boardId, int timeslot) {
 		a = serial.available();
 	}
 	
-	ofSleepMillis(60);
+	ofSleepMillis(10);
 	serial.write(buff, 7);
-	ofSleepMillis(70);
+	ofSleepMillis(10);
 	RodIdentity ident;
 	
 	
 	// read the current identity packet of the rod
 	if(tryToRead((unsigned char *)&ident, sizeof(ident))) {
 
-		
-		// now set its timeslot
-		buff[4] = timeslot;
-		serial.write(buff, 7);
-		
-		// read the acknowledgement
-		if(tryToRead((unsigned char *)&ident, sizeof(ident))) {
-			rodInfos[ident.deviceId] = RodInfo(ident.deviceId, ident.timeslot);
-			allRodInfos[ident.deviceId] = &rodInfos[ident.deviceId];
-			return true;
+		if(set) {
+			// now set its timeslot
+			buff[4] = timeslot;
+			serial.write(buff, 7);
+			
+			// read the acknowledgement
+			if(tryToRead((unsigned char *)&ident, sizeof(ident))) {
+				rodInfos[ident.deviceId] = RodInfo(ident.deviceId, ident.timeslot);
+				allRodInfos[ident.deviceId] = &rodInfos[ident.deviceId];
+				return true;
+			} else {
+				printf("Didn't get a response from rod with id %d\n", boardId);
+			}
 		} else {
-			printf("Didn't get a response from rod with id %d\n", boardId);
+			return true;
 		}
+		
+		
 	} else {
 		//printf("Couldn't find rod with id %d\n", boardId);
 	}

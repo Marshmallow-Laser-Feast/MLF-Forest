@@ -9,6 +9,17 @@
 RodCommunicator::RodCommunicator() {
 	MODE = DISCOVERING;
 	totalRodCount = 0;
+	running = false;
+}
+RodCommunicator::~RodCommunicator() {
+	running = false;
+	
+	waitForThread();
+	for(int i = 0; i < ports.size(); i++) {
+		ports[i].close();
+	}
+	ForestSerialPort::allRodInfos.clear();
+	ports.clear();
 }
 
 void RodCommunicator::reset() {
@@ -19,6 +30,19 @@ void RodCommunicator::reset() {
 	start();
 }
 
+
+string RodCommunicator::getReport() {
+	string report = "";
+	for(int i = 0; i < ports.size(); i++) {
+		report += ports[i].report;
+		report += "\n\n";
+	}
+	return report;
+}
+
+string RodCommunicator::getValues() {
+	return "";
+}
 void RodCommunicator::start() {
 
 	// block whilst creating forest serial ports, then start thread
@@ -145,4 +169,22 @@ void RodCommunicator::discover() {
 		ports[i].discover();
 	}
 	MODE = RUNNING;
+}
+
+
+void RodCommunicator::inspect() {
+	// block whilst creating forest serial ports, then start thread
+	vector<string> serialNos = D2xxSerial::getDeviceSerialNumbers();
+	printf("Found %d serial ports\n", (int) serialNos.size());
+	ports.resize(serialNos.size());
+	for(int i = 0; i < serialNos.size(); i++) {
+		if(!ports[i].close()) {
+			printf("Couldn't close port '%s'\n", serialNos[i].c_str());
+		}
+		ofSleepMillis(100);
+		ports[i].open(serialNos[i]);
+	}
+	for(int i = 0; i < ports.size(); i++) {
+		ports[i].inspect();
+	}
 }
