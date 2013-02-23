@@ -29,7 +29,7 @@
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="camera">
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="view" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="fov" value="40"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="0"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="1"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotx" value="45"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="roty" value="32"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotz" value="0"></Parameter>
@@ -72,8 +72,8 @@
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="animation">
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="laser">
-                <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="file" value="3"></Parameter>
-                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="loop" value="0"></Parameter>
+                <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="file" value="2"></Parameter>
+                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="loop" value="1"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="1.000000000"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="performance" value="0"></Parameter>

@@ -729,8 +729,13 @@ void testApp::update(){
     
     updateRodTuning();
     
-    // clear all laser values
-    for(int i = 0; i < rods.size(); i++) rods[i].setLaser(0);
+    
+    // clear all laser values and fade rod Amps
+    for(int i = 0; i < rods.size(); i++) {
+        Rod &r = rods[i];
+        r.setLaser(0);
+        r.fadeAmp();
+    }
     
     // update rod laser values based on animation pixel values (if animation loaded)
     updateRodLaserAnimation();
@@ -743,6 +748,18 @@ void testApp::update(){
     // this simply moves the performers around
     for(int i=0; i<performers.size(); i++) performers[i].update();
     
+	
+    
+    // serial comms should simply set (overwrite) the value of Amp for each rod
+#ifdef DOING_SERIAL
+	// don't talk to the lasers until
+	// the forest has been scanned.
+	if(rodCommunicator->doneDiscovering()) {
+		rodMapper.update(rodCommunicator, rods);
+	}
+#endif
+    
+    
     // check rod collisions
     // this sets the Amp of the rod if collision detected
     {
@@ -752,16 +769,7 @@ void testApp::update(){
         // check mouse-rod collision
         checkRodCollisions(mouse3d, mouseRadius);
     }
-    
-	
-    // serial comms should simply set the value of Amp for each rod
-#ifdef DOING_SERIAL
-	// don't talk to the lasers until
-	// the forest has been scanned.
-	if(rodCommunicator->doneDiscovering()) {
-		rodMapper.update(rodCommunicator, rods);
-	}
-#endif
+
 	
 	
 	// set lasers based on amp

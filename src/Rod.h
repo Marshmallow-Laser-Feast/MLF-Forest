@@ -46,15 +46,18 @@ public:
     }
 
     //--------------------------------------------------------------
+    void fadeAmp() {
+        if(amp > 0.001) amp *= (1-dampSpeed);
+        else amp = 0;
+    }
+    
+    //--------------------------------------------------------------
     void setLaserBasedonAmp() {
 		// decide whether the laser is on.
         float newLaserAlpha = bLaserAlwaysOn ? 1 : amp > laserAlphaThreshold;
         if(newLaserAlpha > laserAlpha) laserAlpha = newLaserAlpha;
 
         //		oldAmp = amp;
-
-        if(amp > 0.001) amp *= (1-dampSpeed);
-        else amp = 0;
     }
     
     //--------------------------------------------------------------
