@@ -5,21 +5,11 @@
 
 class Rod : public ofNode {
 public:
-    //    ofVec3f pos;
-    //    ofColor color;
-    
     float height;           // real value (in cm)
     float heightNorm;       // normalized (0...1) based on min/max parameters
     
     float radius;           // real value (in cm)
     float radiusNorm;       // normalized (0...1) based on min/max parameters
-    
-    float amp;              // the current amplitude of vibration (0...1)
-    float oldAmp;
-    
-    int pitchIndex;
-    
-    float laserAlpha;
     
     static int angleAmp;
     static float dampSpeed;
@@ -45,78 +35,98 @@ public:
     static int laserDiameter;
     static bool bLaserAlwaysOn;
     static float laserAlphaThreshold;
-    
-	
-	// this is the amplitude of the rod
-	// as returned by the serial interface
-	float ampFromSerial;
-	
-	float ampFromMouse;
-	
-	// this is the id of the board
-	// as programmed in its firmware.
-	int deviceId;
-	
-	// this is the id of the opencv
-	// blob from the layout file.
-	// we need this to be able to
-	// assign it a device id.
-	int index;
-	
+
 	//--------------------------------------------------------------
-    void setup() {
-		ampFromSerial = 0;
+    void setup(int index) {
+        this->index = index;
         heightNorm = ofRandomuf();
         radiusNorm = ofRandomuf();
-        //        color.set(ofRandom(255), ofRandom(255), ofRandom(255));
         amp = 0;
-		ampFromMouse;
+        laserAlpha = 0;
     }
-    
-    //--------------------------------------------------------------
-    void update() {
-        if(ampFromMouse > 0.001) ampFromMouse *= (1-dampSpeed);
-        else ampFromMouse = 0;
 
-		oldAmp = ampFromMouse;
-		
-		
-		// add the amplitude from serial instead of replacing it
-		// so both are interactive
-		amp = MAX(ampFromMouse, ampFromSerial);
-		
+    //--------------------------------------------------------------
+    void setLaserBasedonAmp() {
 		// decide whether the laser is on.
-		if(bLaserAlwaysOn) laserAlpha = 1;
-		else laserAlpha = amp > laserAlphaThreshold;
-		
+        float newLaserAlpha = bLaserAlwaysOn ? 1 : amp > laserAlphaThreshold;
+        if(newLaserAlpha > laserAlpha) laserAlpha = newLaserAlpha;
 
-        
-        height = ofLerp(heightMin, heightMax, heightNorm);
-        radius = ofLerp(diameterMin, diameterMax, radiusNorm)/2;
+        //		oldAmp = amp;
+
+        if(amp > 0.001) amp *= (1-dampSpeed);
+        else amp = 0;
     }
     
     //--------------------------------------------------------------
-    bool trigger(float retriggerThreshold, ScaleManager &scaleManager, float outputPitchMult, int maxNoteCount, float volumePitchMult, float volumeVariance, ofSoundPlayer *sound) {
-        if(oldAmp < retriggerThreshold) ampFromMouse = ofRandom(1 - volumeVariance, 1);
-        
-        // if trigger
-        if(oldAmp < ampFromMouse/2) {
-            if(sound) {
-                float speedMult = scaleManager.currentMult(pitchIndex) * outputPitchMult;
-                float volume = ofRandom(0.5, 1);
-                if(maxNoteCount > 0) volume *= ofMap(pitchIndex, 0, maxNoteCount-1, 1, volumePitchMult);
-                sound->setSpeed(speedMult);
-                sound->setVolume(volume);
-                sound->play();
-                ofLogNotice() << "pitchIndex: " << pitchIndex << ", speedMult: " << speedMult;
-            }
-            return true;
-        }
+//    bool trigger(float retriggerThreshold, ScaleManager &scaleManager, float outputPitchMult, int maxNoteCount, float volumePitchMult, float volumeVariance, ofSoundPlayer *sound) {
+//        if(oldAmp < retriggerThreshold) amp = ofRandom(1 - volumeVariance, 1);
+//        
+//        // if trigger
+//        if(oldAmp < amp/2) {
+//            if(sound) {
+//                float speedMult = scaleManager.currentMult(pitchIndex) * outputPitchMult;
+//                float volume = ofRandom(0.5, 1);
+//                if(maxNoteCount > 0) volume *= ofMap(pitchIndex, 0, maxNoteCount-1, 1, volumePitchMult);
+//                sound->setSpeed(speedMult);
+//                sound->setVolume(volume);
+//                sound->play();
+//                ofLogNotice() << "pitchIndex: " << pitchIndex << ", speedMult: " << speedMult;
+//            }
+//            return true;
+//        }
+//    }
+    
+    //--------------------------------------------------------------
+    int getIndex() {
+        return index;
     }
+    
+    //--------------------------------------------------------------
+    int setDeviceId(int deviceId) {
+        this->deviceId = deviceId;
+    }
+
+    //--------------------------------------------------------------
+    void setPitchIndex(int pitchIndex) {
+        this->pitchIndex = pitchIndex;
+    }
+    
+    //--------------------------------------------------------------
+    int getPitchIndex() const {
+        return pitchIndex;
+    }
+    
+    //--------------------------------------------------------------
+    int getDeviceId() const {
+        return deviceId;
+    }
+
+    
+    //--------------------------------------------------------------
+    void setAmp(float amp) {
+        this->amp = amp;
+    }
+    
+    //--------------------------------------------------------------
+    float getAmp() const {
+        return amp;
+    }
+    
+    //--------------------------------------------------------------
+    void setLaser(float laserAlpha) {
+        this->laserAlpha = laserAlpha;
+    }
+
+    //--------------------------------------------------------------
+    float getLaser() const {
+        return laserAlpha;
+    }
+
     
     //--------------------------------------------------------------
     void draw() {
-        // update();
+        height = ofLerp(heightMin, heightMax, heightNorm);
+        radius = ofLerp(diameterMin, diameterMax, radiusNorm)/2;
         
         ofPushStyle();
         transformGL(); {
@@ -162,4 +172,27 @@ public:
         } restoreTransformGL();
         ofPopStyle();
     }
+    
+    
+private:
+    int pitchIndex;
+    
+    float laserAlpha;
+
+    float amp;      // 0...1 value of the amplitude of the rod
+    
+//    float oldAmp;   // old value of the amp (to detect a trigger)
+
+	
+    // this is the amplitude of the rod
+	// as returned by the serial interface
+//	float ampFromSerial;
+//	float ampFromMouse;
+	
+	// this is the id of the board
+	// as programmed in its firmware.
+	int deviceId;
+	
+	// this is the id of the rod in the vector of rods
+	int index;
 };

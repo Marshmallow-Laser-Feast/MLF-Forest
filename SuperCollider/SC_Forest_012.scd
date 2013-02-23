@@ -22,6 +22,15 @@ e.g message: ['/forestAmp", 15, 0.33] means set the amp of rod 15 to 0.33
 ~globalVolumeInit = 0.25;
 ~windowTitle = "Forest";
 
+
+~soundSelectionIndex = 1;
+~panSelectionIndex = 1;
+~synthsRunning = false;
+~globalVolumeBus = Bus.control(s, 1);
+~globalSoundShapeBus = Bus.control(s, 2);
+
+
+
 // set server outputs
 q = s.options;
 q.numOutputBusChannels = ~surroundSpeakerCount;
@@ -68,16 +77,11 @@ s.waitForBoot({~funcStartSystem.value}, 100, {"couldn't boot".postln});
 	//	["Pulse + width", {arg freq, shape; Pulse.ar(freq, 0.01 + (shape * 0.48))}],
 ];
 
-~panSelectionIndex = 1;
 ~arrPanFuncs = [
 	// ["Stereo (Position used, Centre ignored)", {arg oscillator, amp, pos, centre; Pan2.ar( oscillator, ((pos - 0.5) * 2), amp);}],
 	["Stereo (Position used, Centre ignored)", {arg oscillator, amp, pos, centre; SplayAz.ar(2, oscillator, spread: 0, level: amp, width: 2, center: pos, orientation: 0, levelComp: true)}],
 	["Surround (Position & Centre used)", {arg oscillator, amp, pos, centre; SplayAz.ar(~surroundSpeakerCount, oscillator, spread: centre * 0.5, level: amp, width: 2, center: (pos * 2) - 1, orientation: 0.5, levelComp: true)}],
 ];
-
-~synthsRunning = false;
-~globalVolumeBus = Bus.control(s, 1);
-~globalSoundShapeBus = Bus.control(s, 2);
 
 "".postln;
 ("===  Listening to OSC messages on port: " ++ NetAddr.langPort).postln;
@@ -94,8 +98,6 @@ s.waitForBoot({~funcStartSystem.value}, 100, {"couldn't boot".postln});
 ~centres = ~rodCount.collect({ arg i; 0; });
 
 ~amps = ~rodCount.collect({ arg i; 0; });
-
-~soundSelectionIndex = 3;
 
 // define functions
 

@@ -90,8 +90,6 @@ public:
     
     //--------------------------------------------------------------
     void draw() {
-        update();
-        
         ofPushStyle();
         transformGL(); {
             ofPushMatrix(); {
