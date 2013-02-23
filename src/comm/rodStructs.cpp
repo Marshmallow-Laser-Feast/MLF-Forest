@@ -5,6 +5,9 @@
  */
 
 #include "rodStructs.h"
+#include "ForestSerialPort.h"
+
+
 int MMA_XYar[64] = {
 	0,3,5,8,11,14,16,19,22,25,28,31,34,38,41,45,49,53,58,63,70,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-80,-70,-63,-58,-53,-49,-45,-41,-38,-34,-31,-28,-25,-22,-19,-16,-14,-11,-8,-5,-3};
 
@@ -94,4 +97,32 @@ int RodInfo::processRawAccelerometerData(int x, int z) {
 	out /= 100;
 	
 	return out;
+}
+
+
+
+
+
+
+void RodInfo::setRawData(const RawAccelerometerData &data) {
+	
+	//		data.printDebug();
+	if(data.x==0x40) return;
+	// this is the raw data, normalized and wrapped.
+	rawData.set(lookupXY(data.x), lookupZ(data.y), lookupXY(data.z));//lookupXY(data.x), lookupXY(data.y), lookupZ(data.z));
+	
+	if(rawData.y<0) {
+		rawData.y += 180;
+	}
+	rawData.y -= 90;
+	
+	
+	
+	motion = processRawAccelerometerData(data.x, data.y);
+
+	if(motion!=motion || motion>100) resetMotion();
+	//ForestSerialPort::setLaser(id, motion>0);
+	rawData.z = motion;
+	status = data.status;
+	// do yer filterin' ere innit.
 }

@@ -21,6 +21,7 @@
 
 
 
+
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
@@ -165,30 +166,12 @@ public:
 		peak = 0;
 		curr = 0;
 		cnt = 0;
-		printf("Reseting motion\n");
+		//printf("Reseting motion\n");
 	}
 	
 	
-	void setRawData(const RawAccelerometerData &data) {
-
-//		data.printDebug();
-		if(data.x==0x40) return;
-		// this is the raw data, normalized and wrapped.
-		rawData.set(lookupXY(data.x), lookupZ(data.y), lookupXY(data.z));//lookupXY(data.x), lookupXY(data.y), lookupZ(data.z));
-		
-		if(rawData.y<0) {
-			rawData.y += 180;
-		}
-		rawData.y -= 90;
-		
-		
-		
-		motion = processRawAccelerometerData(data.x, data.y);
-		if(motion!=motion || motion>100) resetMotion();
-		rawData.z = motion;
-		status = data.status;
-		// do yer filterin' ere innit.
-	}
+	void setRawData(const RawAccelerometerData &data);
+	
 	int processRawAccelerometerData(int x, int z);
 
 
