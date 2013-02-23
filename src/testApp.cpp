@@ -33,7 +33,7 @@ ofFbo fbo;
 //ofSoundPlayer sound;
 
 ofVec3f mouse3d;    // 3d coordinates of mouse
-float mouseRadius = 75; // radius of mouse cursor
+float mouseRadius = 50; // radius of mouse cursor
 Rod *mouseRod = NULL; // rod the mouse is currently hitting
 
 ofxAssimpModelLoader venueModel;
