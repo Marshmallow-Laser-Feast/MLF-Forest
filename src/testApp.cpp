@@ -34,7 +34,7 @@ ofFbo fbo;
 
 ofVec3f mouse3d;    // 3d coordinates of mouse
 float mouseRadius = 50; // radius of mouse cursor
-Rod *mouseRod = NULL; // rod the mouse is currently hitting
+Rod *selectedRod = NULL; // rod the mouse is currently hitting
 
 ofxAssimpModelLoader venueModel;
 
@@ -799,7 +799,7 @@ void testApp::update(){
         
         // check mouse-rod collision
         vector<Rod*> hitRods = checkRodCollisions(mouse3d, mouseRadius);
-        mouseRod = hitRods.size() ? hitRods[0] : NULL;
+        selectedRod = hitRods.size() ? hitRods[0] : NULL;
         for(int i=0; i<hitRods.size(); i++) hitRods[i]->color.set(255, 0, 0);
     }
 
@@ -966,8 +966,8 @@ void testApp::draw() {
     ofSetColor(255);
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 2), ofGetWidth() - 100, 30);
     
-    if(mouseRod && params["display.bDisplaySelectedId"]) {
-        ofDrawBitmapString(mouseRod->getInfoStr(), ofGetWidth() - 285, ofGetHeight()-90);
+    if(selectedRod && params["display.bDisplaySelectedId"]) {
+        ofDrawBitmapString(selectedRod->getInfoStr(), ofGetWidth() - 285, ofGetHeight()-90);
     }
     
 #ifdef DOING_SERIAL
