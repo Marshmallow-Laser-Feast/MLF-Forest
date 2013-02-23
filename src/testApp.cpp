@@ -384,7 +384,10 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
         }
         
         sort(rods.begin(), rods.end());
-        for(int i=0; i<rods.size(); i++) rods[i].setIndex(i);
+        for(int i=0; i<rods.size(); i++) {
+            rods[i].setIndex(i);
+            rods[i].setDeviceId(i); // HACK: replace this with correct map
+        }
         
         
         Performer::worldMin.set(-installationWidth/2, 0, -installationLength/2);

@@ -107,14 +107,20 @@ public:
     }
 
     //--------------------------------------------------------------
-    //    int getIndex() {
-    //        return index;
-    //    }
+    int getIndex() {
+        return index;
+    }
     
     //--------------------------------------------------------------
     int setDeviceId(int deviceId) {
         this->deviceId = deviceId;
     }
+    
+    //--------------------------------------------------------------
+    int getDeviceId(int deviceId) const {
+        return deviceId;
+    }
+
     
     //--------------------------------------------------------------
     void setPitchIndex(int pitchIndex) {
