@@ -10,7 +10,7 @@
 
 int Rod::angleAmp;
 float Rod::dampSpeed;
-bool Rod::showPitchIndex;
+//bool Rod::showPitchIndex;
 int Rod::heightMin;
 int Rod::heightMax;
 int Rod::diameterMin;
@@ -21,3 +21,7 @@ int Rod::laserHeight;
 int Rod::laserDiameter;
 bool Rod::bLaserAlwaysOn;
 float Rod::laserAlphaThreshold;
+
+//bool Rod::showDeviceIds = false;
+
+Rod::IDDisplayType Rod::idDisplayType = DISPLAY_PITCH_INDEX;

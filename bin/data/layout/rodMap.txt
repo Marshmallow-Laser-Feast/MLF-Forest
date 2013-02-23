@@ -1,0 +1,3 @@
+# this maps blobId's to deviceId's, separated with a colon
+46:1
+94:3

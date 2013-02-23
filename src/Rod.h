@@ -5,25 +5,26 @@
 
 class Rod : public ofNode {
 public:
-    //    ofVec3f pos;
-    //    ofColor color;
-    
     float height;           // real value (in cm)
     float heightNorm;       // normalized (0...1) based on min/max parameters
     
     float radius;           // real value (in cm)
     float radiusNorm;       // normalized (0...1) based on min/max parameters
     
-    float amp;              // the current amplitude of vibration (0...1)
-    float oldAmp;
-    
-    int pitchIndex;
-    
-    float laserAlpha;
-    
     static int angleAmp;
     static float dampSpeed;
-    static bool showPitchIndex;
+    
+	//static bool showPitchIndex;
+	//static bool showDeviceIds;
+	
+	enum IDDisplayType {
+		DISPLAY_NONE,
+		DISPLAY_PITCH_INDEX,
+		DISPLAY_DEVICE_ID,
+		DISPLAY_BLOB_ID
+	};
+	static IDDisplayType idDisplayType;
+	
     static int heightMin;
     static int heightMax;
     static int diameterMin;
@@ -34,47 +35,98 @@ public:
     static int laserDiameter;
     static bool bLaserAlwaysOn;
     static float laserAlphaThreshold;
-    
-    //--------------------------------------------------------------
-    void setup() {
+
+	//--------------------------------------------------------------
+    void setup(int index) {
+        this->index = index;
         heightNorm = ofRandomuf();
         radiusNorm = ofRandomuf();
-        //        color.set(ofRandom(255), ofRandom(255), ofRandom(255));
         amp = 0;
+        laserAlpha = 0;
     }
-    
+
     //--------------------------------------------------------------
-    void update() {
+    void setLaserBasedonAmp() {
+		// decide whether the laser is on.
+        float newLaserAlpha = bLaserAlwaysOn ? 1 : amp > laserAlphaThreshold;
+        if(newLaserAlpha > laserAlpha) laserAlpha = newLaserAlpha;
+
+        //		oldAmp = amp;
+
         if(amp > 0.001) amp *= (1-dampSpeed);
         else amp = 0;
-        oldAmp = amp;
-        
-        height = ofLerp(heightMin, heightMax, heightNorm);
-        radius = ofLerp(diameterMin, diameterMax, radiusNorm)/2;
     }
     
     //--------------------------------------------------------------
-    bool trigger(float retriggerThreshold, ScaleManager &scaleManager, float outputPitchMult, int maxNoteCount, float volumePitchMult, float volumeVariance, ofSoundPlayer *sound) {
-        if(oldAmp < retriggerThreshold) amp = ofRandom(1 - volumeVariance, 1);
-        
-        // if trigger
-        if(oldAmp < amp/2) {
-            if(sound) {
-                float speedMult = scaleManager.currentMult(pitchIndex) * outputPitchMult;
-                float volume = ofRandom(0.5, 1);
-                if(maxNoteCount > 0) volume *= ofMap(pitchIndex, 0, maxNoteCount-1, 1, volumePitchMult);
-                sound->setSpeed(speedMult);
-                sound->setVolume(volume);
-                sound->play();
-                ofLogNotice() << "pitchIndex: " << pitchIndex << ", speedMult: " << speedMult;
-            }
-            return true;
-        }
+//    bool trigger(float retriggerThreshold, ScaleManager &scaleManager, float outputPitchMult, int maxNoteCount, float volumePitchMult, float volumeVariance, ofSoundPlayer *sound) {
+//        if(oldAmp < retriggerThreshold) amp = ofRandom(1 - volumeVariance, 1);
+//        
+//        // if trigger
+//        if(oldAmp < amp/2) {
+//            if(sound) {
+//                float speedMult = scaleManager.currentMult(pitchIndex) * outputPitchMult;
+//                float volume = ofRandom(0.5, 1);
+//                if(maxNoteCount > 0) volume *= ofMap(pitchIndex, 0, maxNoteCount-1, 1, volumePitchMult);
+//                sound->setSpeed(speedMult);
+//                sound->setVolume(volume);
+//                sound->play();
+//                ofLogNotice() << "pitchIndex: " << pitchIndex << ", speedMult: " << speedMult;
+//            }
+//            return true;
+//        }
+//    }
+    
+    //--------------------------------------------------------------
+    int getIndex() {
+        return index;
     }
+    
+    //--------------------------------------------------------------
+    int setDeviceId(int deviceId) {
+        this->deviceId = deviceId;
+    }
+
+    //--------------------------------------------------------------
+    void setPitchIndex(int pitchIndex) {
+        this->pitchIndex = pitchIndex;
+    }
+    
+    //--------------------------------------------------------------
+    int getPitchIndex() const {
+        return pitchIndex;
+    }
+    
+    //--------------------------------------------------------------
+    int getDeviceId() const {
+        return deviceId;
+    }
+
+    
+    //--------------------------------------------------------------
+    void setAmp(float amp) {
+        this->amp = amp;
+    }
+    
+    //--------------------------------------------------------------
+    float getAmp() const {
+        return amp;
+    }
+    
+    //--------------------------------------------------------------
+    void setLaser(float laserAlpha) {
+        this->laserAlpha = laserAlpha;
+    }
+
+    //--------------------------------------------------------------
+    float getLaser() const {
+        return laserAlpha;
+    }
+
     
     //--------------------------------------------------------------
     void draw() {
-        update();
+        height = ofLerp(heightMin, heightMax, heightNorm);
+        radius = ofLerp(diameterMin, diameterMax, radiusNorm)/2;
         
         ofPushStyle();
         transformGL(); {
@@ -93,14 +145,8 @@ public:
                 //            if(amp > 0.01) {
                 ofPushStyle();
                 ofDisableLighting();
-                if(bLaserAlwaysOn) laserAlpha = 1;
-                else laserAlpha = amp > laserAlphaThreshold;
-                //                        laserAlpha = amp;
-                //                        laserAlpha = 1-laserAlpha;
-                //                        laserAlpha *= laserAlpha * laserAlpha * laserAlpha;
-                //                        laserAlpha = 1-laserAlpha;
-                //                        ofSetColor(0, 255, 0, 255 * laserAlpha);
-                //                    }
+                
+            
                 if(laserAlpha>0) {
                     ofPushMatrix(); {
                         ofSetColor(0, 255, 0, 255 * laserAlpha);
@@ -111,11 +157,42 @@ public:
                     ofPopStyle();
                 }
             } ofPopMatrix();
-            if(showPitchIndex) {
+			if(idDisplayType==DISPLAY_DEVICE_ID) {
+				if(deviceId==0) ofSetHexColor(0xFF0000);
+				else ofSetHexColor(0x00FF00);
+				ofDrawBitmapString(ofToString(deviceId), 30, 0);
+            } else if(idDisplayType==DISPLAY_BLOB_ID) {
+				ofSetHexColor(0x0000FF);
+				ofDrawBitmapString(ofToString(index), 30, 0);
+				
+			} else if(idDisplayType==DISPLAY_PITCH_INDEX) {
                 ofSetColor(0, 100);
                 ofDrawBitmapString(ofToString(pitchIndex), 30, 0);
             }
         } restoreTransformGL();
         ofPopStyle();
     }
+    
+    
+private:
+    int pitchIndex;
+    
+    float laserAlpha;
+
+    float amp;      // 0...1 value of the amplitude of the rod
+    
+//    float oldAmp;   // old value of the amp (to detect a trigger)
+
+	
+    // this is the amplitude of the rod
+	// as returned by the serial interface
+//	float ampFromSerial;
+//	float ampFromMouse;
+	
+	// this is the id of the board
+	// as programmed in its firmware.
+	int deviceId;
+	
+	// this is the id of the rod in the vector of rods
+	int index;
 };

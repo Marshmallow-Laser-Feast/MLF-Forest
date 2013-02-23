@@ -9,6 +9,12 @@
 #include "ofxMidi.h"
 
 
+#ifdef DOING_SERIAL
+#include "RodCommunicator.h"
+#include "RodMapper.h"
+#endif
+
+
 msa::controlfreak::ParameterGroup params;
 msa::controlfreak::gui::Gui gui;
 
@@ -26,6 +32,7 @@ ofFbo fbo;
 
 ofSoundPlayer sound;
 ofVec3f mouse3d;
+float mouseRadius = 75;
 ofxAssimpModelLoader venueModel;
 
 ofImage layoutImage;
@@ -40,6 +47,14 @@ ofVec3f installationSize;
 ofxOscSender *oscSender = NULL;
 bool bSendRodPositionsOsc = false;
 bool bSendRodTuningOsc = false;
+
+#ifdef DOING_SERIAL
+RodCommunicator *rodCommunicator;
+bool showRodGui = true;
+RodMapper rodMapper;
+
+#endif
+
 
 
 //--------------------------------------------------------------
@@ -80,6 +95,14 @@ void sendRodOsc(bool bForce = false);
 
 //--------------------------------------------------------------
 void testApp::setup() {
+	// TODO: remove log level set here
+#pragma warning we'll want to get rid of this line
+	ofSetLogLevel(OF_LOG_ERROR);
+#ifdef DOING_SERIAL
+	rodCommunicator = new RodCommunicator();
+	rodCommunicator->start();
+#endif
+	
     ofSetVerticalSync(true);
     ofSetFrameRate(30);
     
@@ -104,7 +127,10 @@ void testApp::setup() {
     params.startGroup("display").close(); {
         params.addInt("backgroundColor").setClamp(true).set(60);
         params.addInt("floorColor").setClamp(true).set(60);
-        params.addBool("showPitchIndex").trackVariable(&Rod::showPitchIndex);
+        //        params.addBool("showPitchIndex").trackVariable(&Rod::showPitchIndex);
+		params.addNamedIndex("idDisplayType").setLabels(4, "None", "Pitch Index", "Device ID", "Blob Id").trackVariable(&Rod::idDisplayType);
+        
+		
         params.startGroup("lighting"); {
             params.addBool("enabled");
             for(int i=0; i<lights.size(); i++) {
@@ -146,6 +172,7 @@ void testApp::setup() {
         params.addInt("color").setRange(0, 255).setClamp(true).set(60).trackVariable(&Rod::color);
         params.addInt("angleAmp").setRange(0, 90).setClamp(true).trackVariable(&Rod::angleAmp);
         params.addFloat("dampSpeed").setClamp(true).trackVariable(&Rod::dampSpeed);
+		
     } params.endGroup();
     params.startGroup("laser"); {
         params.addInt("height").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
@@ -218,6 +245,46 @@ void testApp::setup() {
         params.addBool("invert").setTooltip("invert pitch relationship from out to in");
     } params.endGroup();
     
+    
+#ifdef DOING_SERIAL
+    params.startGroup("comms"); {
+		params.addInt("param1")
+		.setTooltip("Haven't got info on this from Mike yet")
+		.setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param1);
+		
+		params.addInt("param2")
+		.setTooltip("Haven't got info on this from Mike yet")
+		.setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param2);
+		
+		params.addInt("param3")
+		.setTooltip("Haven't got info on this from Mike yet")
+		.setRange(0, 255).setClamp(true).trackVariable(&ForestSerialPort::param3);
+        
+		params.addInt("tipOverTimeConstant")
+		.setTooltip("Tip-over filter time constant. 0-31, 31 = slowest")
+		.setRange(0, 255).setClamp(true)
+		.trackVariable(&ForestSerialPort::tipOverTimeConstant);
+        
+		params.addInt("tipThreshold")
+		.setTooltip("Tip-over threshold (typ approx 40-50), arbitary units,not degrees!")
+		.setRange(0, 255)
+		.setClamp(true)
+		.trackVariable(&ForestSerialPort::tipThreshold);
+        
+		params.addInt("laserTimeoutValue")
+		.setTooltip("Laser timeout value. Laser will blank if no new command is received before timeout. Units of 2.048mS")
+		.setRange(0, 255)
+		.setClamp(true)
+		.trackVariable(&ForestSerialPort::laserTimeoutValue);
+		
+		params.addInt("laserHoldoff")
+		.setTooltip("Time laser must be vertical before turning on after tip-over condition cleared, units of 16mS")
+		.setRange(0, 255)
+		.setClamp(true)
+		.trackVariable(&ForestSerialPort::laserHoldoff);
+	} params.endGroup();
+#endif
+    
     updateFilesGroup("sound.local.file", "audio", false);
     updateFilesGroup("layout.image", "layout", true);
     updateFilesGroup("animation.laser.file", "animations/laser", true);
@@ -253,10 +320,10 @@ void testApp::setup() {
 
 
 //--------------------------------------------------------------
-void updateRodLayout(bool bForceUpdate = false) {
+void checkAndInitRodLayout(bool bForceUpdate = false) {
     msa::controlfreak::ParameterGroup &paramsLayout = params.getGroup("layout");
     if(bForceUpdate || paramsLayout.hasChanged())  {
-        ofLogNotice() << "updateRodLayout at frame " << ofGetFrameNum();
+        ofLogNotice() << "checkAndInitRodLayout at frame " << ofGetFrameNum();
         
         bSendRodPositionsOsc = true;
         
@@ -311,9 +378,10 @@ void updateRodLayout(bool bForceUpdate = false) {
         
         for(int i=0; i<rods.size(); i++) {
             Rod &r = rods[i];
-            r.setup();
+            r.setup(i);
             r.move(randomness * ofVec3f(ofRandomf(), 0, ofRandomf()));
         }
+        
         
         Performer::worldMin.set(-installationWidth/2, 0, -installationLength/2);
         Performer::worldMax.set( installationWidth/2, 0, installationLength/2);
@@ -322,10 +390,10 @@ void updateRodLayout(bool bForceUpdate = false) {
 
 
 //--------------------------------------------------------------
-void updatePerformers(bool bForceUpdate = false) {
+void checkAndInitPerformers(bool bForceUpdate = false) {
     msa::controlfreak::ParameterGroup &paramsPerformers = params.getGroup("performers");
     if(bForceUpdate || paramsPerformers.hasChanged()) {
-        ofLogNotice() << "updatePerformers at frame " << ofGetFrameNum();
+        ofLogNotice() << "checkAndInitPerformers at frame " << ofGetFrameNum();
         
         float heightMin = paramsPerformers["heightMin"];
         float heightMax = paramsPerformers["heightMax"];
@@ -358,10 +426,10 @@ void updatePerformers(bool bForceUpdate = false) {
 }
 
 //--------------------------------------------------------------
-void updateFbo(bool bForceUpdate = false) {
+void checkAndInitFbo(bool bForceUpdate = false) {
     msa::controlfreak::ParameterGroup &paramsFbo = params.getGroup("fbo");
     if(bForceUpdate || paramsFbo.hasChanged()) {
-        ofLogNotice() << "updateFbo at frame " << ofGetFrameNum();
+        ofLogNotice() << "checkAndInitFbo at frame " << ofGetFrameNum();
         
         float overSampling = params["fbo.overSampling"];
         int internalFormat;
@@ -406,13 +474,14 @@ void checkRodCollisions(ofVec3f p, float radius) {
     
     for(int i=0; i<rods.size(); i++) {
         Rod &r = rods[i];
-        if((p - r.getGlobalPosition()).lengthSquared() < radius * radius) r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
+        if((p - r.getGlobalPosition()).lengthSquared() < radius * radius) r.setAmp(1);
+        //            r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
     }
 }
 
 
 //--------------------------------------------------------------
-void updateLaserAnimation() {
+void updateRodLaserAnimation() {
     msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.laser.file");
     if(paramNamedIndex.hasChanged()) {
         if((int)paramNamedIndex == 0) {
@@ -449,8 +518,9 @@ void updateLaserAnimation() {
             ofVec2f imagePos;
             imagePos.x = ofMap(r.getX(), -installationSize.x/2, installationSize.x/2, 0, animationVideo.getWidth());
             imagePos.y = ofMap(r.getZ(), -installationSize.z/2, installationSize.z/2, 0, animationVideo.getHeight());
-            if(pixels.getColor(imagePos.x, imagePos.y).r > 0) r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
-            else r.amp = 0;
+            //            if(pixels.getColor(imagePos.x, imagePos.y).r > 0) r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
+            //            else r.amp = 0;
+            r.setLaser(pixels.getColor(imagePos.x, imagePos.y).r / 255.0);
         }
     }
 }
@@ -497,7 +567,7 @@ void updatePerformanceAnimation() {
         int numBlobs = animationVideoContours.blobs.size();
         if((int)params["performers.count"] != numBlobs) {
             params["performers.count"] = numBlobs;
-            updatePerformers(true);
+            checkAndInitPerformers(true);
         }
         float heightMin = params["performers.heightMin"];
         float heightMax = params["performers.heightMax"];
@@ -519,7 +589,7 @@ void updatePerformanceAnimation() {
 
 
 //--------------------------------------------------------------
-void updateSound() {
+void checkAndInitSoundFile() {
     msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("sound.local.file");
     if(paramNamedIndex.hasChanged()) {
         sound.loadSound(paramNamedIndex.getSelectedLabel());
@@ -541,41 +611,41 @@ void updateRodTuning() {
     bool bRet = false;
     for(int i=0; i<rods.size(); i++) {
         Rod &r = rods[i];
-        r.pitchIndex = 0;
+        int pitchIndex = 0;
         float distRatio = r.getGlobalPosition().length() / halfInstallationLength;
         if(invert) distRatio = 1-distRatio;
-        r.pitchIndex += distRatio * noteCountDistance;
+        pitchIndex += distRatio * noteCountDistance;
         float angle = atan2(r.getX(), r.getZ());
         angle = fabsf(angle);
         if(angle > PI/2) angle = PI - angle;
         if(r.getGlobalPosition().length() > 100) {  // hack to include radial only in rods not in center
-            r.pitchIndex += ofMap(angle, 0, PI, 0, noteCountRadial);
+            pitchIndex += ofMap(angle, 0, PI, 0, noteCountRadial);
         }
         if(maxNoteCount > 0) {
-            r.pitchIndex %= 2 * maxNoteCount;
-            if(r.pitchIndex >= maxNoteCount) r.pitchIndex = 2 * maxNoteCount - 1 - r.pitchIndex;  // mirror mod
+            pitchIndex %= 2 * maxNoteCount;
+            if(pitchIndex >= maxNoteCount) pitchIndex = 2 * maxNoteCount - 1 - pitchIndex;  // mirror mod
         }
-        r.pitchIndex += inputPitchOffset;
+        pitchIndex += inputPitchOffset;
         if(maxNoteCount > 0) {
-            r.heightNorm = ofNormalize(r.pitchIndex, 0, maxNoteCount);
+            r.heightNorm = ofNormalize(pitchIndex, 0, maxNoteCount);
         }
+        r.setPitchIndex(pitchIndex);
     }
 }
 
 
 //--------------------------------------------------------------
 void resetAll() {
-    updateRodLayout(true);
-    //    updateRods(true);
-    updatePerformers(true);
-    updateFbo(true);
+    checkAndInitRodLayout(true);
+    checkAndInitPerformers(true);
+    checkAndInitFbo(true);
 }
 
 //--------------------------------------------------------------
 void sendRodOsc(bool bForce) {
     if(params["sound.osc.enabled"].hasChanged()) {
         bForce = true;
-        updateRodLayout(true);  // force zero if enabled state has changed
+        checkAndInitRodLayout(true);  // force zero if enabled state has changed
     }
     if(bForce) ofLogNotice() << "sending full osc";
     
@@ -592,7 +662,7 @@ void sendRodOsc(bool bForce) {
         
         int volumePower = params["sound.osc.volumePower"];
         float installationRadius = sqrt(installationSize.x * installationSize.x + installationSize.z * installationSize.z);
-
+        
         ofxOscBundle b;
         for(int i=0; i<rods.size(); i++) {
             Rod &r = rods[i];
@@ -602,7 +672,7 @@ void sendRodOsc(bool bForce) {
             m.addIntArg(i);
             float amp = 1;
             for(int i=0; i<volumePower; i++) {
-                amp *= r.amp;
+                amp *= r.getAmp();
             }
             m.addFloatArg(amp);
             b.addMessage(m);
@@ -635,7 +705,7 @@ void sendRodOsc(bool bForce) {
                 ofxOscMessage m;
                 m.setAddress("/forestFreq");
                 m.addIntArg(i);
-                m.addFloatArg(scaleManager.currentFreq(r.pitchIndex) * outputPitchMult);
+                m.addFloatArg(scaleManager.currentFreq(r.getPitchIndex()) * outputPitchMult);
                 b.addMessage(m);
             }
             oscSender->sendBundle(b);
@@ -652,23 +722,60 @@ void sendRodOsc(bool bForce) {
 void testApp::update(){
     msa::controlfreak::update();
     
-    updateRodLayout();
-    //    updateRods();
-    updatePerformers();
-    updateFbo();
-    updateSound();
+    checkAndInitRodLayout();
+    checkAndInitPerformers();
+    checkAndInitFbo();
+    checkAndInitSoundFile();
+    
     updateRodTuning();
     
-    updateLaserAnimation();
+    // clear all laser values
+    for(int i = 0; i < rods.size(); i++) rods[i].setLaser(0);
+    
+    // update rod laser values based on animation pixel values (if animation loaded)
+    updateRodLaserAnimation();
+    
+    // update positions of virtual performers based on animation
+    // this simply moves the performers around
     updatePerformanceAnimation();
     
+    // update performers generative animation
+    // this simply moves the performers around
+    for(int i=0; i<performers.size(); i++) performers[i].update();
     
-    // check for performer-rod collision, and do sound
-    for(int j=0; j<performers.size(); j++) {
-        Performer &p = performers[j];
-        checkRodCollisions(p.getGlobalPosition(), p.affectRadius);
+    // check rod collisions
+    // this sets the Amp of the rod if collision detected
+    {
+        // check for performer-rod collision
+        for(int j=0; j<performers.size(); j++) checkRodCollisions(performers[j].getGlobalPosition(), performers[j].affectRadius);
+        
+        // check mouse-rod collision
+        checkRodCollisions(mouse3d, mouseRadius);
     }
     
+	
+    // serial comms should simply set the value of Amp for each rod
+#ifdef DOING_SERIAL
+	// don't talk to the lasers until
+	// the forest has been scanned.
+	if(rodCommunicator->doneDiscovering()) {
+		rodMapper.update(rodCommunicator, rods);
+	}
+#endif
+	
+	
+	// set lasers based on amp
+	for(int i = 0; i < rods.size(); i++) rods[i].setLaserBasedonAmp();
+    
+    
+    // send laser value back down serial
+#ifdef DOING_SERIAL
+    
+#endif
+    
+    
+    
+	// send OSC
     bool bForce = params["sound.osc.forceSend"];
     int sendFullFrameCount = params["sound.osc.sendFullFrameCount"];
     if(sendFullFrameCount && (ofGetFrameNum() % (sendFullFrameCount * 30) == 0)) bForce = true;
@@ -694,6 +801,13 @@ void drawFloor() {
 
 //--------------------------------------------------------------
 void testApp::draw() {
+#ifdef DOING_SERIAL
+    
+	if(showRodGui) {
+		rodCommunicator->draw();
+		return;
+	}
+#endif
     glEnable(GL_DEPTH_TEST);
     ofEnableAlphaBlending();
     ofClear((int)params["display.backgroundColor"].getMappedTo(0, 255));
@@ -746,14 +860,10 @@ void testApp::draw() {
     
     // draw mouse cursor
     {
-        float r = 75;
         mouse3d = windowToWorld(ofGetMouseX(), ofGetMouseY());
-        //        if(ofGetMousePressed())
-        checkRodCollisions(mouse3d, r);
-        
         ofPushStyle();
         ofSetColor(100, 0, 0, 50);
-        ofSphere(mouse3d, r);
+        ofSphere(mouse3d, mouseRadius);
         ofPopStyle();
     }
     
@@ -788,8 +898,19 @@ void testApp::draw() {
     }
     ofSetColor(255);
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 2), ofGetWidth() - 100, 30);
-    
-    
+#ifdef DOING_SERIAL
+	if(!rodCommunicator->doneDiscovering()) {
+		ofSetHexColor(0);
+		ofRectangle r(495, ofGetHeight()-20, ofGetWidth()-495, 20);
+		ofRect(r);
+		ofSetHexColor(0x990000);
+		r.width *= rodCommunicator->getProgress();
+		ofRect(r);
+		ofSetHexColor(0xFFFFFF);
+		ofDrawBitmapString(ofToString ((int)(rodCommunicator->getProgress()*100.f))+ "% done discovering nodes", r.x+5, r.y+15);
+	}
+#endif
+	
 }
 
 //--------------------------------------------------------------
@@ -820,7 +941,15 @@ void testApp::keyPressed(int key){
         case 'r':
             resetAll();
             break;
-            
+#ifdef DOING_SERIAL
+		case '\t':
+			showRodGui ^= true;
+			break;
+		case '=':
+			rodCommunicator->reset();
+			rodMapper.reset();
+			break;
+#endif
     }
 }
 
@@ -852,7 +981,7 @@ void testApp::mouseReleased(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::windowResized(int w, int h){
-    updateFbo(true);
+    checkAndInitFbo(true);
 }
 
 //--------------------------------------------------------------
