@@ -25,4 +25,4 @@ float Rod::laserAlphaThreshold;
 //bool Rod::showDeviceIds = false;
 
 Rod::IDDisplayType Rod::idDisplayType = DISPLAY_PITCH_INDEX;
-bool Rod::bDisplaySelectedId = false;
+//bool Rod::bDisplaySelectedId = false;
