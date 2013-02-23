@@ -1,4 +1,4 @@
-/**     ___           ___           ___                         ___           ___     
+/**     ___           ___           ___                         ___           ___
  *     /__/\         /  /\         /  /\         _____         /  /\         /__/|    
  *    |  |::\       /  /::\       /  /::|       /  /::\       /  /::\       |  |:|    
  *    |  |:|:\     /  /:/\:\     /  /:/:|      /  /:/\:\     /  /:/\:\      |  |:|    
@@ -23,13 +23,14 @@
 class RodCommunicator: public ofThread {
 public:
 	RodCommunicator();
-	
+	~RodCommunicator();
 	
 	void reset();
 	
 	// call this in your setup
 	void start();
 	
+	string getValues();
 	//
 	bool doneDiscovering();
 	
@@ -38,11 +39,14 @@ public:
 	
 	void setLaser(int deviceId, bool on);
 	
+	string getReport();
+	
 	float getAmplitude(int deviceId);
 	
-	
+
 	// draws debug info
 	void draw();
+	void inspect();
 	
 protected:
 	void threadedFunction();
@@ -64,4 +68,5 @@ private:
 	// reported update rate in hz
 	float updateRate;
 	bool running;
+	ofTrueTypeFont font;
 };
