@@ -24,9 +24,9 @@ void RodMapper::update(RodCommunicator *comms, vector<Rod> &rods) {
 }
 
 int RodMapper::findDeviceIdForRod(Rod &rod) {
-	if(blobToDevice.find(rod.blobId)!=blobToDevice.end()) {
+	if(blobToDevice.find(rod.index)!=blobToDevice.end()) {
 
-		return blobToDevice[rod.blobId];
+		return blobToDevice[rod.index];
 	} else {
 		//printf("Couldn't find device for rod with blob ID %d\n", rod.blobId);
 	}
@@ -103,7 +103,7 @@ void RodMapper::updateRodCommunicationMapping(vector<Rod> &rods) {
 			
 			rods[i].deviceId = deviceId;
 			
-			blobToDevice[rods[i].blobId] = deviceId;
+			blobToDevice[rods[i].index] = deviceId;
 
 			if(deviceId>0) {
 				rodCommunicationMapping[deviceId] = &rods[i];

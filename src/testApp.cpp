@@ -352,7 +352,7 @@ void updateRodLayout(bool bForceUpdate = false) {
             for(int i=0; i<layoutImageContours.nBlobs; i++) {
                 rods.push_back(Rod());
                 Rod &r = rods[i];
-				r.blobId = i;
+				r.index = i;
                 ofxCvBlob &blob = layoutImageContours.blobs[i];
                 float x = ofMap(blob.centroid.x, 0, greyImage.getWidth(), -installationWidth/2, installationWidth/2);
                 float z = ofMap(blob.centroid.y, 0, greyImage.getHeight(), -installationLength/2, installationLength/2);
