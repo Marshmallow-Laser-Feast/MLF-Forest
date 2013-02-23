@@ -7,10 +7,11 @@
 #include "ofxAssimpModelLoader.h"
 #include "ofxOsc.h"
 #include "ofxMidi.h"
-#include "RodMapper.h"
+
 
 #ifdef DOING_SERIAL
 #include "RodCommunicator.h"
+#include "RodMapper.h"
 #endif
 
 
@@ -741,12 +742,13 @@ void testApp::update(){
     }
     
 	
+#ifdef DOING_SERIAL
 	// don't talk to the lasers until
 	// the forest has been scanned.
 	if(rodCommunicator->doneDiscovering()) {
 		rodMapper.update(rodCommunicator, rods);
 	}
-	
+#endif
 	
 	
 	// update the rod values
