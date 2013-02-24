@@ -17,6 +17,9 @@ int ForestSerialPort::tipThreshold = 45;
 int ForestSerialPort::laserTimeoutValue = 10; // ??
 int ForestSerialPort::laserHoldoff = 10; // ??
 // end: laser parameters
+
+float ForestSerialPort::ampGain = 1;
+
 bool ForestSerialPort::forceLasersOn = false;
 
 map<int,RodInfo*> ForestSerialPort::allRodInfos;

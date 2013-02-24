@@ -42,6 +42,9 @@ public:
     static bool bLaserAlwaysOn;
     static float laserAlphaThreshold;
     
+    static map<int,Rod*> deviceIdToRod;
+
+    
 	//--------------------------------------------------------------
     void setup(float installationRadius) {
         heightNorm = ofRandomuf();
@@ -123,6 +126,7 @@ public:
     //--------------------------------------------------------------
     int setDeviceId(int deviceId) {
         this->deviceId = deviceId;
+        deviceIdToRod[deviceId] = this;
     }
     
     //--------------------------------------------------------------

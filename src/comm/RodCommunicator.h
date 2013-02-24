@@ -43,11 +43,14 @@ public:
 	
 	float getAmplitude(int deviceId);
 	
+    int findRodWithBiggestAmplitude(float &outAmplitude);
 
 	// draws debug info
 	void draw();
 	void inspect();
 	
+    
+    
 protected:
 	void threadedFunction();
 	

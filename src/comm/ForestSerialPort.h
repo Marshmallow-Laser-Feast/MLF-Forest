@@ -68,6 +68,7 @@ public:
 	static int tipThreshold; // typically approx 40-50 - arbitary units
 	static int laserTimeoutValue; // units of 2.048 ms
 	static int laserHoldoff;
+    static float ampGain;
 	static map<int,RodInfo*> allRodInfos;
 	void inspect();
 	string report;

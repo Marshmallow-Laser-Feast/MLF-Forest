@@ -19,6 +19,7 @@ msa::controlfreak::ParameterGroup params;
 msa::controlfreak::gui::Gui gui;
 
 vector<Rod> rods;
+
 vector<Performer> performers;
 
 ScaleManager scaleManager;
@@ -167,7 +168,7 @@ void testApp::setup() {
         params.addInt("randomness").setTooltip("amount of randomness in position (cm)").setRange(0, 1000).setClamp(true);
         params.addNamedIndex("image").setTooltip("use a black & white image for rod layout (rodCountWidth & rodCountLength will be ignored)");
     } params.endGroup();
-    params.startGroup("rods").close(); {
+    params.startGroup("rods"); {
         params.addInt("heightMin").setTooltip("minimum rod height (cm)").setRange(1, 1000).setClamp(true).set(180).trackVariable(&Rod::heightMin);
         params.addInt("heightMax").setTooltip("maximum rod height (cm)").setRange(1, 1000).setClamp(true).set(300).trackVariable(&Rod::heightMax);
         params.addInt("diameterMin").setTooltip("minimum rod diamater (cm)").setRange(1, 50).setClamp(true).set(3).trackVariable(&Rod::diameterMin);
@@ -175,6 +176,9 @@ void testApp::setup() {
         params.addInt("color").setRange(0, 255).setClamp(true).set(60);//.trackVariable(&Rod::brightness);
         params.addInt("angleAmp").setRange(0, 90).setClamp(true).trackVariable(&Rod::angleAmp);
         params.addFloat("dampSpeed").setClamp(true).trackVariable(&Rod::dampSpeed);
+        params.addInt("showRodAmp").setRange(0, 200).setClamp(true);
+        params.addFloat("selectedRodAmp").setClamp(true);
+                                             
 		
     } params.endGroup();
     params.startGroup("laser"); {
@@ -252,6 +256,9 @@ void testApp::setup() {
     
 #ifdef DOING_SERIAL
     params.startGroup("comms"); {
+        params.addBool("learnMode");
+        params.addFloat("learnAmpThreshold").setClamp(true).set(0.5);
+
 		params.addBool("forceLasersOn").set(false).trackVariable(&ForestSerialPort::forceLasersOn);
 		
 		params.addInt("param1")
@@ -288,6 +295,13 @@ void testApp::setup() {
 		.setRange(0, 255)
 		.setClamp(true)
 		.trackVariable(&ForestSerialPort::laserHoldoff);
+        
+        params.addFloat("ampGain")
+		.setTooltip("how much to amplify the amplitude signal before clipping")
+		.setRange(0, 10)
+		.setClamp(true)
+		.trackVariable(&ForestSerialPort::ampGain);
+        
 	} params.endGroup();
 #endif
     
@@ -394,6 +408,8 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
             rods[i].setIndex(i);
             rods[i].setDeviceId(i); // HACK: replace this with correct map
         }
+        
+        // TODO: load deviceId map
         
         
         Performer::worldMin.set(-installationWidth/2, 0, -installationLength/2);
@@ -743,7 +759,7 @@ void sendRodOsc(bool bForce) {
 
 
 //--------------------------------------------------------------
-void testApp::update(){
+void testApp::update() {
     msa::controlfreak::update();
     
     checkAndInitRodLayout();
@@ -783,7 +799,16 @@ void testApp::update(){
 //		rodMapper.update(rodCommunicator, rods);
 //	}
 	if(rodCommunicator->doneDiscovering()) {
-
+        if(params["comms.learnMode"] && selectedRod) {
+            float currentHighestAmp;
+            int deviceIdForHighestAmp = rodCommunicator->findRodWithBiggestAmplitude(currentHighestAmp);
+            if(currentHighestAmp > (float)params["comms.learnAmpThreshold"]) {
+                selectedRod->setDeviceId(deviceIdForHighestAmp);
+                // TODO: save deviceIdmap
+            }
+        }
+        
+        
 		for(int i=0; i<rods.size(); i++) {
 			Rod &r = rods[i];
 			r.setAmp(MAX(r.getAmp(), rodCommunicator->getAmplitude( r.getDeviceId() )));
@@ -819,14 +844,16 @@ void testApp::update(){
     
     // send laser value back down serial
 #ifdef DOING_SERIAL
-	
 	for(int i=0; i<rods.size(); i++) {
-		
 		rodCommunicator->setLaser(rods[i].getDeviceId(), rods[i].getLaser());
 	}
 	
 #endif
     
+    {
+        int showRodAmp = MIN((int)params["rods.showRodAmp"], rods.size()-1);
+        params["rods.selectedRodAmp"] = rods[showRodAmp].getAmp();
+    }
     
 	// send OSC
     bool bForce = params["sound.osc.forceSend"];
@@ -873,14 +900,7 @@ void drawSerialProgress() {
 #endif
 //--------------------------------------------------------------
 void testApp::draw() {
-#ifdef DOING_SERIAL
-    
-	if(showRodGui) {
-		rodCommunicator->draw();
-		drawSerialProgress();
-		return;
-	}
-#endif
+
     glEnable(GL_DEPTH_TEST);
     ofEnableAlphaBlending();
     ofClear((int)params["display.backgroundColor"].getMappedTo(0, 255));
@@ -977,7 +997,23 @@ void testApp::draw() {
     }
     
 #ifdef DOING_SERIAL
-	drawSerialProgress();
+    if(params["comms.learnMode"]) {
+        ofPushStyle();
+        ofSetColor(255, 0, 0);
+        ofNoFill();
+        int w = 10;
+        ofSetLineWidth(2*w);
+        ofRect(w, w, ofGetWidth()-2*w, ofGetHeight()-2*w);
+        ofPopStyle();
+    }
+    
+    
+    if(showRodGui) {
+		rodCommunicator->draw();
+	}
+    
+    drawSerialProgress();
+
 #endif
 	
 }
@@ -1005,6 +1041,10 @@ void testApp::keyPressed(int key){
             
         case ' ':
             easyCam.enableMouseInput();
+            break;
+            
+        case 'L':
+            params["comms.learnMode"] = ! (bool) params["comms.learnMode"];
             break;
             
         case '>':
@@ -1056,7 +1096,7 @@ void testApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-    selectedRod = NULL;
+//    selectedRod = NULL;
 }
 
 //--------------------------------------------------------------
