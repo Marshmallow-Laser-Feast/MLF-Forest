@@ -5,6 +5,8 @@
 
 class Rod : public ofNode {
 public:
+    ofColor color;
+    
     float height;           // real value (in cm)
     float heightNorm;       // normalized (0...1) based on min/max parameters
     
@@ -14,41 +16,43 @@ public:
     static int angleAmp;
     static float dampSpeed;
     
-	//static bool showPitchIndex;
-	//static bool showDeviceIds;
-	
 	enum IDDisplayType {
 		DISPLAY_NONE,
 		DISPLAY_PITCH_INDEX,
 		DISPLAY_DEVICE_ID,
 		DISPLAY_INDEX,
         DISPLAY_POLAR_COORDS,
+        DISPLAY_POLAR_COORDS_NORM,
         DISPLAY_RADIUS,
         DISPLAY_ANGLE,
         DISPLAY_NAME
 	};
 	static IDDisplayType idDisplayType;
-    static bool bDisplaySelectedId;
+//    static bool bDisplaySelectedId;
 	
     static int heightMin;
     static int heightMax;
     static int diameterMin;
     static int diameterMax;
-    static int color;
+//    static int brightness;
     
+    static bool displayLaser;
     static int laserHeight;
     static int laserDiameter;
     static bool bLaserAlwaysOn;
     static float laserAlphaThreshold;
     
 	//--------------------------------------------------------------
-    void setup() {
+    void setup(float installationRadius) {
         heightNorm = ofRandomuf();
         radiusNorm = ofRandomuf();
         amp = 0;
         laserAlpha = 0;
         polarCoordinates.x = getPosition().length();
         polarCoordinates.y = ofMap(atan2(getPosition().z, getPosition().x), -PI, PI, 0, 360);
+        
+        polarCoordinatesNorm.x = polarCoordinates.x / installationRadius;
+        polarCoordinatesNorm.y = polarCoordinates.y / 360.0f;
     }
     
     //--------------------------------------------------------------
@@ -96,8 +100,13 @@ public:
     }
     
     //--------------------------------------------------------------
+    ofVec2f getPolarCoordinatesNorm() const {
+        return polarCoordinatesNorm;
+    }
+    
+    //--------------------------------------------------------------
     float getSortScore() const {
-        return round(polarCoordinates.x/100) * 10000 + round(polarCoordinates.y);
+        return round(polarCoordinatesNorm.x * 100) * 10000 + round(polarCoordinates.y);
     }
 
 
@@ -152,6 +161,18 @@ public:
         return laserAlpha;
     }
     
+    //--------------------------------------------------------------
+    string getInfoStr() const {
+        string s = "";
+        s += "index: " + ofToString(index) + "\n";
+        s += "deviceId: " + ofToString(deviceId) + "\n";
+        s += "name: " + name + "\n";
+        s += "pitchIndex: " + ofToString(pitchIndex) + "\n";
+        s += "polarCoordinates: " + ofToString(polarCoordinates.x, 2) + ", " + ofToString(polarCoordinates.y, 2) + "\n";
+        s += "polarCoordinatesNorm: " + ofToString(polarCoordinatesNorm.x, 2) + ", " + ofToString(polarCoordinatesNorm.y, 2) + "\n";
+        s += "sortScore: " + ofToString(getSortScore(), 2);
+        return s;
+    }
     
     //--------------------------------------------------------------
     void draw() {
@@ -177,7 +198,7 @@ public:
                 ofDisableLighting();
                 
                 
-                if(laserAlpha>0) {
+                if(laserAlpha>0 && displayLaser) {
                     ofPushMatrix(); {
                         ofSetColor(0, 255, 0, 255 * laserAlpha);
                         ofTranslate(0, laserHeight/2, 0);
@@ -188,13 +209,13 @@ public:
                 }
             } ofPopMatrix();
             
-            if(bDisplaySelectedId == false || laserAlpha == 1) {
+//            if(bDisplaySelectedId == false || laserAlpha == 1) {
                 if(idDisplayType==DISPLAY_DEVICE_ID) {
                     if(deviceId==0) ofSetHexColor(0xFF0000);
                     else ofSetHexColor(0x00FF00);
                     ofDrawBitmapString(ofToString(deviceId), 30, 0);
                 } else if(idDisplayType==DISPLAY_INDEX) {
-                    ofSetHexColor(0x0000FF);
+                    ofSetColor(255);
                     ofDrawBitmapString(ofToString(index), 30, 0);
                 } else if(idDisplayType==DISPLAY_PITCH_INDEX) {
                     ofSetColor(0, 100);
@@ -204,15 +225,18 @@ public:
                     ofDrawBitmapString(name, 30, 0);
                 } else if(idDisplayType==DISPLAY_POLAR_COORDS) {
                     ofSetColor(0, 100);
-                    ofDrawBitmapString(ofToString(polarCoordinates.x) + ", " + ofToString(polarCoordinates.y), 30, 0);
+                    ofDrawBitmapString(ofToString(polarCoordinates.x, 0) + ", " + ofToString(polarCoordinates.y, 0), 30, 0);
+                } else if(idDisplayType==DISPLAY_POLAR_COORDS_NORM) {
+                    ofSetColor(0, 100);
+                    ofDrawBitmapString(ofToString(polarCoordinatesNorm.x, 2) + ", " + ofToString(polarCoordinatesNorm.y, 2), 30, 0);
                 } else if(idDisplayType==DISPLAY_RADIUS) {
                     ofSetColor(0, 100);
-                    ofDrawBitmapString(ofToString(polarCoordinates.x), 30, 0);
+                    ofDrawBitmapString(ofToString(polarCoordinates.x, 0), 30, 0);
                 } else if(idDisplayType==DISPLAY_ANGLE) {
                     ofSetColor(0, 100);
-                    ofDrawBitmapString(ofToString(polarCoordinates.y), 30, 0);
+                    ofDrawBitmapString(ofToString(polarCoordinates.y, 0), 30, 0);
                 }
-            }
+//            }
             
         } restoreTransformGL();
         ofPopStyle();
@@ -251,4 +275,5 @@ private:
     
     // each rod has polar coordinates, distance first, and then angle
     ofVec2f polarCoordinates;
+    ofVec2f polarCoordinatesNorm;   // normalized
 };

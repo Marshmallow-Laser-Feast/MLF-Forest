@@ -15,8 +15,9 @@ int Rod::heightMin;
 int Rod::heightMax;
 int Rod::diameterMin;
 int Rod::diameterMax;
-int Rod::color;
+//int Rod::brightness;
 
+bool Rod::displayLaser;
 int Rod::laserHeight;
 int Rod::laserDiameter;
 bool Rod::bLaserAlwaysOn;
@@ -25,4 +26,4 @@ float Rod::laserAlphaThreshold;
 //bool Rod::showDeviceIds = false;
 
 Rod::IDDisplayType Rod::idDisplayType = DISPLAY_PITCH_INDEX;
-bool Rod::bDisplaySelectedId = false;
+//bool Rod::bDisplaySelectedId = false;

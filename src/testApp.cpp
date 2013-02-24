@@ -30,9 +30,12 @@ vector<ofLight*> lights;
 ofFbo fbo;
 
 
-ofSoundPlayer sound;
-ofVec3f mouse3d;
-float mouseRadius = 75;
+//ofSoundPlayer sound;
+
+ofVec3f mouse3d;    // 3d coordinates of mouse
+float mouseRadius = 50; // radius of mouse cursor
+Rod *selectedRod = NULL; // rod the mouse is currently hitting
+
 ofxAssimpModelLoader venueModel;
 
 ofImage layoutImage;
@@ -128,8 +131,8 @@ void testApp::setup() {
         params.addInt("backgroundColor").setClamp(true).set(60);
         params.addInt("floorColor").setClamp(true).set(60);
         //        params.addBool("showPitchIndex").trackVariable(&Rod::showPitchIndex);
-		params.addNamedIndex("idDisplayType").setLabels(8, "None", "Pitch Index", "Device ID", "Index", "Polar Coordinates", "Radius", "Angle", "Name").trackVariable(&Rod::idDisplayType);
-        params.addBool("bDisplaySelectedId").trackVariable(&Rod::bDisplaySelectedId);
+		params.addNamedIndex("idDisplayType").setLabels(9, "None", "Pitch Index", "Device ID", "Index", "Polar Coordinates", "Polar Coordinates Norm", "Radius", "Angle", "Name").trackVariable(&Rod::idDisplayType);
+        params.addBool("bDisplaySelectedId");//.trackVariable(&Rod::bDisplaySelectedId);
 		
         params.startGroup("lighting"); {
             params.addBool("enabled");
@@ -169,12 +172,13 @@ void testApp::setup() {
         params.addInt("heightMax").setTooltip("maximum rod height (cm)").setRange(1, 1000).setClamp(true).set(300).trackVariable(&Rod::heightMax);
         params.addInt("diameterMin").setTooltip("minimum rod diamater (cm)").setRange(1, 50).setClamp(true).set(3).trackVariable(&Rod::diameterMin);
         params.addInt("diameterMax").setTooltip("maximum rod diamater (cm)").setRange(1, 50).setClamp(true).set(10).trackVariable(&Rod::diameterMax);;
-        params.addInt("color").setRange(0, 255).setClamp(true).set(60).trackVariable(&Rod::color);
+        params.addInt("color").setRange(0, 255).setClamp(true).set(60);//.trackVariable(&Rod::brightness);
         params.addInt("angleAmp").setRange(0, 90).setClamp(true).trackVariable(&Rod::angleAmp);
         params.addFloat("dampSpeed").setClamp(true).trackVariable(&Rod::dampSpeed);
 		
     } params.endGroup();
     params.startGroup("laser"); {
+        params.addBool("displayLaser").trackVariable(&Rod::displayLaser);
         params.addInt("height").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
         params.addInt("diameter").setRange(1, 50).setClamp(true).trackVariable(&Rod::laserDiameter);
         params.addBool("alwaysOn").trackVariable(&Rod::bLaserAlwaysOn);
@@ -378,11 +382,11 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
             }
         }
         
-        
+        float installationRadius = sqrt(installationSize.x * installationSize.x + installationSize.z * installationSize.z);
         for(int i=0; i<rods.size(); i++) {
             Rod &r = rods[i];
             r.move(randomness * ofVec3f(ofRandomf(), 0, ofRandomf()));
-            r.setup();
+            r.setup(installationRadius);
         }
         
         sort(rods.begin(), rods.end());
@@ -473,19 +477,26 @@ void updateCamera() {
 //}
 
 //--------------------------------------------------------------
-void checkRodCollisions(ofVec3f p, float radius) {
+vector<Rod*> checkRodCollisions(ofVec3f p, float radius) {
+    vector<Rod*> hitRods;
+    
     float outputPitchMult = params["sound.local.outputPitchMult"];
     float volumeVariance = params["sound.volumeVariance"];
     float retriggerThreshold = params["sound.retriggerThreshold"];
     int maxNoteCount = params["tuning.maxNoteCount"];
     float volumePitchMult = params["tuning.volumePitchMult"];
-    ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
+//    ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
     
     for(int i=0; i<rods.size(); i++) {
         Rod &r = rods[i];
-        if((p - r.getGlobalPosition()).lengthSquared() < radius * radius) r.setAmp(1);
+        if((p - r.getGlobalPosition()).lengthSquared() < radius * radius) {
+            r.setAmp(1);
+            hitRods.push_back(&r);
+        }
         //            r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
     }
+    
+    return hitRods;
 }
 
 
@@ -519,7 +530,7 @@ void updateRodLaserAnimation() {
         float retriggerThreshold = params["sound.retriggerThreshold"];
         int maxNoteCount = params["tuning.maxNoteCount"];
         float volumePitchMult = params["tuning.volumePitchMult"];
-        ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
+//        ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
         
         ofPixelsRef pixels = animationVideo.getPixelsRef();
         for(int i=0; i<rods.size(); i++) {
@@ -599,12 +610,12 @@ void updatePerformanceAnimation() {
 
 //--------------------------------------------------------------
 void checkAndInitSoundFile() {
-    msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("sound.local.file");
-    if(paramNamedIndex.hasChanged()) {
-        sound.loadSound(paramNamedIndex.getSelectedLabel());
-        sound.setMultiPlay(true);
-        sound.setLoop(false);
-    }
+//    msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("sound.local.file");
+//    if(paramNamedIndex.hasChanged()) {
+//        sound.loadSound(paramNamedIndex.getSelectedLabel());
+//        sound.setMultiPlay(true);
+//        sound.setLoop(false);
+//    }
 }
 
 //--------------------------------------------------------------
@@ -615,22 +626,21 @@ void updateRodTuning() {
     bool invert = params["tuning.invert"];
     int maxNoteCount = params["tuning.maxNoteCount"];
     int inputPitchOffset = params["tuning.inputPitchOffset"];
-    float halfInstallationLength =  installationSize.x/2;//length()/2;  // TODO: hack?
+//    float halfInstallationLength =  installationSize.x/2;//length()/2;  // TODO: hack?
     
     bool bRet = false;
     for(int i=0; i<rods.size(); i++) {
         Rod &r = rods[i];
-        float distanceToCenter = r.getPolarCoordinates().x;
-        float angle = r.getPolarCoordinates().y;
+        float distanceToCenter = r.getPolarCoordinatesNorm().x;
+        float angle = r.getPolarCoordinatesNorm().y;
         
         int pitchIndex = 0;
-        float distRatio = distanceToCenter / halfInstallationLength;
+        float distRatio = distanceToCenter;
         if(invert) distRatio = 1-distRatio;
         pitchIndex += distRatio * noteCountDistance;
-//        angle = fabsf(angle);
-        if(angle > 180) angle = 360 - angle;
-        if(distanceToCenter > 100) {  // hack to include radial only in rods not in center
-            pitchIndex += ofMap(angle, 0, 360, 0, noteCountRadial);
+        if(angle > 0.5) angle = 1.0 - angle;
+        if(distanceToCenter > 0.01) {  // hack to include radial only in rods not in center
+            pitchIndex += angle * noteCountRadial;
         }
         if(maxNoteCount > 0) {
             pitchIndex %= 2 * maxNoteCount;
@@ -650,6 +660,7 @@ void resetAll() {
     checkAndInitRodLayout(true);
     checkAndInitPerformers(true);
     checkAndInitFbo(true);
+    selectedRod = NULL;
 }
 
 //--------------------------------------------------------------
@@ -672,7 +683,6 @@ void sendRodOsc(bool bForce) {
         bSendRodPositionsOsc = bSendRodPositionsOsc || bForce;
         
         int volumePower = params["sound.osc.volumePower"];
-        float installationRadius = sqrt(installationSize.x * installationSize.x + installationSize.z * installationSize.z);
         
         ofxOscBundle b;
         for(int i=0; i<rods.size(); i++) {
@@ -694,19 +704,19 @@ void sendRodOsc(bool bForce) {
             b.clear();
             for(int i=0; i<rods.size(); i++) {
                 Rod &r = rods[i];
-                float distanceToCenter = r.getPolarCoordinates().x;
-                float angle = r.getPolarCoordinates().y;
+                float distanceToCenter = r.getPolarCoordinatesNorm().x;
+                float angle = r.getPolarCoordinatesNorm().y;
 
                 ofxOscMessage m;
                 m.setAddress("/forestPos");
                 m.addIntArg(i);
-                m.addFloatArg(angle / 360.0f);
+                m.addFloatArg(angle);
                 b.addMessage(m);
                 
                 m.clear();
                 m.setAddress("/forestCentre");
                 m.addIntArg(i);
-                m.addFloatArg(distanceToCenter / installationRadius);
+                m.addFloatArg(distanceToCenter);
                 b.addMessage(m);
             }
             oscSender->sendBundle(b);
@@ -749,6 +759,7 @@ void testApp::update(){
         Rod &r = rods[i];
         r.setLaser(0);
         r.fadeAmp();
+        r.color = ofColor((float)params["rods.color"]);
     }
     
     // update rod laser values based on animation pixel values (if animation loaded)
@@ -775,11 +786,15 @@ void testApp::update(){
 
 		for(int i=0; i<rods.size(); i++) {
 			Rod &r = rods[i];
+<<<<<<< HEAD
 			if(r.getDeviceId()==83) {
 //				printf("SDfklsjdf\n");
 			}
 			r.setAmp(MAX(r.getAmp(), rodCommunicator->getAmplitude( r.getDeviceId() )));
 //			r.setAmp(rodCommunicator->getAmplitude( r.getDeviceId() ));
+=======
+			r.setAmp(MAX(r.getAmp(), rodCommunicator->getAmplitude( r.getDeviceId() )));
+>>>>>>> origin/memo
 		}
 	}
 #endif
@@ -792,7 +807,16 @@ void testApp::update(){
         for(int j=0; j<performers.size(); j++) checkRodCollisions(performers[j].getGlobalPosition(), performers[j].affectRadius);
         
         // check mouse-rod collision
-        checkRodCollisions(mouse3d, mouseRadius);
+        vector<Rod*> hitRods = checkRodCollisions(mouse3d, mouseRadius);
+//        selectedRod = hitRods.size() ? hitRods[0] : selectedRod;//NULL;
+        
+//        for(int i=0; i<hitRods.size(); i++) hitRods[i]->color.set(255, 0, 0);
+        if(hitRods.size()) selectedRod = hitRods[0];
+    }
+    
+    if(selectedRod) {
+        selectedRod->color.set(255, 0, 0);
+        selectedRod->setLaser(1);
     }
 
 	
@@ -812,7 +836,11 @@ void testApp::update(){
 #endif
     
     
+<<<<<<< HEAD
 	cout << rods[83].getAmp() << endl;
+=======
+//	cout << rods[83].getAmp() << endl;
+>>>>>>> origin/memo
     
 	// send OSC
     bool bForce = params["sound.osc.forceSend"];
@@ -838,9 +866,9 @@ void drawFloor() {
     venueModel.drawFaces();
     
     ofSetColor(100, 0, 0);
-    ofLine(-floorWidth/2, 0, 0, floorWidth/2, 0, 0);
+    ofLine(-floorWidth/2, 5, 0, floorWidth/2, 5, 0);
     ofSetColor(0, 0, 100);
-    ofLine(0, 0, -floorLength/2, 0, 0, floorLength/2);
+    ofLine(0, 5, -floorLength/2, 5, 0, floorLength/2);
 }
 
 #ifdef DOING_SERIAL
@@ -957,6 +985,11 @@ void testApp::draw() {
     }
     ofSetColor(255);
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 2), ofGetWidth() - 100, 30);
+    
+    if(selectedRod && params["display.bDisplaySelectedId"]) {
+        ofDrawBitmapString(selectedRod->getInfoStr(), ofGetWidth() - 285, ofGetHeight()-90);
+    }
+    
 #ifdef DOING_SERIAL
 	drawSerialProgress();
 #endif
@@ -988,13 +1021,27 @@ void testApp::keyPressed(int key){
             easyCam.enableMouseInput();
             break;
             
+        case '>':
+        case '.':
+            if(selectedRod &&  selectedRod->getIndex() < rods.size()-1) selectedRod = &rods[selectedRod->getIndex()+1];
+            else selectedRod = &rods[0];
+            break;
+            
+        case '<':
+        case ',':
+            if(selectedRod && selectedRod->getIndex() > 0) selectedRod = &rods[selectedRod->getIndex()-1];
+            else selectedRod = &rods[rods.size()-1];
+            break;
+            
         case 'r':
             resetAll();
             break;
+            
 #ifdef DOING_SERIAL
 		case '\t':
 			showRodGui ^= true;
 			break;
+            
 		case '=':
 			rodCommunicator->reset();
 			rodMapper.reset();
@@ -1023,6 +1070,7 @@ void testApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
+    selectedRod = NULL;
 }
 
 //--------------------------------------------------------------
