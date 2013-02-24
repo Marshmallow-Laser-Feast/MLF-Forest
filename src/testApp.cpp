@@ -828,7 +828,7 @@ void testApp::update() {
 //        selectedRod = hitRods.size() ? hitRods[0] : selectedRod;//NULL;
         
 //        for(int i=0; i<hitRods.size(); i++) hitRods[i]->color.set(255, 0, 0);
-        if(hitRods.size()) selectedRod = hitRods[0];
+        if(hitRods.size() && ofGetMousePressed()) selectedRod = hitRods[0];
     }
     
     if(selectedRod) {
