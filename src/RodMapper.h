@@ -37,11 +37,13 @@ public:
 	
 	
 	int findDeviceIdForRod(Rod &rod);
-	void updateRodCommunicationMapping(vector<Rod> &rods);
+	
+    void updateRodCommunicationMapping(vector<Rod> &rods);
 	void updateRodsFromSerial(RodCommunicator *comms);
 	void loadRodMapFile();
 	void saveRodMapFile();
-	void setMapping(int blobId, int deviceId);
+	
+    void setMapping(int blobId, int deviceId);
 	
 	bool hasLoaded;
 };

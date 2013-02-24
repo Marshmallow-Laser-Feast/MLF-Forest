@@ -409,8 +409,8 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
             rods[i].setDeviceId(i); // HACK: replace this with correct map
         }
         
-        // TODO: load deviceId map
-        
+
+        Rod::loadDeviceIdToRodMap(rods);
         
         Performer::worldMin.set(-installationWidth/2, 0, -installationLength/2);
         Performer::worldMax.set( installationWidth/2, 0, installationLength/2);
@@ -993,7 +993,7 @@ void testApp::draw() {
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 2), ofGetWidth() - 100, 30);
     
     if(selectedRod && params["display.bDisplaySelectedId"]) {
-        ofDrawBitmapString(selectedRod->getInfoStr(), ofGetWidth() - 285, ofGetHeight()-90);
+        ofDrawBitmapString(selectedRod->getInfoStr(), ofGetWidth() - 285, ofGetHeight()-110);
     }
     
 #ifdef DOING_SERIAL
@@ -1029,6 +1029,7 @@ void testApp::keyPressed(int key){
     switch(key) {
         case 's':
             params.saveXmlValues();
+            Rod::saveDeviceIdToRodMap(rods);
             break;
             
         case 'l':
