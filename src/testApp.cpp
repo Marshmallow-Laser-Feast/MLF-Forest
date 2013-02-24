@@ -786,15 +786,7 @@ void testApp::update(){
 
 		for(int i=0; i<rods.size(); i++) {
 			Rod &r = rods[i];
-<<<<<<< HEAD
-			if(r.getDeviceId()==83) {
-//				printf("SDfklsjdf\n");
-			}
 			r.setAmp(MAX(r.getAmp(), rodCommunicator->getAmplitude( r.getDeviceId() )));
-//			r.setAmp(rodCommunicator->getAmplitude( r.getDeviceId() ));
-=======
-			r.setAmp(MAX(r.getAmp(), rodCommunicator->getAmplitude( r.getDeviceId() )));
->>>>>>> origin/memo
 		}
 	}
 #endif
@@ -835,12 +827,6 @@ void testApp::update(){
 	
 #endif
     
-    
-<<<<<<< HEAD
-	cout << rods[83].getAmp() << endl;
-=======
-//	cout << rods[83].getAmp() << endl;
->>>>>>> origin/memo
     
 	// send OSC
     bool bForce = params["sound.osc.forceSend"];
