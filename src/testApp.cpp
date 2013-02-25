@@ -190,7 +190,7 @@ void testApp::setup() {
         params.addFloat("dampSpeed").setClamp(true).trackVariable(&Rod::dampSpeed);
         params.addInt("showRodAmp").setRange(0, 200).setClamp(true);
         params.addFloat("selectedRodAmp").setClamp(true);
-                                             
+        
 		
     } params.endGroup();
     params.startGroup("laser"); {
@@ -255,6 +255,7 @@ void testApp::setup() {
     } params.endGroup();
     params.startGroup("tuning"); {
         params.addNamedIndex("scale").setLabels(scaleManager.scaleNames)/*.setMode(msa::controlfreak::ParameterNamedIndex::kList)*/.trackVariable(&scaleManager.currentIndex);
+        params.addBool("useIndex");
         params.addInt("noteCountWidth").setTooltip("how many notes are mapped from center to outer edge on width").setRange(0, 128).setClamp(true).set(8);
         params.addInt("noteCountLength").setTooltip("how many notes are mapped from center to outer edge on length").setRange(0, 128).setClamp(true).set(8);
         params.addInt("noteCountRadial").setTooltip("how many notes are mapped around the circumference").setRange(0, 128).setClamp(true).set(8);
@@ -271,7 +272,7 @@ void testApp::setup() {
     params.startGroup("comms"); {
         params.addBool("learnMode");
         params.addFloat("learnAmpThreshold").setClamp(true).set(0.5);
-
+        
 		params.addBool("forceLasersOn").set(false).trackVariable(&ForestSerialPort::forceLasersOn);
 		
 		params.addInt("param1")
@@ -422,7 +423,7 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
             rods[i].setDeviceId(i); // HACK: replace this with correct map
         }
         
-
+        
         Rod::loadDeviceIdToRodMap(rods);
         
         Performer::worldMin.set(-installationWidth/2, 0, -installationLength/2);
@@ -509,12 +510,12 @@ void updateCamera() {
 vector<Rod*> checkRodCollisions(ofVec3f p, float radius) {
     vector<Rod*> hitRods;
     
-    float outputPitchMult = params["sound.local.outputPitchMult"];
-    float volumeVariance = params["sound.volumeVariance"];
-    float retriggerThreshold = params["sound.retriggerThreshold"];
-    int maxNoteCount = params["tuning.maxNoteCount"];
-    float volumePitchMult = params["tuning.volumePitchMult"];
-//    ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
+    //    float outputPitchMult = params["sound.local.outputPitchMult"];
+    //    float volumeVariance = params["sound.volumeVariance"];
+    //    float retriggerThreshold = params["sound.retriggerThreshold"];
+    //    int maxNoteCount = params["tuning.maxNoteCount"];
+    //    float volumePitchMult = params["tuning.volumePitchMult"];
+    //    ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
     
     for(int i=0; i<rods.size(); i++) {
         Rod &r = rods[i];
@@ -554,12 +555,12 @@ void updateRodLaserAnimation() {
         
         animationVideo.update();
         
-        float outputPitchMult = params["sound.local.outputPitchMult"];
-        float volumeVariance = params["sound.volumeVariance"];
-        float retriggerThreshold = params["sound.retriggerThreshold"];
-        int maxNoteCount = params["tuning.maxNoteCount"];
-        float volumePitchMult = params["tuning.volumePitchMult"];
-//        ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
+        //        float outputPitchMult = params["sound.local.outputPitchMult"];
+        //        float volumeVariance = params["sound.volumeVariance"];
+        //        float retriggerThreshold = params["sound.retriggerThreshold"];
+        //        int maxNoteCount = params["tuning.maxNoteCount"];
+        //        float volumePitchMult = params["tuning.volumePitchMult"];
+        //        ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
         
         ofPixelsRef pixels = animationVideo.getPixelsRef();
         for(int i=0; i<rods.size(); i++) {
@@ -639,23 +640,24 @@ void updatePerformanceAnimation() {
 
 //--------------------------------------------------------------
 void checkAndInitSoundFile() {
-//    msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("sound.local.file");
-//    if(paramNamedIndex.hasChanged()) {
-//        sound.loadSound(paramNamedIndex.getSelectedLabel());
-//        sound.setMultiPlay(true);
-//        sound.setLoop(false);
-//    }
+    //    msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("sound.local.file");
+    //    if(paramNamedIndex.hasChanged()) {
+    //        sound.loadSound(paramNamedIndex.getSelectedLabel());
+    //        sound.setMultiPlay(true);
+    //        sound.setLoop(false);
+    //    }
 }
 
 //--------------------------------------------------------------
 void updateRodTuning() {
+    bool useIndex = params["tuning.useIndex"];
     ofVec3f noteCount(params["tuning.noteCountWidth"], 0, params["tuning.noteCountLength"]);
     int noteCountRadial = params["tuning.noteCountRadial"];
     int noteCountDistance = params["tuning.noteCountDistance"];
     bool invert = params["tuning.invert"];
     int maxNoteCount = params["tuning.maxNoteCount"];
     int inputPitchOffset = params["tuning.inputPitchOffset"];
-//    float halfInstallationLength =  installationSize.x/2;//length()/2;  // TODO: hack?
+    //    float halfInstallationLength =  installationSize.x/2;//length()/2;  // TODO: hack?
     
     bool bRet = false;
     for(int i=0; i<rods.size(); i++) {
@@ -664,6 +666,7 @@ void updateRodTuning() {
         float angle = r.getPolarCoordinatesNorm().y;
         
         int pitchIndex = 0;
+        if(useIndex) pitchIndex = r.getIndex();
         float distRatio = distanceToCenter;
         if(invert) distRatio = 1-distRatio;
         pitchIndex += distRatio * noteCountDistance;
@@ -673,7 +676,7 @@ void updateRodTuning() {
         }
         if(maxNoteCount > 0) {
             pitchIndex %= 2 * maxNoteCount;
-            if(pitchIndex >= maxNoteCount) pitchIndex = 2 * maxNoteCount - 1 - pitchIndex;  // mirror mod
+            if(pitchIndex >= maxNoteCount) pitchIndex = 2 * maxNoteCount - pitchIndex;  // mirror mod
         }
         pitchIndex += inputPitchOffset;
         if(maxNoteCount > 0) {
@@ -735,7 +738,7 @@ void sendRodOsc(bool bForce) {
                 Rod &r = rods[i];
                 float distanceToCenter = r.getPolarCoordinatesNorm().x;
                 float angle = r.getPolarCoordinatesNorm().y;
-
+                
                 ofxOscMessage m;
                 m.setAddress("/forestPos");
                 m.addIntArg(i);
@@ -811,9 +814,9 @@ void testApp::update() {
 #ifdef DOING_SERIAL
 	// don't talk to the lasers until
 	// the forest has been scanned.
-//	if(rodCommunicator->doneDiscovering()) {
-//		rodMapper.update(rodCommunicator, rods);
-//	}
+    //	if(rodCommunicator->doneDiscovering()) {
+    //		rodMapper.update(rodCommunicator, rods);
+    //	}
 	if(rodCommunicator->doneDiscovering()) {
         if(params["comms.learnMode"] && selectedRod) {
             float currentHighestAmp;
@@ -847,7 +850,7 @@ void testApp::update() {
         selectedRod->color.set(255, 0, 0);
         selectedRod->setLaser(1);
     }
-
+    
 	
 	
 	// set lasers based on amp
@@ -913,7 +916,7 @@ void drawSerialProgress() {
 
 //--------------------------------------------------------------
 void testApp::draw() {
-
+    
     glEnable(GL_DEPTH_TEST);
     ofEnableAlphaBlending();
     ofClear((int)params["display.backgroundColor"].getMappedTo(0, 255));
@@ -1026,7 +1029,7 @@ void testApp::draw() {
 	}
     
     drawSerialProgress();
-
+    
 #endif
 	
 }
@@ -1060,7 +1063,7 @@ void testApp::keyPressed(int key){
         case 'L':
             params["comms.learnMode"] = ! (bool) params["comms.learnMode"];
             break;
-
+            
         case '>':
         case '.':
             if(selectedRod &&  selectedRod->getIndex() < rods.size()-1) selectedRod = &rods[selectedRod->getIndex()+1];
