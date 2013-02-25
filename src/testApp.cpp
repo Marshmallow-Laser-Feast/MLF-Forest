@@ -840,10 +840,7 @@ void testApp::update() {
         
         // check mouse-rod collision
         vector<Rod*> hitRods = checkRodCollisions(mouse3d, mouseRadius);
-//        selectedRod = hitRods.size() ? hitRods[0] : selectedRod;//NULL;
-        
-//        for(int i=0; i<hitRods.size(); i++) hitRods[i]->color.set(255, 0, 0);
-        if(hitRods.size() && ofGetMousePressed()) selectedRod = hitRods[0];
+        if(hitRods.size() && ofGetMousePressed() && !ofGetKeyPressed()) selectedRod = hitRods[0];
     }
     
     if(selectedRod) {
