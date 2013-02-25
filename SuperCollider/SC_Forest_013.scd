@@ -45,7 +45,9 @@ s.waitForBoot({~funcStartSystem.value}, 100, {"couldn't boot".postln});
 
 // sound functions - add new rows at end to create more sound options (see template row)
 ~arrSoundFuncs = [
+    ["Sine", {arg freq, shape; SinOsc.ar(freq, 0) + (0 * shape);}],
 	["Sine + octave", {arg freq, shape; (1 - shape) * SinOsc.ar(freq, 0) + (shape * SinOsc.ar(freq * 2, 0));}],
+    ["Sine + Ringz(noise)", {arg freq, shape;  (1 - shape) * SinOsc.ar(freq, 0) + Ringz.ar(PinkNoise.ar(shape), freq); }],
 	["Sine + wobble", {arg freq, shape; Mix.new(SinOsc.ar([freq, freq * (1 + (shape * 0.01))], 0));}],
 	["Dust Ringz + density", {arg freq, shape;  Ringz.ar(Dust.ar(0.5 + (shape * 7), 0.5), freq, 2, 2) }],
 	["Sine Ringz + wobble", {arg freq, shape;  Ringz.ar(SinOsc.ar([freq, freq * (1 + (shape * 0.01))] * 0.6, 0, 0.03), freq, 0.3) }],
