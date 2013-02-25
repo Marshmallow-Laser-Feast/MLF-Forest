@@ -43,10 +43,7 @@ public:
 	
 	float getAmplitude(int deviceId);
 	
-<<<<<<< HEAD
-=======
     int findRodWithBiggestAmplitude(float &outAmplitude);
->>>>>>> master
 
 	// draws debug info
 	void draw();
