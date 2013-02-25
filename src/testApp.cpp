@@ -379,7 +379,7 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
             greyImage.allocate(layoutImage.getWidth(), layoutImage.getHeight());
             greyImage = colorImage;
             
-            greyImage.threshold(50);
+            greyImage.threshold(10);
             
             layoutImageContours.findContours(greyImage, 0, greyImage.getWidth() * greyImage.getHeight(), 100000, false);
             

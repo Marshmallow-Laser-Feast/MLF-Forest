@@ -120,7 +120,7 @@ public:
     
     //--------------------------------------------------------------
     float getSortScore() const {
-        return round(polarCoordinatesNorm.x * 100) * 10000 + round(polarCoordinates.y);
+        return floor(polarCoordinates.x / 100.0) * 1000000 + round(polarCoordinates.y);
     }
 
 
