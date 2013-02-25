@@ -89,7 +89,9 @@ void RodCommunicator::draw() {
 	string report = "";
 	report += "# rods connected: " + ofToString(totalRodCount) + "\n";
 	report += "Update Rate:	     " + ofToString(updateRate,1) + " Hz\n";
-	ofBackground(0,0,0);
+//	ofBackground(0,0,0);
+    ofSetColor(0, 100);
+    ofRect(0, 0, ofGetWidth(), ofGetHeight());
 	ofSetHexColor(0xFFFFFF);
 	ofDrawBitmapString(report, xOffset, 30);
 	for(int i = 0; i < ports.size(); i++) {
@@ -109,10 +111,29 @@ float RodCommunicator::getAmplitude(int deviceId) {
 	// TODO: this - actually I think this is done
 //	return ofGetMousePressed()?1:0;
 	if(ForestSerialPort::allRodInfos.find(deviceId)!=ForestSerialPort::allRodInfos.end()) {
-		return ForestSerialPort::allRodInfos[deviceId]->rawData.z/90.f;
+        
+		return ForestSerialPort::allRodInfos[deviceId]->getAmplitude();
 	}
 	return 0;
 }
+
+int RodCommunicator::findRodWithBiggestAmplitude(float &outAmplitude) {
+    
+	map<int,RodInfo*>::iterator it = ForestSerialPort::allRodInfos.begin();
+    float maxAmp = 0;
+    int maxDeviceId = -1;
+    for(; it != ForestSerialPort::allRodInfos.end(); it++){
+        if((*it).second->getAmplitude()>maxAmp) {
+            maxAmp = (*it).second->getAmplitude();
+            maxDeviceId = (*it).first;
+        }
+        
+    }
+    outAmplitude = maxAmp;
+    return maxDeviceId;
+}
+
+// pair device/rod id
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS

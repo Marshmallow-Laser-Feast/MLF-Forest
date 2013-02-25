@@ -173,7 +173,7 @@ public:
 	void setRawData(const RawAccelerometerData &data);
 	
 	int processRawAccelerometerData(int x, int z);
-
+    float getAmplitude();
 
 	int lastX;
 	int lastZ;

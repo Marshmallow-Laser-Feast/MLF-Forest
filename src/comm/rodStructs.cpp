@@ -119,10 +119,30 @@ void RodInfo::setRawData(const RawAccelerometerData &data) {
 	
 	
 	motion = processRawAccelerometerData(data.x, data.y);
+<<<<<<< HEAD
 
 	if(motion!=motion || motion>100) resetMotion();
+=======
+    
+	if(motion!=motion || motion>100) resetMotion();
+
+    
+    
+>>>>>>> master
 	//ForestSerialPort::setLaser(id, motion>0);
 	rawData.z = motion;
 	status = data.status;
 	// do yer filterin' ere innit.
+<<<<<<< HEAD
 }
+=======
+}
+
+
+float RodInfo::getAmplitude() {
+    float signal = rawData.z/90.f;
+    signal *= ForestSerialPort::ampGain;
+    signal = ofClamp(signal, 0, 1);
+    return signal;
+}
+>>>>>>> master

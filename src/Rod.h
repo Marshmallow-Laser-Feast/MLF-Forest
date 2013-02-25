@@ -42,6 +42,9 @@ public:
     static bool bLaserAlwaysOn;
     static float laserAlphaThreshold;
     
+    static map<int,Rod*> deviceIdToRod;
+
+    
 	//--------------------------------------------------------------
     void setup(float installationRadius) {
         heightNorm = ofRandomuf();
@@ -123,6 +126,8 @@ public:
     //--------------------------------------------------------------
     int setDeviceId(int deviceId) {
         this->deviceId = deviceId;
+        deviceIdToRod[deviceId] = this;
+        printf("Rod::setDeviceId : %i for index %i\n", deviceId, index);
     }
     
     //--------------------------------------------------------------
@@ -170,10 +175,15 @@ public:
         s += "pitchIndex: " + ofToString(pitchIndex) + "\n";
         s += "polarCoordinates: " + ofToString(polarCoordinates.x, 2) + ", " + ofToString(polarCoordinates.y, 2) + "\n";
         s += "polarCoordinatesNorm: " + ofToString(polarCoordinatesNorm.x, 2) + ", " + ofToString(polarCoordinatesNorm.y, 2) + "\n";
-        s += "sortScore: " + ofToString(getSortScore(), 2);
+        s += "sortScore: " + ofToString(getSortScore(), 2) + "\n";
+        s += "amp: " + ofToString(getAmp()) + "\n";
         return s;
     }
     
+    
+    static void loadDeviceIdToRodMap(vector<Rod> &rods);
+    static void saveDeviceIdToRodMap(vector<Rod> &rods);
+
     //--------------------------------------------------------------
     void draw() {
         height = ofLerp(heightMin, heightMax, heightNorm);

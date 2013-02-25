@@ -15,6 +15,7 @@
 		484278492f1de95152e5d98140e05c1c /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = d084e33ad2553757fce058cac4724646 /* tinyxml.cpp */; };
 		4bef550a42ff220f1601eda371051eec /* OscOutboundPacketStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = c95dcfe1d82990d5d52e81f7a1f8592c /* OscOutboundPacketStream.cpp */; };
 		51250bd1e6b81cc30373c207df79d41f /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = c1504e910301310523fd1651f78fddea /* ofxXmlSettings.cpp */; };
+		5BAB48B216DA826B00BE91AF /* libftd2xx.1.2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BAB48B116DA826B00BE91AF /* libftd2xx.1.2.2.dylib */; };
 		5bee728c7c78a5a1ed28158820afda6f /* OscPrintReceivedElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = e7ef19f959fe848c6782a9a4c248b109 /* OscPrintReceivedElements.cpp */; };
 		5c8a7b2dbf0e393ad3d8bd6457a17cc8 /* ofxCvColorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86bf4d7f56cdce21f5de3bc9e3e8ccdb /* ofxCvColorImage.cpp */; };
 		5e324baaadb520016671016423601165 /* IpEndpointName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71b3fc362793b42604f475c88431873d /* IpEndpointName.cpp */; };
@@ -85,7 +86,6 @@
 		EABA2F7C16D675E500EAE855 /* RodCommunicator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EABA2F7A16D675E500EAE855 /* RodCommunicator.cpp */; };
 		EABA2F7F16D6768D00EAE855 /* ForestSerialPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EABA2F7D16D6768D00EAE855 /* ForestSerialPort.cpp */; };
 		EABA2F8116D678F400EAE855 /* D2xxSerial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EABA2F8016D678F400EAE855 /* D2xxSerial.cpp */; };
-		EABA2F8316D67B1300EAE855 /* libftd2xx.1.1.10.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EABA2F8216D67B1300EAE855 /* libftd2xx.1.1.10.dylib */; };
 		baa357339c21bdd375cbcbcb2d39f4a4 /* OscReceivedElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6b9d1c11adf484c84ac900b6ff723f6d /* OscReceivedElements.cpp */; };
 		bd427589c66140293166b60f99865dbf /* ofxCvGrayscaleImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 541d8623c91350755549942e5ae29b2f /* ofxCvGrayscaleImage.cpp */; };
 		c0c2a5b38c59c954945da9e051f9e8ec /* ofxCvFloatImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67d66405ae77ad4fd1bb32e8037eb2f2 /* ofxCvFloatImage.cpp */; };
@@ -179,6 +179,7 @@
 		541d8623c91350755549942e5ae29b2f /* ofxCvGrayscaleImage.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxCvGrayscaleImage.cpp; path = ../../../openFrameworks/addons/ofxOpenCv/src/ofxCvGrayscaleImage.cpp; sourceTree = SOURCE_ROOT; };
 		55b71cee2589cddd6e49c1682cac4893 /* aiPostProcess.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = aiPostProcess.h; path = ../../../openFrameworks/addons/ofxAssimpModelLoader/libs/assimp/include/aiPostProcess.h; sourceTree = SOURCE_ROOT; };
 		59da32dff8a4c17e727fc434dc0cff87 /* OscPrintReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscPrintReceivedElements.h; path = ../../../openFrameworks/addons/ofxOsc/libs/oscpack/src/osc/OscPrintReceivedElements.h; sourceTree = SOURCE_ROOT; };
+		5BAB48B116DA826B00BE91AF /* libftd2xx.1.2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libftd2xx.1.2.2.dylib; path = ../../../../../../../usr/local/lib/libftd2xx.1.2.2.dylib; sourceTree = "<group>"; };
 		5a910c26908014c78cf64af92df92086 /* aiColor4D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = aiColor4D.h; path = ../../../openFrameworks/addons/ofxAssimpModelLoader/libs/assimp/include/aiColor4D.h; sourceTree = SOURCE_ROOT; };
 		5bdeece2ba7823ea7748a7a259f1b782 /* core.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = core.hpp; path = ../../../openFrameworks/addons/ofxOpenCv/libs/opencv/include/opencv2/core/core.hpp; sourceTree = SOURCE_ROOT; };
 		5cfa9e2eb94256e6026815533c93afc7 /* tracking.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = tracking.hpp; path = ../../../openFrameworks/addons/ofxOpenCv/libs/opencv/include/opencv2/video/tracking.hpp; sourceTree = SOURCE_ROOT; };
@@ -383,7 +384,6 @@
 		EABA2F7D16D6768D00EAE855 /* ForestSerialPort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ForestSerialPort.cpp; sourceTree = "<group>"; };
 		EABA2F7E16D6768D00EAE855 /* ForestSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForestSerialPort.h; sourceTree = "<group>"; };
 		EABA2F8016D678F400EAE855 /* D2xxSerial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = D2xxSerial.cpp; sourceTree = "<group>"; };
-		EABA2F8216D67B1300EAE855 /* libftd2xx.1.1.10.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libftd2xx.1.1.10.dylib; path = ../../../../../../usr/local/lib/libftd2xx.1.1.10.dylib; sourceTree = "<group>"; };
 		EABA2F8416D699C100EAE855 /* rodStructs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rodStructs.h; sourceTree = "<group>"; };
 		a0dbf44296f69209d643987574866d8f /* tinyxml.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = tinyxml.h; path = ../../../openFrameworks/addons/ofxXmlSettings/libs/tinyxml.h; sourceTree = SOURCE_ROOT; };
 		a2620df90fd137d3a35f394485f13bf4 /* legacy.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = legacy.hpp; path = ../../../openFrameworks/addons/ofxOpenCv/libs/opencv/include/opencv2/legacy/legacy.hpp; sourceTree = SOURCE_ROOT; };
@@ -451,8 +451,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BAB48B216DA826B00BE91AF /* libftd2xx.1.2.2.dylib in Frameworks */,
 				EA91AABE16D796690041CA34 /* CoreMIDI.framework in Frameworks */,
-				EABA2F8316D67B1300EAE855 /* libftd2xx.1.1.10.dylib in Frameworks */,
 				E7F985F815E0DEA3003869B5 /* Accelerate.framework in Frameworks */,
 				E7E077E815D3B6510020DFD4 /* QTKit.framework in Frameworks */,
 				E4EB6799138ADC1D00A09F29 /* GLUT.framework in Frameworks */,
@@ -817,8 +817,8 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				5BAB48B116DA826B00BE91AF /* libftd2xx.1.2.2.dylib */,
 				EA91AABD16D796690041CA34 /* CoreMIDI.framework */,
-				EABA2F8216D67B1300EAE855 /* libftd2xx.1.1.10.dylib */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
