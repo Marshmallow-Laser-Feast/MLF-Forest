@@ -9,7 +9,7 @@
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="display">
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="backgroundColor" value="45"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="floorColor" value="40"></Parameter>
-            <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="idDisplayType" value="2"></Parameter>
+            <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="idDisplayType" value="1"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="bDisplaySelectedId" value="1"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="lighting">
                 <Parameter type="N3msa12controlfreak13ParameterBoolE" name="enabled" value="1"></Parameter>
@@ -52,9 +52,9 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="diameterMax" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="color" value="46"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="angleAmp" value="1"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="dampSpeed" value="0.046785712"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="dampSpeed" value="0.026785715"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="showRodAmp" value="83"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="selectedRodAmp" value="0.009058342"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="selectedRodAmp" value="0.000000000"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="laser">
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="displayLaser" value="1"></Parameter>
@@ -98,32 +98,20 @@
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="outputPitchMult" value="1.000000000"></Parameter>
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="volumePower" value="2"></Parameter>
                 <Parameter type="N3msa12controlfreak13ParameterBoolE" name="forceSend" value="0"></Parameter>
-                <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="60"></Parameter>
+                <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="0"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="scale" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="noteCountWidth" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="noteCountLength" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="noteCountRadial" value="20"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="noteCountRadial" value="30"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="noteCountDistance" value="7"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="inputPitchOffset" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="maxNoteCount" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="volumePitchMult" value="0.000000000"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="invert" value="0"></Parameter>
-        </Parameter>
-        <Parameter type="N3msa12controlfreak14ParameterGroupE" name="comms">
-            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="learnMode" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="learnAmpThreshold" value="0.482142866"></Parameter>
-            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="forceLasersOn" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="param1" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="param2" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="param3" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipOverTimeConstant" value="10"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipThreshold" value="245"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserTimeoutValue" value="255"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserHoldoff" value="10"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="ampGain" value="2.008928537"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="randomness" value="0.010000000"></Parameter>
         </Parameter>
     </Parameter>
 </ofxMSAControlFreak>

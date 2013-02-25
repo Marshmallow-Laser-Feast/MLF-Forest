@@ -251,6 +251,7 @@ void testApp::setup() {
         params.addInt("maxNoteCount").setRange(0, 50).setClamp(true).set(0);
         params.addFloat("volumePitchMult").setTooltip("make higher sounds lower volume").setClamp(true);
         params.addBool("invert").setTooltip("invert pitch relationship from out to in");
+        params.addFloat("randomness").setClamp(true);
     } params.endGroup();
     
     
@@ -740,12 +741,15 @@ void sendRodOsc(bool bForce) {
         
         if(bSendRodTuningOsc) {
             b.clear();
+            float freqRandomness = params["tuning.randomness"];
             for(int i=0; i<rods.size(); i++) {
                 Rod &r = rods[i];
                 ofxOscMessage m;
                 m.setAddress("/forestFreq");
                 m.addIntArg(i);
-                m.addFloatArg(scaleManager.currentFreq(r.getPitchIndex()) * outputPitchMult);
+                float freq = scaleManager.currentFreq(r.getPitchIndex()) * outputPitchMult;
+                if(freqRandomness) freq *= ofRandom(1-freqRandomness/2.0f, 1+freqRandomness/2.0f);
+                m.addFloatArg(freq);
                 b.addMessage(m);
             }
             oscSender->sendBundle(b);
