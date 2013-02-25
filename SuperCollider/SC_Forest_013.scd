@@ -19,17 +19,16 @@ e.g message: ['/forestAmp", 15, 0.33] means set the amp of rod 15 to 0.33
 ~recChannels = 2;  // default is stereo recording
 ~recSampleFormat = "int24";   // can also be "int16" or "float"
 
-~globalSoundShapeInit = 0.2;
-~globalVolumeInit = 0.5;
-
 ~windowTitle = "Forest";
 
-
-~soundSelectionIndex = 4;
+~soundSelectionIndex = 2;
 ~panSelectionIndex = 0;
 ~synthsRunning = false;
 ~globalVolumeBus = Bus.control(s, 1);
 ~globalSoundShapeBus = Bus.control(s, 2);
+
+~globalSoundShapeInit = 0.2;
+~globalVolumeInit = 0.5;
 
 
 
