@@ -71,7 +71,14 @@ public:
     
     //--------------------------------------------------------------
     void updateName() {
-        
+        if(index == 0) name = "O";
+        else if(index <= 10) name = "A" + ofToString(index);
+        else if(index <= 30) name = "B" + ofToString(index - 10);
+        else if(index <= 60) name = "C" + ofToString(index - 30);
+        else if(index <= 90) name = "D" + ofToString(index - 60);
+        else if(index <= 120) name = "E" + ofToString(index - 90);
+        else if(index <= 150) name = "F" + ofToString(index - 120);
+        else name = "NA";
     }
     
     //--------------------------------------------------------------
@@ -127,6 +134,7 @@ public:
     //--------------------------------------------------------------
     void setIndex(int index) {
         this->index = index;
+        updateName();
     }
 
     //--------------------------------------------------------------
@@ -242,7 +250,7 @@ public:
                     ofSetColor(0, 100);
                     ofDrawBitmapString(ofToString(pitchIndex), 30, 0);
                 } else if(idDisplayType==DISPLAY_NAME) {
-                    ofSetColor(0, 100);
+                    ofSetColor(255);
                     ofDrawBitmapString(name, 30, 0);
                 } else if(idDisplayType==DISPLAY_POLAR_COORDS) {
                     ofSetColor(0, 100);
