@@ -263,6 +263,7 @@ void testApp::setup() {
     params.startGroup("tuning"); {
         params.addNamedIndex("scale").setLabels(scaleManager.scaleNames)/*.setMode(msa::controlfreak::ParameterNamedIndex::kList)*/.trackVariable(&scaleManager.currentIndex);
         params.addBool("useIndex");
+        params.addFloat("indexMultipler").setRange(0, 10).setClamp(true).setIncrement(0.1).setSnap(true);
         params.addInt("noteCountWidth").setTooltip("how many notes are mapped from center to outer edge on width").setRange(0, 128).setClamp(true).set(8);
         params.addInt("noteCountLength").setTooltip("how many notes are mapped from center to outer edge on length").setRange(0, 128).setClamp(true).set(8);
         params.addInt("noteCountRadial").setTooltip("how many notes are mapped around the circumference").setRange(0, 128).setClamp(true).set(8);
@@ -272,7 +273,8 @@ void testApp::setup() {
         params.addInt("subbassDivider").setRange(1, 8).setClamp(true);
         params.addFloat("volumePitchMult").setTooltip("make higher sounds lower volume").setClamp(true);
         params.addBool("invert").setTooltip("invert pitch relationship from out to in");
-        params.addFloat("randomness").setClamp(true);
+        params.addInt("noteRandomness").setTooltip("amount of randomness in note number").setClamp(true).setRange(0, 20);
+        params.addFloat("freqRandomness").setTooltip("amount of randomness in frequency (%)").setClamp(true);
     } params.endGroup();
     
     
@@ -680,12 +682,14 @@ void checkAndInitSoundFile() {
 //--------------------------------------------------------------
 void updateRodTuning() {
     bool useIndex = params["tuning.useIndex"];
+    float indexMultipler = params["tuning.indexMultipler"];
     ofVec3f noteCount(params["tuning.noteCountWidth"], 0, params["tuning.noteCountLength"]);
     int noteCountRadial = params["tuning.noteCountRadial"];
     int noteCountDistance = params["tuning.noteCountDistance"];
     bool invert = params["tuning.invert"];
     int maxNoteCount = params["tuning.maxNoteCount"];
     int inputPitchOffset = params["tuning.inputPitchOffset"];
+    int noteRandomness = params["tuning.noteRandomness"];
     //    float halfInstallationLength =  installationSize.x/2;//length()/2;  // TODO: hack?
     
     bool bRet = false;
@@ -695,7 +699,8 @@ void updateRodTuning() {
         float angle = r.getPolarCoordinatesNorm().y;
         
         int pitchIndex = 0;
-        if(useIndex) pitchIndex = r.getIndex();
+        if(noteRandomness) pitchIndex += noteRandomness * r.getPitchIndexOffset();
+        if(useIndex) pitchIndex += r.getIndex() * indexMultipler;
         float distRatio = distanceToCenter;
         if(invert) distRatio = 1-distRatio;
         pitchIndex += distRatio * noteCountDistance;
@@ -704,8 +709,11 @@ void updateRodTuning() {
             pitchIndex += angle * noteCountRadial;
         }
         if(maxNoteCount > 0) {
+            if(pitchIndex < 0) pitchIndex += maxNoteCount;
             pitchIndex %= 2 * maxNoteCount;
             if(pitchIndex >= maxNoteCount) pitchIndex = 2 * maxNoteCount - pitchIndex;  // mirror mod
+        } else {
+            if(pitchIndex < 0) pitchIndex = 0;
         }
         pitchIndex += inputPitchOffset;
         if(maxNoteCount > 0) {
@@ -785,7 +793,7 @@ void sendRodOsc(bool bForce) {
         
         if(bSendRodTuningOsc) {
             b.clear();
-            float freqRandomness = params["tuning.randomness"];
+            float freqRandomness = params["tuning.freqRandomness"];
             for(int i=0; i<rods.size(); i++) {
                 Rod &r = rods[i];
                 ofxOscMessage m;

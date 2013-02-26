@@ -60,6 +60,7 @@ public:
     void setup(float installationRadius) {
         heightNorm = ofRandomuf();
         radiusNorm = ofRandomuf();
+        pitchIndexOffset = ofRandomf();
         amp = 0;
         laserAlpha = 0;
         polarCoordinates.x = getPosition().length();
@@ -164,6 +165,12 @@ public:
     int getPitchIndex() const {
         return pitchIndex;
     }
+    
+    //--------------------------------------------------------------
+    float getPitchIndexOffset() const {
+        return pitchIndexOffset;
+    }
+
     
     //--------------------------------------------------------------
     void setAmp(float amp) {
@@ -280,6 +287,7 @@ public:
     
 private:
     int pitchIndex;
+    float pitchIndexOffset; // -1...1 random offset for pitch note (multiplied by global)
     
     float laserAlpha;
     
