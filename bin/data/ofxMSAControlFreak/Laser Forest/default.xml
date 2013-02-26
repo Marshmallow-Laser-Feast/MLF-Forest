@@ -9,7 +9,7 @@
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="display">
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="backgroundColor" value="45"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="floorColor" value="40"></Parameter>
-            <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="idDisplayType" value="8"></Parameter>
+            <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="idDisplayType" value="1"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="bDisplaySelectedId" value="1"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="lighting">
                 <Parameter type="N3msa12controlfreak13ParameterBoolE" name="enabled" value="1"></Parameter>
@@ -110,6 +110,7 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="noteCountDistance" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="inputPitchOffset" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="maxNoteCount" value="16"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="subbassDivider" value="2"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="volumePitchMult" value="0.000000000"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="invert" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="randomness" value="0.010000000"></Parameter>

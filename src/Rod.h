@@ -71,13 +71,13 @@ public:
     
     //--------------------------------------------------------------
     void updateName() {
-        if(index == 0) name = "O";
-        else if(index <= 10) name = "A" + ofToString(index);
-        else if(index <= 30) name = "B" + ofToString(index - 10);
-        else if(index <= 60) name = "C" + ofToString(index - 30);
-        else if(index <= 90) name = "D" + ofToString(index - 60);
-        else if(index <= 120) name = "E" + ofToString(index - 90);
-        else if(index <= 150) name = "F" + ofToString(index - 120);
+        if(index == 0) name = "A";
+        else if(index <= 10) name = "B" + ofToString(index);
+        else if(index <= 30) name = "C" + ofToString(index - 10);
+        else if(index <= 60) name = "D" + ofToString(index - 30);
+        else if(index <= 90) name = "E" + ofToString(index - 60);
+        else if(index <= 120) name = "F" + ofToString(index - 90);
+        else if(index <= 150) name = "G" + ofToString(index - 120);
         else name = "NA";
     }
     
