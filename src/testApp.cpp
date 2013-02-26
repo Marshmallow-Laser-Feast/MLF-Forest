@@ -57,6 +57,8 @@ ofxCvContourFinder layoutImageContours;
 ofVideoPlayer animationVideo;
 ofxCvContourFinder animationVideoContours;
 
+ofSoundPlayer messageAudio;
+
 
 ofVec3f installationSize;
 
@@ -349,6 +351,9 @@ void testApp::setup() {
     //    cameras[1]->enableOrtho();
     
     cameras[2] = new ofCamera;
+    
+    
+    messageAudio.loadSound("message.wav");
     
     
     venueModel.loadModel("3d/venue.dae");
@@ -1104,6 +1109,12 @@ void testApp::keyPressed(int key){
         case 'r':
             resetAll();
             break;
+            
+        case 'M':
+            messageAudio.setPosition(0);
+            messageAudio.play();
+            break;
+            
             
 #ifdef DOING_SERIAL
 		case '\t':
