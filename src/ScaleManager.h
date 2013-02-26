@@ -78,17 +78,30 @@ public:
     //--------------------------------------------------------------
     void setup() {
         scaleNames.push_back("hicaz kar");
+        scaleNames.push_back("zurguleli hicaz");
         scaleNames.push_back("chromatic");
-        scaleNames.push_back("weird");
+        scaleNames.push_back("harmonic");
+        scaleNames.push_back("pentatonic");
+        scaleNames.push_back("minor");
+        scaleNames.push_back("memo's special");
+
         
 #ifdef USE_SAMPLE
-        static float scale1[] = { 220.000, 293.664, 311.126, 369.994, 391.995, 440.000, 466.163, 554.365, 587.329 }; // hicaz kar
-        static float scale6[] = { 195.998, 207.652, 220.000, 233.082, 246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228 }; // chromatic
-        static float scale7[] = { 200, 200+200*1/8, 200+200*1/4, 200+200*1/2 }; // weird
+        static float scale1[] = { 220.000, 293.664, 311.126, 369.994, 391.995, 440.000, 466.163, 554.365, 587.329 }; // hicaz kar: A D D# F# G A A# C# D
+        static float scale2[] = { 220.000, 233.082, 277.183, 293.665, 329.628, 349.228, 415.305 }; // zurguleli hicaz: A A# C# D E F G#
+        static float scale3[] = { 220.000, 233.082, 246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305 }; // chromatic
+        static float scale4[] = { 220, 220 * 1.1, 220 * 1.2, 220 * 1.5, 220 * 1.75}; // harmonic
+        static float scale5[] = { 220, 261.626, 293.665, 329.628, 391.995}; // pentatonic
+        static float scale6[] = { 220.000, 246.942, 261.626, 293.665, 329.628, 349.228, 391.995 }; // minor
+        static float scale7[] = { 220.000, 261.626, 293.665, 329.628, 349.228, 391.995 }; // minor
         
-        add("weird", scale7, 4);
-        add("chromatic", scale6, 11);
         add("hicaz kar", scale1, 9);
+        add("zurguleli hicaz", scale2, 7);
+        add("chromatic", scale3, 11);
+        add("harmonic", scale4, 5);
+        add("pentatonic", scale5, 5);
+        add("minor", scale6, 7);
+        add("memo's special", scale7, 6);
 #endif
         
         
