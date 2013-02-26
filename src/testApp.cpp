@@ -230,9 +230,14 @@ void testApp::setup() {
             params.addBool("loop");
             params.addFloat("speed").setRange(0, 4).setClamp(true).setSnap(true);
         } params.endGroup();
-        params.addNamedIndex("performance").setTooltip("use a black & white PJPG quicktime for performance animation");
-        params.addInt("blurAmount").setClamp(true).setRange(1, 33).setIncrement(2).setSnap(true);
-        params.addInt("threshold").setRange(0, 255).setClamp(true);
+        params.startGroup("performance"); {
+            params.addNamedIndex("file").setTooltip("use a black & white PJPG quicktime for performance animation");
+            params.addInt("blurAmount").setClamp(true).setRange(1, 33).setIncrement(2).setSnap(true);
+            params.addInt("threshold").setRange(0, 255).setClamp(true);
+            params.addFloat("speed").setRange(0, 4).setClamp(true).setSnap(true);
+            params.addBool("play");
+            params.addFloat("time").setIncrement(1).setClamp(true);
+        } params.endGroup();
     } params.endGroup();
     
     params.startGroup("sound"); {
@@ -323,7 +328,7 @@ void testApp::setup() {
     updateFilesGroup("sound.local.file", "audio", false);
     updateFilesGroup("layout.image", "layout", true);
     updateFilesGroup("animation.laser.file", "animations/laser", true);
-    updateFilesGroup("animation.performance", "animations/performance", true);
+    updateFilesGroup("animation.performance.file", "animations/performance", true);
     
     params.loadXmlValues();
     
@@ -538,8 +543,8 @@ void updateRodLaserAnimation() {
         if((int)paramNamedIndex == 0) {
             animationVideo.close();
         } else {
-            params["animation.performance"] = 0;
-            params["animation.performance"].clearChanged();
+            params["animation.performance.file"] = 0;
+            params["animation.performance.file"].clearChanged();
             params["performers.count"] = 0;
             animationVideo.loadMovie(paramNamedIndex.getSelectedLabel());
             animationVideo.setLoopState(params["animation.laser.loop"] ? OF_LOOP_NORMAL : OF_LOOP_NONE);
@@ -579,7 +584,7 @@ void updateRodLaserAnimation() {
 
 //--------------------------------------------------------------
 void updatePerformanceAnimation() {
-    msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.performance");
+    msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.performance.file");
     if(paramNamedIndex.hasChanged()) {
         if((int)paramNamedIndex == 0) {
             animationVideo.close();
@@ -590,8 +595,11 @@ void updatePerformanceAnimation() {
             
             //            animationVideo.loadMovie("animations/laser/" + paramNamedIndex.getSelectedLabel());
             animationVideo.loadMovie(paramNamedIndex.getSelectedLabel());
-            animationVideo.setLoopState(OF_LOOP_NORMAL);
-            animationVideo.play();
+            animationVideo.setLoopState(OF_LOOP_NONE);
+            animationVideo.setSpeed(params["animation.performance.speed"]);
+
+            if(params["animation.performance.play"]) animationVideo.play();
+            params["animation.performance.time"].setRange(0, animationVideo.getDuration());
         }
     }
     
@@ -600,7 +608,22 @@ void updatePerformanceAnimation() {
     if(animationVideo.isLoaded() && (int)paramNamedIndex > 0) {
         Performer::updateFromAnimation = true;
         
+        if(params["animation.performance.speed"].hasChanged()) animationVideo.setSpeed(params["animation.performance.speed"]);
+
+        if(params["animation.performance.play"].hasChanged()) {
+            if(params["animation.performance.play"]) animationVideo.play();
+            else animationVideo.stop();
+        }
+        
+        if(params["animation.performance.play"]) {
+            params["animation.performance.time"] = animationVideo.getPosition() * animationVideo.getDuration();
+        } else {
+            animationVideo.setPosition((float)params["animation.performance.time"] / animationVideo.getDuration());
+        }
+        
         animationVideo.update();
+        //        params["animation.performance.time"].clearChanged();
+        //        if(params["animation.performance.time"]
         
         ofxCvColorImage colorImage;
         colorImage.allocate(animationVideo.getWidth(), animationVideo.getHeight());
@@ -610,8 +633,8 @@ void updatePerformanceAnimation() {
         greyImage.allocate(animationVideo.getWidth(), animationVideo.getHeight());
         greyImage = colorImage;
         
-        greyImage.blur(params["animation.blurAmount"]);
-        greyImage.threshold(params["animation.threshold"]);
+        greyImage.blur(params["animation.performance.blurAmount"]);
+        greyImage.threshold(params["animation.performance.threshold"]);
         
         animationVideoContours.findContours(greyImage, 0, greyImage.getWidth() * greyImage.getHeight(), 100000, false);
         
