@@ -640,7 +640,7 @@ void updatePerformanceAnimation() {
         greyImage.allocate(animationVideo.getWidth(), animationVideo.getHeight());
         greyImage = colorImage;
         
-        greyImage.blur(params["animation.performance.blurAmount"]);
+//        greyImage.blur(params["animation.performance.blurAmount"]);
         greyImage.threshold(params["animation.performance.threshold"]);
         
         animationVideoContours.findContours(greyImage, 0, greyImage.getWidth() * greyImage.getHeight(), 100000, false);
@@ -661,6 +661,8 @@ void updatePerformanceAnimation() {
             p.setGlobalPosition(x, 0, z);
             p.heightNorm = 0.5;
             p.height = ofLerp(heightMin, heightMax, p.heightNorm);
+            p.color = animationVideo.getPixelsRef().getColor(blob.centroid.x, blob.centroid.y);
+//            p.color *= 255;
             
         }
     } else {
@@ -752,6 +754,20 @@ void sendRodOsc(bool bForce) {
         bSendRodPositionsOsc = bSendRodPositionsOsc || bForce;
         
         int volumePower = params["sound.osc.volumePower"];
+        
+        // compress audio
+//        float totalRodVolume;
+//        for(int i=0; i<rods.size(); i++) {
+//            Rod &r = rods[i];
+//            float amp = 1;
+//            for(int i=0; i<volumePower; i++) {
+//                amp *= r.getAmp();
+//            }
+//            m.addFloatArg(amp);
+//            b.addMessage(m);
+//        }
+//        oscSender->sendBundle(b);
+        
         
         ofxOscBundle b;
         for(int i=0; i<rods.size(); i++) {
