@@ -783,7 +783,7 @@ void sendRodOsc(bool bForce) {
                 m.clear();
                 m.setAddress("/forestCentre");
                 m.addIntArg(i);
-                m.addFloatArg(distanceToCenter);
+                m.addFloatArg(1.0 - distanceToCenter);
                 b.addMessage(m);
             }
             oscSender->sendBundle(b);

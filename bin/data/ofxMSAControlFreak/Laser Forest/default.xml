@@ -54,10 +54,10 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="angleAmp" value="1"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="dampSpeed" value="0.026785715"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="showRodAmp" value="83"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="selectedRodAmp" value="0.000000000"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="selectedRodAmp" value="0.550283253"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="performers">
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="count" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="count" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMin" value="66"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMax" value="150"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="speedMin" value="47"></Parameter>
@@ -81,12 +81,12 @@
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="1.000000000"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="performance">
-                <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="file" value="4"></Parameter>
+                <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="file" value="0"></Parameter>
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="blurAmount" value="1"></Parameter>
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="threshold" value="25"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="1.000000000"></Parameter>
-                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="play" value="1"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="time" value="62.333332062"></Parameter>
+                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="play" value="0"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="time" value="1.000000000"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="sound">
@@ -106,8 +106,8 @@
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="60"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="compression">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="1.540983200"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.010205187"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="2.540196419"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.016822493"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">
