@@ -258,6 +258,11 @@ void testApp::setup() {
             params.addBang("forceSend").setTooltip("send full osc of all rod tunings and positions");
             params.addInt("sendFullFrameCount").setTooltip("if this is non-zero, send full OSC every this many seconds").setRange(0, 60*10).setClamp(true);
         } params.endGroup();
+        params.startGroup("compression"); {
+            params.addFloat("totalVolume");
+            params.addFloat("avgVolume");
+        } params.endGroup();
+        
         
     } params.endGroup();
     params.startGroup("tuning"); {
@@ -604,7 +609,7 @@ void updatePerformanceAnimation() {
             animationVideo.loadMovie(paramNamedIndex.getSelectedLabel());
             animationVideo.setLoopState(OF_LOOP_NONE);
             animationVideo.setSpeed(params["animation.performance.speed"]);
-
+            
             if(params["animation.performance.play"]) animationVideo.play();
             params["animation.performance.time"].setRange(0, animationVideo.getDuration());
         }
@@ -616,7 +621,7 @@ void updatePerformanceAnimation() {
         Performer::updateFromAnimation = true;
         
         if(params["animation.performance.speed"].hasChanged()) animationVideo.setSpeed(params["animation.performance.speed"]);
-
+        
         if(params["animation.performance.play"].hasChanged()) {
             if(params["animation.performance.play"]) animationVideo.play();
             else animationVideo.stop();
@@ -640,7 +645,7 @@ void updatePerformanceAnimation() {
         greyImage.allocate(animationVideo.getWidth(), animationVideo.getHeight());
         greyImage = colorImage;
         
-//        greyImage.blur(params["animation.performance.blurAmount"]);
+        //        greyImage.blur(params["animation.performance.blurAmount"]);
         greyImage.threshold(params["animation.performance.threshold"]);
         
         animationVideoContours.findContours(greyImage, 0, greyImage.getWidth() * greyImage.getHeight(), 100000, false);
@@ -662,7 +667,7 @@ void updatePerformanceAnimation() {
             p.heightNorm = 0.5;
             p.height = ofLerp(heightMin, heightMax, p.heightNorm);
             p.color = animationVideo.getPixelsRef().getColor(blob.centroid.x, blob.centroid.y);
-//            p.color *= 255;
+            //            p.color *= 255;
             
         }
     } else {
@@ -753,22 +758,6 @@ void sendRodOsc(bool bForce) {
         bSendRodTuningOsc = bSendRodTuningOsc || bForce || params["tuning"].hasChanged() || params["sound.osc.outputPitchMult"].hasChanged();
         bSendRodPositionsOsc = bSendRodPositionsOsc || bForce;
         
-        int volumePower = params["sound.osc.volumePower"];
-        
-        // compress audio
-//        float totalRodVolume;
-//        for(int i=0; i<rods.size(); i++) {
-//            Rod &r = rods[i];
-//            float amp = 1;
-//            for(int i=0; i<volumePower; i++) {
-//                amp *= r.getAmp();
-//            }
-//            m.addFloatArg(amp);
-//            b.addMessage(m);
-//        }
-//        oscSender->sendBundle(b);
-        
-        
         ofxOscBundle b;
         for(int i=0; i<rods.size(); i++) {
             Rod &r = rods[i];
@@ -776,11 +765,7 @@ void sendRodOsc(bool bForce) {
             m.clear();
             m.setAddress("/forestAmp");
             m.addIntArg(i);
-            float amp = 1;
-            for(int i=0; i<volumePower; i++) {
-                amp *= r.getAmp();
-            }
-            m.addFloatArg(amp);
+            m.addFloatArg(r.volume);
             b.addMessage(m);
         }
         oscSender->sendBundle(b);
@@ -908,7 +893,16 @@ void testApp::update() {
 	
 	
 	// set lasers based on amp
-	for(int i = 0; i < rods.size(); i++) rods[i].setLaserBasedonAmp();
+    int volumePower = params["sound.osc.volumePower"];
+    float totalVolume = 0;
+	for(int i = 0; i < rods.size(); i++) {
+        Rod &r = rods[i];
+        r.setLaserBasedonAmp();
+        r.volume = pow(r.getAmp(), volumePower);
+        totalVolume += r.volume;
+    }
+    params["sound.compression.totalVolume"] = totalVolume;
+    params["sound.compression.avgVolume"] = totalVolume / rods.size();
     
     
     // send laser value back down serial

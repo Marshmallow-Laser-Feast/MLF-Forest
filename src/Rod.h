@@ -24,6 +24,8 @@ public:
     float radius;           // real value (in cm)
     float radiusNorm;       // normalized (0...1) based on min/max parameters
     
+    float volume;
+    
     static int angleAmp;
     static float dampSpeed;
     
