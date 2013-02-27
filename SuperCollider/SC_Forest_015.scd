@@ -31,7 +31,7 @@ e.g message: ['/forestAmp", 15, 0.33] means set the amp of rod 15 to 0.33
 ~recSampleFormat = "int24";   // can also be "int16" or "float"
 
 ~globalSoundShapeInit = 0.2;
-~globalVolumeInit = 0.1;
+~globalVolumeInit = 0.15;
 
 ~windowTitle = "Forest";
 
