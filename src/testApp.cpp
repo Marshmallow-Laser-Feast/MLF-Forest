@@ -182,7 +182,7 @@ void testApp::setup() {
         params.addInt("randomness").setTooltip("amount of randomness in position (cm)").setRange(0, 1000).setClamp(true);
         params.addNamedIndex("image").setTooltip("use a black & white image for rod layout (rodCountWidth & rodCountLength will be ignored)");
     } params.endGroup();
-    params.startGroup("rods"); {
+    params.startGroup("rods").close(); {
         params.addInt("heightMin").setTooltip("minimum rod height (cm)").setRange(1, 1000).setClamp(true).set(180).trackVariable(&Rod::heightMin);
         params.addInt("heightMax").setTooltip("maximum rod height (cm)").setRange(1, 1000).setClamp(true).set(300).trackVariable(&Rod::heightMax);
         params.addInt("diameterMin").setTooltip("minimum rod diamater (cm)").setRange(1, 50).setClamp(true).set(3).trackVariable(&Rod::diameterMin);
@@ -192,17 +192,7 @@ void testApp::setup() {
         params.addFloat("dampSpeed").setClamp(true).trackVariable(&Rod::dampSpeed);
         params.addInt("showRodAmp").setRange(0, 200).setClamp(true);
         params.addFloat("selectedRodAmp").setClamp(true);
-        
-		
     } params.endGroup();
-    params.startGroup("laser"); {
-        params.addBool("displayLaser").trackVariable(&Rod::displayLaser);
-        params.addInt("height").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
-        params.addInt("diameter").setRange(1, 50).setClamp(true).trackVariable(&Rod::laserDiameter);
-        params.addBool("alwaysOn").trackVariable(&Rod::bLaserAlwaysOn);
-        params.addFloat("alphaThreshold").trackVariable(&Rod::laserAlphaThreshold).setClamp(true);;
-    } params.endGroup();
-    
     //    params.startGroup("ssao"); {
     //        params.addBool("enabled");
     //        params.addFloat("weight").setRange(0, 100).setClamp(true).set(1);
@@ -214,7 +204,7 @@ void testApp::setup() {
     //        params.addBool("rayReflection");
     //    } params.endGroup();
     
-    params.startGroup("performers"); {
+    params.startGroup("performers").close(); {
         params.addInt("count").setTooltip("number of performers").setRange(0, 30).setClamp(true);
         params.addInt("heightMin").setTooltip("minimum performer height (cm)").setRange(1, 200).setClamp(true).set(100);
         params.addInt("heightMax").setTooltip("maximum performer height (cm)").setRange(1, 200).setClamp(true).set(150);
@@ -224,6 +214,14 @@ void testApp::setup() {
         params.addFloat("affectRadius").setRange(0, 2).setClamp(true);
         params.addFloat("noiseAmount").setRange(0, 20).setClamp(true).trackVariable(&Performer::noiseAmount);
         params.addFloat("noiseFreq").setRange(0, 0.1).setClamp(true).trackVariable(&Performer::noiseFreq);
+    } params.endGroup();
+    
+    params.startGroup("laser"); {
+        params.addBool("displayLaser").trackVariable(&Rod::displayLaser);
+        params.addInt("height").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
+        params.addInt("diameter").setRange(1, 50).setClamp(true).trackVariable(&Rod::laserDiameter);
+        params.addBool("alwaysOn").trackVariable(&Rod::bLaserAlwaysOn);
+        params.addFloat("alphaThreshold").trackVariable(&Rod::laserAlphaThreshold).setClamp(true);;
     } params.endGroup();
     
     params.startGroup("animation"); {
@@ -262,9 +260,8 @@ void testApp::setup() {
             params.addFloat("totalVolume");
             params.addFloat("avgVolume");
         } params.endGroup();
-        
-        
     } params.endGroup();
+    
     params.startGroup("tuning"); {
         params.addNamedIndex("scale").setLabels(scaleManager.scaleNames)/*.setMode(msa::controlfreak::ParameterNamedIndex::kList)*/.trackVariable(&scaleManager.currentIndex);
         params.addBool("useIndex");
@@ -279,7 +276,7 @@ void testApp::setup() {
         params.addFloat("volumePitchMult").setTooltip("make higher sounds lower volume").setClamp(true);
         params.addBool("invert").setTooltip("invert pitch relationship from out to in");
         params.addInt("noteRandomness").setTooltip("amount of randomness in note number").setClamp(true).setRange(0, 20);
-        params.addFloat("freqRandomness").setTooltip("amount of randomness in frequency (%)").setClamp(true);
+        params.addInt("detuneAmount").setTooltip("amount of randomness in frequency (cents)").setClamp(true).setRange(0, 200);
     } params.endGroup();
     
     
@@ -794,14 +791,14 @@ void sendRodOsc(bool bForce) {
         
         if(bSendRodTuningOsc) {
             b.clear();
-            float freqRandomness = params["tuning.freqRandomness"];
+            float detuneAmount = 1 + (0.059 * 0.01 * (float)params["tuning.detuneAmount"]);
             for(int i=0; i<rods.size(); i++) {
                 Rod &r = rods[i];
                 ofxOscMessage m;
                 m.setAddress("/forestFreq");
                 m.addIntArg(i);
                 float freq = scaleManager.currentFreq(r.getPitchIndex()) * outputPitchMult;
-                if(freqRandomness) freq *= ofRandom(1-freqRandomness/2.0f, 1+freqRandomness/2.0f);
+                if(detuneAmount != 1) freq *= ofRandom(1/detuneAmount, 1*detuneAmount);
                 if(i==0) freq /= (float)params["tuning.subbassDivider"];
                 m.addFloatArg(freq);
                 b.addMessage(m);
