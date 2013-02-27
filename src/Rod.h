@@ -41,22 +41,23 @@ public:
         DISPLAY_NAME
 	};
 	static IDDisplayType idDisplayType;
-//    static bool bDisplaySelectedId;
+    //    static bool bDisplaySelectedId;
 	
     static int heightMin;
     static int heightMax;
     static int diameterMin;
     static int diameterMax;
-//    static int brightness;
+    //    static int brightness;
     
     static bool displayLaser;
     static int laserHeight;
     static int laserDiameter;
     static bool bLaserAlwaysOn;
-    static float laserAlphaThreshold;
+    static float laserCutoffThreshold;
+    static float laserTriggerThreshold;
     
     static map<int,Rod*> deviceIdToRod;
-
+    
     
 	//--------------------------------------------------------------
     void setup(float installationRadius) {
@@ -86,6 +87,7 @@ public:
     
     //--------------------------------------------------------------
     void fadeAmp() {
+        oldAmp = amp;
         if(amp > 0.001) amp *= (1-dampSpeed);
         else amp = 0;
     }
@@ -93,10 +95,18 @@ public:
     //--------------------------------------------------------------
     void setLaserBasedonAmp() {
 		// decide whether the laser is on.
-        float newLaserAlpha = bLaserAlwaysOn ? 1 : amp > laserAlphaThreshold;
-        if(newLaserAlpha > laserAlpha) laserAlpha = newLaserAlpha;
-        
-        //		oldAmp = amp;
+//        float newLaserAlpha;
+        if(bLaserAlwaysOn) laserAlpha = 1;
+        else {
+            // if laser is off, and amp is greater than trigger theshold, and amp is rising -> switch it on
+            if(laserAlpha == 0 && amp > laserTriggerThreshold && amp > oldAmp) laserAlpha = 1;
+
+            
+            // if laser is on, and amp is less than cutoff threshold, and amp is falling
+            else if(laserAlpha == 1 && amp < laserCutoffThreshold && amp <= oldAmp) laserAlpha = 0;
+            //        if(newLaserAlpha > laserAlpha)
+//            laserAlpha = newLaserAlpha;
+        }
     }
     
     //--------------------------------------------------------------
@@ -132,14 +142,14 @@ public:
     float getSortScore() const {
         return floor(polarCoordinates.x / 100.0) * 1000000 + round(polarCoordinates.y);
     }
-
-
+    
+    
     //--------------------------------------------------------------
     void setIndex(int index) {
         this->index = index;
         updateName();
     }
-
+    
     //--------------------------------------------------------------
     int getIndex() {
         return index;
@@ -156,7 +166,7 @@ public:
     int getDeviceId() const {
         return deviceId;
     }
-
+    
     
     //--------------------------------------------------------------
     void setPitchIndex(int pitchIndex) {
@@ -172,7 +182,7 @@ public:
     float getPitchIndexOffset() const {
         return pitchIndexOffset;
     }
-
+    
     
     //--------------------------------------------------------------
     void setAmp(float amp) {
@@ -211,7 +221,7 @@ public:
     
     static void loadDeviceIdToRodMap(vector<Rod> &rods);
     static void saveDeviceIdToRodMap(vector<Rod> &rods);
-
+    
     //--------------------------------------------------------------
     void draw() {
         height = ofLerp(heightMin, heightMax, heightNorm);
@@ -247,34 +257,34 @@ public:
                 }
             } ofPopMatrix();
             
-//            if(bDisplaySelectedId == false || laserAlpha == 1) {
-                if(idDisplayType==DISPLAY_DEVICE_ID) {
-                    if(deviceId==0) ofSetHexColor(0xFF0000);
-                    else ofSetHexColor(0x00FF00);
-                    ofDrawBitmapString(ofToString(deviceId), 30, 0);
-                } else if(idDisplayType==DISPLAY_INDEX) {
-                    ofSetColor(255);
-                    ofDrawBitmapString(ofToString(index), 30, 0);
-                } else if(idDisplayType==DISPLAY_PITCH_INDEX) {
-                    ofSetColor(0, 100);
-                    ofDrawBitmapString(ofToString(pitchIndex), 30, 0);
-                } else if(idDisplayType==DISPLAY_NAME) {
-                    ofSetColor(255);
-                    ofDrawBitmapString(name, 30, 0);
-                } else if(idDisplayType==DISPLAY_POLAR_COORDS) {
-                    ofSetColor(0, 100);
-                    ofDrawBitmapString(ofToString(polarCoordinates.x, 0) + ", " + ofToString(polarCoordinates.y, 0), 30, 0);
-                } else if(idDisplayType==DISPLAY_POLAR_COORDS_NORM) {
-                    ofSetColor(0, 100);
-                    ofDrawBitmapString(ofToString(polarCoordinatesNorm.x, 2) + ", " + ofToString(polarCoordinatesNorm.y, 2), 30, 0);
-                } else if(idDisplayType==DISPLAY_RADIUS) {
-                    ofSetColor(0, 100);
-                    ofDrawBitmapString(ofToString(polarCoordinates.x, 0), 30, 0);
-                } else if(idDisplayType==DISPLAY_ANGLE) {
-                    ofSetColor(0, 100);
-                    ofDrawBitmapString(ofToString(polarCoordinates.y, 0), 30, 0);
-                }
-//            }
+            //            if(bDisplaySelectedId == false || laserAlpha == 1) {
+            if(idDisplayType==DISPLAY_DEVICE_ID) {
+                if(deviceId==0) ofSetHexColor(0xFF0000);
+                else ofSetHexColor(0x00FF00);
+                ofDrawBitmapString(ofToString(deviceId), 30, 0);
+            } else if(idDisplayType==DISPLAY_INDEX) {
+                ofSetColor(255);
+                ofDrawBitmapString(ofToString(index), 30, 0);
+            } else if(idDisplayType==DISPLAY_PITCH_INDEX) {
+                ofSetColor(0, 100);
+                ofDrawBitmapString(ofToString(pitchIndex), 30, 0);
+            } else if(idDisplayType==DISPLAY_NAME) {
+                ofSetColor(255);
+                ofDrawBitmapString(name, 30, 0);
+            } else if(idDisplayType==DISPLAY_POLAR_COORDS) {
+                ofSetColor(0, 100);
+                ofDrawBitmapString(ofToString(polarCoordinates.x, 0) + ", " + ofToString(polarCoordinates.y, 0), 30, 0);
+            } else if(idDisplayType==DISPLAY_POLAR_COORDS_NORM) {
+                ofSetColor(0, 100);
+                ofDrawBitmapString(ofToString(polarCoordinatesNorm.x, 2) + ", " + ofToString(polarCoordinatesNorm.y, 2), 30, 0);
+            } else if(idDisplayType==DISPLAY_RADIUS) {
+                ofSetColor(0, 100);
+                ofDrawBitmapString(ofToString(polarCoordinates.x, 0), 30, 0);
+            } else if(idDisplayType==DISPLAY_ANGLE) {
+                ofSetColor(0, 100);
+                ofDrawBitmapString(ofToString(polarCoordinates.y, 0), 30, 0);
+            }
+            //            }
             
         } restoreTransformGL();
         ofPopStyle();
@@ -294,6 +304,7 @@ private:
     float laserAlpha;
     
     float amp;      // 0...1 value of the amplitude of the rod
+    float oldAmp;
     
     //    float oldAmp;   // old value of the amp (to detect a trigger)
     

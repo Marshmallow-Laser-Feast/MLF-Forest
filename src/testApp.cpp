@@ -221,7 +221,8 @@ void testApp::setup() {
         params.addInt("height").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
         params.addInt("diameter").setRange(1, 50).setClamp(true).trackVariable(&Rod::laserDiameter);
         params.addBool("alwaysOn").trackVariable(&Rod::bLaserAlwaysOn);
-        params.addFloat("alphaThreshold").trackVariable(&Rod::laserAlphaThreshold).setClamp(true);;
+        params.addFloat("triggerThreshold").setTooltip("turn laser on when amp increases above this").trackVariable(&Rod::laserTriggerThreshold).setClamp(true).set(0.1);
+        params.addFloat("cutoffThreshold").setTooltip("cut laser off when amp falls below this").trackVariable(&Rod::laserCutoffThreshold).setClamp(true).set(0.5);
     } params.endGroup();
     
     params.startGroup("animation"); {
@@ -585,7 +586,8 @@ void updateRodLaserAnimation() {
             imagePos.y = ofMap(r.getZ(), -installationSize.z/2, installationSize.z/2, 0, animationVideo.getHeight());
             //            if(pixels.getColor(imagePos.x, imagePos.y).r > 0) r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
             //            else r.amp = 0;
-            r.setLaser(pixels.getColor(imagePos.x, imagePos.y).r / 255.0);
+//            r.setLaser(pixels.getColor(imagePos.x, imagePos.y).r / 255.0);
+            if(pixels.getColor(imagePos.x, imagePos.y).r > 50) r.setLaser(1);
         }
     }
 }
@@ -828,13 +830,10 @@ void testApp::update() {
     // clear all laser values and fade rod Amps
     for(int i = 0; i < rods.size(); i++) {
         Rod &r = rods[i];
-        r.setLaser(0);
+//        r.setLaser(0);
         r.fadeAmp();
         r.color = ofColor((float)params["rods.color"]);
     }
-    
-    // update rod laser values based on animation pixel values (if animation loaded)
-    updateRodLaserAnimation();
     
     // update positions of virtual performers based on animation
     // this simply moves the performers around
@@ -881,14 +880,7 @@ void testApp::update() {
         vector<Rod*> hitRods = checkRodCollisions(mouse3d, mouseRadius);
         if(hitRods.size() && ofGetMousePressed() && !ofGetKeyPressed()) selectedRod = hitRods[0];
     }
-    
-    if(selectedRod) {
-        selectedRod->color.set(255, 0, 0);
-        selectedRod->setLaser(1);
-    }
-    
-	
-	
+ 	
 	// set lasers based on amp
     int volumePower = params["sound.osc.volumePower"];
     float totalVolume = 0;
@@ -900,6 +892,16 @@ void testApp::update() {
     }
     params["sound.compression.totalVolume"] = totalVolume;
     params["sound.compression.avgVolume"] = totalVolume / rods.size();
+    
+    
+    // update rod laser values based on animation pixel values (if animation loaded)
+    updateRodLaserAnimation();
+
+    
+    if(selectedRod) {
+        selectedRod->color.set(255, 0, 0);
+        selectedRod->setLaser(1);
+    }
     
     
     // send laser value back down serial

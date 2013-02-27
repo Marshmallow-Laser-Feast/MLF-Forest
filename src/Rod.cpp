@@ -27,7 +27,8 @@ bool Rod::displayLaser;
 int Rod::laserHeight;
 int Rod::laserDiameter;
 bool Rod::bLaserAlwaysOn;
-float Rod::laserAlphaThreshold;
+float Rod::laserCutoffThreshold;
+float Rod::laserTriggerThreshold;
 
 //bool Rod::showDeviceIds = false;
 
