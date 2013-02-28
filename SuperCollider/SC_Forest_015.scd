@@ -97,8 +97,8 @@ s.waitForBoot({~funcStartSystem.value}, 100, {"couldn't boot".postln});
 	["Surround (SplayAz)", {arg oscillator, amp, pos, centre; SplayAz.ar(~surroundSpeakerCount, oscillator ! 2, spread: centre * 0.5, level: amp, width: 2, center: (pos * 2) - 1, orientation: 0.5, levelComp: true)}],
     ["Surround (PanAz)", {arg oscillator, amp, pos, centre; PanAz.ar(~surroundSpeakerCount, oscillator, pos: pos * 2 - 1, level: amp, width: 2 + (centre * ~surroundSpeakerCount), orientation: 0.5)}],
 //	["Surround (Position & Centre used)", {arg oscillator, amp, pos, centre; Pan4.ar(oscillator, pos * 2 - 1, centre * 2 - 1, amp)}],
-    // ["Surround (Position & Centre used)", {arg oscillator, amp, pos, centre; SplayAz.ar(~surroundSpeakerCount, oscillator ! 1, spread: centre, level: amp, width: 2, center: (pos * 2) - 1, orientation: 0.5, levelComp: true)}],
 ];
+
 
 "".postln;
 ("===  Listening to OSC messages on port: " ++ NetAddr.langPort).postln;
