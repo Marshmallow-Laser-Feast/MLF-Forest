@@ -36,7 +36,7 @@ e.g message: ['/forestAmp", 15, 0.33] means set the amp of rod 15 to 0.33
 
 
 ~soundSelectionIndex = 2;
-~panSelectionIndex = 0;
+~panSelectionIndex = 2;
 ~synthsRunning = false;
 ~globalVolumeBus = Bus.control(s, 1);
 ~globalSoundShapeBus = Bus.control(s, 1);
