@@ -222,7 +222,8 @@ void testApp::setup() {
         params.addInt("diameter").setRange(1, 50).setClamp(true).trackVariable(&Rod::laserDiameter);
         params.addBool("alwaysOn").trackVariable(&Rod::bLaserAlwaysOn);
         params.addBool("random").trackVariable(&Rod::bLaserRandom);
-        params.addInt("bLaserRandomSkipFrame").setClamp(true).trackVariable(&Rod::laserRandomSkipFrame);
+        params.addInt("laserRandomSkipFrame").setClamp(true).set(2).trackVariable(&Rod::laserRandomSkipFrame);
+        params.addFloat("laserRandomProbability").setClamp(true).set(0.3).trackVariable(&Rod::laserRandomProbability);
         params.addFloat("triggerThreshold").setTooltip("turn laser on when amp increases above this").trackVariable(&Rod::laserTriggerThreshold).setClamp(true).set(0.1);
         params.addFloat("cutoffThreshold").setTooltip("cut laser off when amp falls below this").trackVariable(&Rod::laserCutoffThreshold).setClamp(true).set(0.5);
     } params.endGroup();

@@ -55,6 +55,7 @@ public:
     static bool bLaserAlwaysOn;
     static bool bLaserRandom;
     static int laserRandomSkipFrame;
+    static float laserRandomProbability;
     static float laserCutoffThreshold;
     static float laserTriggerThreshold;
     
@@ -97,7 +98,7 @@ public:
     //--------------------------------------------------------------
     void setLaserBasedonAmp() {
         if(bLaserRandom) {
-            if(ofGetFrameNum() % (laserRandomSkipFrame+1) == 0) laserAlpha = ofRandomuf() > 0.5;
+            if(ofGetFrameNum() % (laserRandomSkipFrame+1) == 0) laserAlpha = ofRandomuf() < laserRandomProbability;
         }
         else if(bLaserAlwaysOn) laserAlpha = 1;
         else {
