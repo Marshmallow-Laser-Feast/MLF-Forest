@@ -359,9 +359,7 @@ void testApp::setup() {
     
     cameras[2] = new ofCamera;
     
-    
     messageAudio.loadSound("message.wav");
-    
     
     venueModel.loadModel("3d/venue.dae");
     venueModel.setScaleNomalization(false);
@@ -738,6 +736,7 @@ void resetAll() {
     checkAndInitPerformers(true);
     checkAndInitFbo(true);
     selectedRod = NULL;
+    params["animation.laser.file"] = 0;
 }
 
 //--------------------------------------------------------------
@@ -1092,6 +1091,39 @@ void testApp::exit() {
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
     switch(key) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            params["animation.laser.file"] = key-48;
+            break;
+//            
+//        case '1':   // radial out
+//            params["animation.laser.file"] = 1;
+////            params["animation.laser.loop"] = true;
+//            break;
+//            
+//        case '2':   // radial in
+//            params["animation.laser.file"] = 2;
+////            params["animation.laser.loop"] = true;
+//            break;
+//            
+//        case '3':   // spiral
+//            params["animation.laser.file"] = 3;
+////            params["animation.laser.loop"] = false;
+//            break;
+//            
+//        case '4':   // spiral
+//            params["animation.laser.file"] = 4;
+//            //            params["animation.laser.loop"] = false;
+//            break;
+//            
         case 's':
             params.saveXmlValues();
             Rod::saveDeviceIdToRodMap(rods);
@@ -1136,10 +1168,12 @@ void testApp::keyPressed(int key){
             
         case 'a':
             params["laser.alwaysOn"] = !params["laser.alwaysOn"];
+            params["animation.laser.file"] = 0;
             break;
             
         case 'r':
             params["laser.random"] = !params["laser.random"];
+            params["animation.laser.file"] = 0;
             break;
             
             
