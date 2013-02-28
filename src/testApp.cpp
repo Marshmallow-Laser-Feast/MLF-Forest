@@ -426,7 +426,7 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
             }
         }
         
-        float installationRadius = sqrt(installationSize.x * installationSize.x + installationSize.z * installationSize.z);
+        float installationRadius = installationSize.x/2;//sqrt(installationSize.x * installationSize.x + installationSize.z * installationSize.z)/2;
         for(int i=0; i<rods.size(); i++) {
             Rod &r = rods[i];
             r.move(randomness * ofVec3f(ofRandomf(), 0, ofRandomf()));
