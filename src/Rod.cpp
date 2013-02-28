@@ -27,6 +27,8 @@ bool Rod::displayLaser;
 int Rod::laserHeight;
 int Rod::laserDiameter;
 bool Rod::bLaserAlwaysOn;
+bool Rod::bLaserRandom;
+int Rod::laserRandomSkipFrame;
 float Rod::laserCutoffThreshold;
 float Rod::laserTriggerThreshold;
 

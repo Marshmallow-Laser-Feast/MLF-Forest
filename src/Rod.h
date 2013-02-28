@@ -53,6 +53,8 @@ public:
     static int laserHeight;
     static int laserDiameter;
     static bool bLaserAlwaysOn;
+    static bool bLaserRandom;
+    static int laserRandomSkipFrame;
     static float laserCutoffThreshold;
     static float laserTriggerThreshold;
     
@@ -94,18 +96,16 @@ public:
     
     //--------------------------------------------------------------
     void setLaserBasedonAmp() {
-		// decide whether the laser is on.
-//        float newLaserAlpha;
-        if(bLaserAlwaysOn) laserAlpha = 1;
+        if(bLaserRandom) {
+            if(ofGetFrameNum() % (laserRandomSkipFrame+1) == 0) laserAlpha = ofRandomuf() > 0.5;
+        }
+        else if(bLaserAlwaysOn) laserAlpha = 1;
         else {
             // if laser is off, and amp is greater than trigger theshold, and amp is rising -> switch it on
             if(laserAlpha == 0 && amp > laserTriggerThreshold && amp > oldAmp) laserAlpha = 1;
-
             
             // if laser is on, and amp is less than cutoff threshold, and amp is falling
             else if(laserAlpha == 1 && amp < laserCutoffThreshold && amp <= oldAmp) laserAlpha = 0;
-            //        if(newLaserAlpha > laserAlpha)
-//            laserAlpha = newLaserAlpha;
         }
     }
     
