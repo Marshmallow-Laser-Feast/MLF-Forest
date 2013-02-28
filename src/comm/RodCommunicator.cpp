@@ -85,18 +85,26 @@ float RodCommunicator::getProgress() {
 
 
 void RodCommunicator::draw() {
-	int xOffset = 330;
-	string report = "";
+	ofPushStyle();
+    ofEnableAlphaBlending();
+    int xOffset = 330;
+	
+    string report = "";
 	report += "# rods connected: " + ofToString(totalRodCount) + "\n";
 	report += "Update Rate:	     " + ofToString(updateRate,1) + " Hz\n";
 //	ofBackground(0,0,0);
     ofSetColor(0, 100);
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
+    
+    //ofRect(ForestSerialPort::bgRect);
 	ofSetHexColor(0xFFFFFF);
+    
 	ofDrawBitmapString(report, xOffset, 30);
-	for(int i = 0; i < ports.size(); i++) {
+	
+    for(int i = 0; i < ports.size(); i++) {
 		ports[i].draw(xOffset, 100 + i * 85);
 	}
+    ofPopStyle();
 }
 
 

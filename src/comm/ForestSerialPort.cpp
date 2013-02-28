@@ -18,6 +18,8 @@ int ForestSerialPort::laserTimeoutValue = 10; // ??
 int ForestSerialPort::laserHoldoff = 10; // ??
 // end: laser parameters
 
+
+ofRectangle ForestSerialPort::bgRect;
 float ForestSerialPort::ampGain = 1;
 
 bool ForestSerialPort::forceLasersOn = false;
@@ -307,12 +309,17 @@ void ForestSerialPort::request() {
 }
 
 void ForestSerialPort::draw(int x, int y) {
-
+    if(bgRect.x==0) {
+        bgRect.x = x;
+        bgRect.y = y;
+    }
+    
 	int pos = 0;
 	float width = 50;
 	ofSetHexColor(0xFFFFFF);
 	
-	ofDrawBitmapString(serialNo, x, y);
+	ofDrawBitmapStringHighlight(serialNo, x, y, ofColor(0, 0, 0, 120), ofColor(255, 255, 255, 255));
+    
 	map<int,RodInfo>::iterator it = rodInfos.begin();
 
 	for( ; it != rodInfos.end(); it++) {
@@ -322,7 +329,7 @@ void ForestSerialPort::draw(int x, int y) {
 		r.y += r.height;
 		r.height *= -1;
 		ofRect(r);
-		
+		bgRect.growToInclude(r);
 		ofRectangle meter = r;
 		meter.width /= 3;
 		if(currentCommandType==RETURN_PROCESSED_MOTION_DATA) {
@@ -344,7 +351,7 @@ void ForestSerialPort::draw(int x, int y) {
 		} else if(currentCommandType==RETURN_RAW_ACCELEROMETER) {
 			
 
-			meter.y -= meter.height/2;
+
 			ofSetHexColor(0x990000);
 			meter.height = r.height*(*it).second.rawData.x/90.f;
 			ofRect(meter);
@@ -361,7 +368,7 @@ void ForestSerialPort::draw(int x, int y) {
 		}
 
 		
-		
+		//ofDrawBitmapStringHighlight(<#string text#>, <#const ofPoint &position#>)
 		
 		
 		
@@ -385,8 +392,8 @@ void ForestSerialPort::draw(int x, int y) {
 		} else {
 			status += " ";
 		}
-		
-		ofDrawBitmapString(ofToString((int)(*it).second.id)+status, r.x, r.y+14);
+
+		ofDrawBitmapStringHighlight(ofToString((int)(*it).second.id)+status, r.x, r.y+14, ofColor(0, 0, 0, 120), ofColor(255, 255, 255, 255));
 		
 		pos++;
 	}

@@ -73,6 +73,7 @@ public:
 	void inspect();
 	string report;
 	static bool forceLasersOn;
+    static ofRectangle bgRect;
 private:
 	
 	bool setTimeslot(int boardId, int timeslot, bool set = true);

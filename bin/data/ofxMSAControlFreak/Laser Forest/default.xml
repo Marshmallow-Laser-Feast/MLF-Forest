@@ -73,9 +73,9 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="diameter" value="7"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="alwaysOn" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="random" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="bLaserRandomSkipFrame" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="triggerThreshold" value="0.100000001"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="cutoffThreshold" value="0.500000000"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="bLaserRandomSkipFrame" value="2"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="triggerThreshold" value="0.245535716"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="cutoffThreshold" value="0.625000000"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="animation">
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="laser">
@@ -109,8 +109,8 @@
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="60"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="compression">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="0.000000000"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="3.382040977"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.022397622"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">
@@ -138,7 +138,7 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="param3" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipOverTimeConstant" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipThreshold" value="79"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserTimeoutValue" value="126"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserTimeoutValue" value="255"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserHoldoff" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="ampGain" value="3.035714388"></Parameter>
         </Parameter>
