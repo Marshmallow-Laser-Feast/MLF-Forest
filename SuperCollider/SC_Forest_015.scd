@@ -24,12 +24,12 @@ e.g message: ['/forestAmp", 15, 0.33] means set the amp of rod 15 to 0.33
 (
 // initialise
 ~rodCount = 151;
-~surroundSpeakerCount = 8;
+~surroundSpeakerCount = 4;
 
 ~recordingsFolder = "~/Desktop";
 ~recChannels = 2;  // default is stereo recordings
 
-~globalSoundShapeInit = 0.2;
+~globalSoundShapeInit = 0.3;
 ~globalVolumeInit = 0.15;
 
 ~windowTitle = "Forest";
@@ -95,7 +95,7 @@ s.waitForBoot({~funcStartSystem.value}, 100, {"couldn't boot".postln});
 ~arrPanFuncs = [
 	["Stereo (Position used, Centre ignored)", {arg oscillator, amp, pos, centre; Pan2.ar( oscillator, ((pos - 0.5) * 2), amp);}],
 	["Surround (SplayAz)", {arg oscillator, amp, pos, centre; SplayAz.ar(~surroundSpeakerCount, oscillator ! 2, spread: centre * 0.5, level: amp, width: 2, center: (pos * 2) - 1, orientation: 0.5, levelComp: true)}],
-    ["Surround (PanAz)", {arg oscillator, amp, pos, centre; PanAz.ar(~surroundSpeakerCount, oscillator, pos: pos * 2 - 1, level: amp, width: 2 + (centre * ~surroundSpeakerCount), orientation: 0.5)}],
+    ["Surround (PanAz)", {arg oscillator, amp, pos, centre; PanAz.ar(~surroundSpeakerCount, oscillator, pos: pos * 2 - 1, level: amp, width: 1.5 + (centre * ~surroundSpeakerCount), orientation: 0.5)}],
 //	["Surround (Position & Centre used)", {arg oscillator, amp, pos, centre; Pan4.ar(oscillator, pos * 2 - 1, centre * 2 - 1, amp)}],
 ];
 
