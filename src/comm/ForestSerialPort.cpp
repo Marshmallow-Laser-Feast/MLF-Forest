@@ -137,7 +137,7 @@ void ForestSerialPort::discover() {
 
 bool ForestSerialPort::tryToRead(unsigned char *buff, int length, int timeout) {
 	// wait for buffer to fill up, or timeout
-	while(serial.available()<length && --timeout>0) usleep(100);
+	while(serial.available()<length && --timeout>0) usleep(50);
 	if(serial.available()>=length) {
 		if(serial.read(buff, length)==length) {
 			return true;
@@ -147,6 +147,7 @@ bool ForestSerialPort::tryToRead(unsigned char *buff, int length, int timeout) {
 		}
 	} else {
 		//printf("Error, read timed out\n");
+        return false;
 	}
 	return false;
 }
