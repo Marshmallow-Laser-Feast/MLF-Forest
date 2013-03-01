@@ -332,6 +332,28 @@ void testApp::setup() {
 		.setClamp(true)
 		.trackVariable(&ForestSerialPort::ampGain);
         
+        params.addInt("gateThreshold")
+		.setTooltip("threshold of the gate")
+		.setRange(500, 3000)
+		.setClamp(true)
+		.trackVariable(&RodInfo::threshold);
+        
+        params.addInt("attackThreshold")
+		.setTooltip("threshold of the attack")
+		.setRange(0, 3000)
+		.setClamp(true)
+		.trackVariable(&RodInfo::attackThreshold);
+        
+        
+        params.addFloat("attackSmoothing")
+		.setTooltip("how smoothed over the attack is")
+		.setRange(1, 6)
+		.setClamp(true)
+		.trackVariable(&RodInfo::attackSmoothing);
+        
+        
+        
+        
 	} params.endGroup();
 #endif
     

@@ -36,7 +36,9 @@ int RodInfo::holdAmt = 20;
 // threshold for the noise gate ~ [0-8000]
 int RodInfo::threshold = 1000;
 
+float RodInfo::attackSmoothing = 4;
 
+int RodInfo::attackThreshold = 1000;
 int RodInfo::processRawAccelerometerData(int x, int z) {
 	
 
@@ -68,12 +70,12 @@ int RodInfo::processRawAccelerometerData(int x, int z) {
 
 	// peak follower
 	if(out>curr) { // attack
-		if(curr<1000) {
+		if(curr<attackThreshold) {
             curr = out;
 			//printf("jumping\n");
 			
 		} else {
-            curr += (out-curr)/4;
+            curr += (float)(out-curr)/(float)attackSmoothing;
 			//printf("Not jumping\n");
 		}
 		

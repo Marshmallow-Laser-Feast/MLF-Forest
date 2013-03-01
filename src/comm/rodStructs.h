@@ -174,6 +174,8 @@ public:
 	
 	int processRawAccelerometerData(int x, int z);
     float getAmplitude();
+    static float attackSmoothing;
+    static int attackThreshold;
 
 	int lastX;
 	int lastZ;
