@@ -139,6 +139,11 @@ public:
 	float motionSpare;
 	float tip;
 	unsigned char status;
+    
+    // set to 1 when there's an actual timeout, then
+    // decreased with every 
+    float timeout;
+    
 	RodInfo(unsigned char id = 0, unsigned char timeslot = 0) {
 		this->timeslot = timeslot;
 		this->id = id;
@@ -149,8 +154,13 @@ public:
 		return status & statusType;
 	}
 	
+    void notifyTimeout() {
+        timeout = 1;
+    }
+    
 	
 	void setProcessedData(const ProcessedAccelerometerData &data) {
+        timeout *= 0.99;
 		motion = data.motion;
 		motionSpare = data.motionSpare;
 		tip = data.tip;
@@ -158,6 +168,7 @@ public:
 	}
 	
 	void resetMotion() {
+        timeout = 0;
 		motion = 0;
 		motionSpare = 0;
 		lastX = 0;

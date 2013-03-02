@@ -39,8 +39,10 @@ int RodInfo::threshold = 1000;
 float RodInfo::attackSmoothing = 4;
 
 int RodInfo::attackThreshold = 1000;
+
+
 int RodInfo::processRawAccelerometerData(int x, int z) {
-	
+
 
 	
     x = MMA_XYar[x];
@@ -108,6 +110,7 @@ int RodInfo::processRawAccelerometerData(int x, int z) {
 
 void RodInfo::setRawData(const RawAccelerometerData &data) {
 	
+    
 	//		data.printDebug();
 	if(data.x==0x40) return;
 	// this is the raw data, normalized and wrapped.
@@ -118,7 +121,9 @@ void RodInfo::setRawData(const RawAccelerometerData &data) {
 	}
 	rawData.y -= 90;
 	
-	
+    
+    // decay timeout indicator.
+	timeout *= 0.99;
 	
 	motion = processRawAccelerometerData(data.x, data.y);
 
