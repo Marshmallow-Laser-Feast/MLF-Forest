@@ -233,6 +233,10 @@ void testApp::setup() {
             params.addNamedIndex("file").setTooltip("use a black & white PJPG quicktime for laser animation");
             params.addBool("loop");
             params.addFloat("speed").setRange(0, 4).setClamp(true).setSnap(true);
+            params.addBool("playRandom");
+            params.addInt("randomChangeTimeMin").setTooltip("Change random animation after min this many seconds").setClamp(true);
+            params.addInt("randomChangeTimeMax").setTooltip("Change random animation after max this many seconds").setClamp(true);;
+            params.addInt("nextChangeMillis");
         } params.endGroup();
         params.startGroup("performance"); {
             params.addNamedIndex("file").setTooltip("use a black & white PJPG quicktime for performance animation");
@@ -572,6 +576,7 @@ vector<Rod*> checkRodCollisions(ofVec3f p, float radius) {
 //--------------------------------------------------------------
 void updateRodLaserAnimation() {
     msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.laser.file");
+    
     if(paramNamedIndex.hasChanged()) {
         if((int)paramNamedIndex == 0) {
             animationVideo.close();
@@ -611,6 +616,14 @@ void updateRodLaserAnimation() {
             //            else r.amp = 0;
 //            r.setLaser(pixels.getColor(imagePos.x, imagePos.y).r / 255.0);
             if(pixels.getColor(imagePos.x, imagePos.y).r > 50) r.setLaser(1);
+        }
+    }
+    
+    
+    if(params["animation.laser.playRandom"]) {
+        if(ofGetElapsedTimeMillis() >= (int)params["animation.laser.nextChangeMillis"]) {
+            params["animation.laser.nextChangeMillis"] = ofGetElapsedTimeMillis() + 1000 * ofRandom(params["animation.laser.randomChangeTimeMin"], params["animation.laser.randomChangeTimeMax"]);
+            paramNamedIndex = ofRandom(1, paramNamedIndex.size());
         }
     }
 }
