@@ -72,4 +72,5 @@ private:
 	float updateRate;
 	bool running;
 	ofTrueTypeFont font;
+    float smoothedUpdateRate;
 };

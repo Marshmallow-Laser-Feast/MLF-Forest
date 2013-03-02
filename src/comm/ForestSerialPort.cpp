@@ -18,6 +18,7 @@ int ForestSerialPort::laserTimeoutValue = 10; // ??
 int ForestSerialPort::laserHoldoff = 10; // ??
 // end: laser parameters
 
+set<int> ForestSerialPort::foundDeviceIds;
 
 ofRectangle ForestSerialPort::bgRect;
 float ForestSerialPort::ampGain = 1;
@@ -26,7 +27,7 @@ bool ForestSerialPort::forceLasersOn = false;
 
 map<int,RodInfo*> ForestSerialPort::allRodInfos;
 
-
+ofTrueTypeFont ForestSerialPort::font;
 
 
 bool hasInitedLaserBitmap = false;
@@ -100,18 +101,20 @@ void ForestSerialPort::discover() {
 	float progressIncrement = 1.f/MAX_BOARDS_PER_NETWORK;
 	for(int id = 1; id <= MAX_BOARDS_PER_NETWORK; id++) {
 
-
-		bool success = setTimeslot(id, slotId);
-		
-		if(success) {
-			printf("DEVICE ID: %d - TIMESLOT: %d\n", id, slotId);
-			slotId++;
-		}
-		
-		
-		
-		progress += progressIncrement;
-		ofSleepMillis(10);
+        if(foundDeviceIds.find(id)==foundDeviceIds.end()) {
+            bool success = setTimeslot(id, slotId);
+            
+            if(success) {
+                printf("DEVICE ID: %d - TIMESLOT: %d\n", id, slotId);
+                foundDeviceIds.insert(id);
+                slotId++;
+            }
+            
+            
+            
+            progress += progressIncrement;
+            ofSleepMillis(3);
+        }
 	}
 	report = "=================================\n";
 	report += "Forest Serial Port " + serialNo + "\n";
@@ -167,9 +170,9 @@ bool ForestSerialPort::setTimeslot(int boardId, int timeslot, bool set) {
 		a = serial.available();
 	}
 	
-	ofSleepMillis(10);
+	ofSleepMillis(5);
 	serial.write(buff, 7);
-	ofSleepMillis(10);
+	ofSleepMillis(5);
 	RodIdentity ident;
 	
 	
@@ -210,7 +213,7 @@ void ForestSerialPort::retrieve() {
 	if(currentCommandType==RETURN_RAW_ACCELEROMETER) {
 		for(int i = 0; i < rodInfos.size(); i++) {
 			RawAccelerometerData accel;
-			if(tryToRead((unsigned char*)&accel, sizeof(accel))) {
+			if(tryToRead((unsigned char*)&accel, sizeof(accel), 30)) {
 				if(rodInfos.find(accel.id)!=rodInfos.end()) {
 					if(accel.x!=0x40) {
 						rodInfos[accel.id].setRawData(accel);
@@ -218,7 +221,14 @@ void ForestSerialPort::retrieve() {
 //						printf("'%s' Rod id %d accelerometer is faulty\n", serialNo.c_str(), accel.id);	// TODO: re-enable
 					}
 				}
-			}
+			} else {
+                for(map<int,RodInfo>::iterator it = rodInfos.begin(); it != rodInfos.end(); it++) {
+                    if((*it).second.timeslot==i+1) {
+                        (*it).second.notifyTimeout();
+                        break;
+                    }
+                }
+            }
 		}
 	} else if(currentCommandType==RETURN_PROCESSED_MOTION_DATA) {
 		for(int i = 0; i < rodInfos.size(); i++) {
@@ -319,18 +329,23 @@ void ForestSerialPort::draw(int x, int y) {
 	float width = 50;
 	ofSetHexColor(0xFFFFFF);
 	
-	ofDrawBitmapStringHighlight(serialNo, x, y, ofColor(0, 0, 0, 120), ofColor(255, 255, 255, 255));
+	drawString(serialNo, x, y);//, ofColor(0, 0, 0, 120), ofColor(255, 255, 255, 255));
     
 	map<int,RodInfo>::iterator it = rodInfos.begin();
 
 	for( ; it != rodInfos.end(); it++) {
-		ofSetHexColor(0x666666);
-		ofRectangle r(x + width * pos, y+5, width-10, 40);
+
+        float cc = 0.2 + 0.8*(*it).second.timeout;
+        
+		ofRectangle r(x + width * pos, y+13, width-10, 40);
 		// make the rectangle's origin at the bottom left
 		r.y += r.height;
 		r.height *= -1;
-		ofRect(r);
-		bgRect.growToInclude(r);
+		
+		glColor4f(cc, 0.2, 0.2, 0.9);
+        ofRect(r);
+        
+        //bgRect.growToInclude(r);
 		ofRectangle meter = r;
 		meter.width /= 3;
 		if(currentCommandType==RETURN_PROCESSED_MOTION_DATA) {
@@ -371,10 +386,14 @@ void ForestSerialPort::draw(int x, int y) {
 		
 		//ofDrawBitmapStringHighlight(<#string text#>, <#const ofPoint &position#>)
 		
-		
+
 		
 		//printf("[%d] = %f\n", (*it).second.id, (*it).second.motion);
-		ofSetHexColor(0xFFFFFF);
+		glColor4f(1, 1, 1, 0.6);
+        ofNoFill();
+        ofRect(r);
+        ofFill();
+        ofSetHexColor(0xFFFFFF);
 		string status = " ";
 		if((*it).second.getStatus(ROD_STATUS_BAD_ACCELEROMETER)) {
 			status += "A";
@@ -394,10 +413,29 @@ void ForestSerialPort::draw(int x, int y) {
 			status += " ";
 		}
 
-		ofDrawBitmapStringHighlight(ofToString((int)(*it).second.id)+status, r.x, r.y+14, ofColor(0, 0, 0, 120), ofColor(255, 255, 255, 255));
+		drawString(ofToString((int)(*it).second.id)+status, r.x, r.y+7);//, ofColor(0, 0, 0, 120), ofColor(255, 255, 255, 255));
 		
 		pos++;
 	}
+}
+
+void ForestSerialPort::drawString(string s, int x, int y) {
+		
+    if(font.isLoaded()) {
+        glColor4f(0,0,0,0.7);
+        ofRectangle r = font.getStringBoundingBox(s, x, y);
+        int pad = 5;
+        r.width += pad*2;
+        r.height += pad*2;
+        x += pad;
+        y += pad;
+        ofRect(r);
+        ofSetHexColor(0xFFFFFF);
+        font.drawString(s, x, y);
+
+    } else {
+        ofDrawBitmapStringHighlight(s,x,y, ofColor(0, 0, 0, 120), ofColor(255, 255, 255, 255));
+    }
 }
 
 // close the serial port

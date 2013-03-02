@@ -10,6 +10,7 @@ RodCommunicator::RodCommunicator() {
 	MODE = DISCOVERING;
 	totalRodCount = 0;
 	running = false;
+    smoothedUpdateRate = 0;
 }
 RodCommunicator::~RodCommunicator() {
 	running = false;
@@ -44,7 +45,7 @@ string RodCommunicator::getValues() {
 	return "";
 }
 void RodCommunicator::start() {
-
+    ForestSerialPort::font.loadFont("fonts/automat.ttf", 6);
 	// block whilst creating forest serial ports, then start thread
 	vector<string> serialNos = D2xxSerial::getDeviceSerialNumbers();
 	printf("Found %d serial ports\n", (int) serialNos.size());
@@ -53,7 +54,7 @@ void RodCommunicator::start() {
 		if(!ports[i].close()) {
 			printf("Couldn't close port '%s'\n", serialNos[i].c_str());
 		}
-		ofSleepMillis(100);
+		ofSleepMillis(10);
 		ports[i].open(serialNos[i]);
 	}
 	startThread();
@@ -88,10 +89,14 @@ void RodCommunicator::draw() {
 	ofPushStyle();
     ofEnableAlphaBlending();
     int xOffset = 330;
-	
+	smoothedUpdateRate = updateRate * 0.05 + smoothedUpdateRate * 0.95;
     string report = "";
 	report += "# rods connected: " + ofToString(totalRodCount) + "\n";
-	report += "Update Rate:	     " + ofToString(updateRate,1) + " Hz\n";
+	report += "Update Rate:	     " + ofToString(smoothedUpdateRate, 0) + " Hz\n";
+    report += "\n\nKey\n===\n";
+    report += "A:    bad accelerometer\n";
+    report += "R:    reset occurred since timeslot allocated - indicates node has power-cycled since host startup\n";
+    report += "T:    tip-over detected\n";
 //	ofBackground(0,0,0);
     ofSetColor(0, 100);
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
@@ -99,10 +104,10 @@ void RodCommunicator::draw() {
     //ofRect(ForestSerialPort::bgRect);
 	ofSetHexColor(0xFFFFFF);
     
-	ofDrawBitmapString(report, xOffset, 30);
+    ForestSerialPort::drawString(report, xOffset, 30);
 	
     for(int i = 0; i < ports.size(); i++) {
-		ports[i].draw(xOffset, 100 + i * 85);
+		ports[i].draw(xOffset, 120 + i * 85);
 	}
     ofPopStyle();
 }
@@ -162,7 +167,7 @@ void RodCommunicator::threadedFunction() {
 		totalRodCount += rodCount;
 	}
 	float msPerFrame = maxRodCount*40; // this is wrong
-	msPerFrame = 10;
+	msPerFrame = 5;
 	
 	float t = 0;
 	// then run
@@ -194,6 +199,7 @@ void RodCommunicator::threadedFunction() {
 
 // this blocks until the entire network is discovered
 void RodCommunicator::discover() {
+    ForestSerialPort::foundDeviceIds.clear();
 	for(int i = 0; i < ports.size(); i++) {
 		ports[i].discover();
 	}

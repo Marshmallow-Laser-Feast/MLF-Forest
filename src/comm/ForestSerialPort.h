@@ -20,7 +20,7 @@
 #include "ofMain.h"
 #include "D2xxSerial.h"
 #include "rodStructs.h"
-
+#include <set>
 // 250k baud for the forest
 #define SERIAL_PORT_SPEED 250000
 #define MAX_BOARDS_PER_NETWORK 180 // should be 255
@@ -74,6 +74,10 @@ public:
 	string report;
 	static bool forceLasersOn;
     static ofRectangle bgRect;
+    // id's of all the rods already found so we don't have to look for them again
+    static set<int> foundDeviceIds;
+    static ofTrueTypeFont font;
+    static void drawString(string s, int x, int y);
 private:
 	
 	bool setTimeslot(int boardId, int timeslot, bool set = true);
@@ -96,5 +100,5 @@ private:
 	LaserCommandType currentCommandType;
 	
 	static unsigned char laserBitmap[LASER_BITMAP_SIZE];
-	
+
 };
