@@ -216,7 +216,7 @@ void testApp::setup() {
         params.addFloat("noiseFreq").setRange(0, 0.1).setClamp(true).trackVariable(&Performer::noiseFreq);
     } params.endGroup();
     
-    params.startGroup("laser"); {
+    params.startGroup("laser").close(); {
         params.addBool("displayLaser").trackVariable(&Rod::displayLaser);
         params.addInt("height").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
         params.addInt("diameter").setRange(1, 50).setClamp(true).trackVariable(&Rod::laserDiameter);
@@ -235,6 +235,7 @@ void testApp::setup() {
         params.addFloat("randomAmpMin").setClamp(true);
         params.addFloat("randomAmpMax").setClamp(true);
         params.addInt("nextChangeMillis");
+        params.addBool("triggerOnMouse");
     } params.endGroup();
     
     params.startGroup("animation"); {
@@ -260,7 +261,7 @@ void testApp::setup() {
     params.startGroup("sound"); {
         params.addFloat("volumeVariance").setClamp(true).set(1);
         params.addFloat("retriggerThreshold").setClamp(true).set(1);
-        params.startGroup("local"); {
+        params.startGroup("local").close(); {
             params.addBool("enabled").set(true);
             params.addNamedIndex("file").setTooltip("select file");
             params.addFloat("outputPitchMult").setRange(0, 2).setClamp(true).setIncrement(0.005).setSnap(true).set(1);
@@ -273,13 +274,13 @@ void testApp::setup() {
             params.addBang("forceSend").setTooltip("send full osc of all rod tunings and positions");
             params.addInt("sendFullFrameCount").setTooltip("if this is non-zero, send full OSC every this many seconds").setRange(0, 60*10).setClamp(true);
         } params.endGroup();
-        params.startGroup("compression"); {
+        params.startGroup("compression").close(); {
             params.addFloat("totalVolume");
             params.addFloat("avgVolume");
         } params.endGroup();
     } params.endGroup();
     
-    params.startGroup("tuning"); {
+    params.startGroup("tuning").close(); {
         params.addNamedIndex("scale").setLabels(scaleManager.scaleNames)/*.setMode(msa::controlfreak::ParameterNamedIndex::kList)*/.trackVariable(&scaleManager.currentIndex);
         params.addBool("useIndex");
         params.addFloat("indexMultipler").setRange(0, 10).setClamp(true).setIncrement(0.1).setSnap(true);
@@ -559,7 +560,7 @@ void updateCamera() {
 //}
 
 //--------------------------------------------------------------
-vector<Rod*> checkRodCollisions(ofVec3f p, float radius) {
+vector<Rod*> checkRodCollisions(ofVec3f p, float radius, bool setAmp = true) {
     vector<Rod*> hitRods;
     
     //    float outputPitchMult = params["sound.local.outputPitchMult"];
@@ -572,7 +573,7 @@ vector<Rod*> checkRodCollisions(ofVec3f p, float radius) {
     for(int i=0; i<rods.size(); i++) {
         Rod &r = rods[i];
         if((p - r.getGlobalPosition()).lengthSquared() < radius * radius) {
-            r.setAmp(1);
+            if(setAmp) r.setAmp(1);
             hitRods.push_back(&r);
         }
         //            r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
@@ -934,8 +935,11 @@ void testApp::update() {
         for(int j=0; j<performers.size(); j++) checkRodCollisions(performers[j].getGlobalPosition(), performers[j].affectRadius);
         
         // check mouse-rod collision
-        vector<Rod*> hitRods = checkRodCollisions(mouse3d, mouseRadius);
-        if(hitRods.size() && ofGetMousePressed() && !ofGetKeyPressed()) selectedRod = hitRods[0];
+        vector<Rod*> hitRods = checkRodCollisions(mouse3d, mouseRadius, params["randomMusic.triggerOnMouse"]);
+        if(hitRods.size()) {
+            if(ofGetMousePressed() && !ofGetKeyPressed()) selectedRod = hitRods[0];
+            else hitRods[0]->color.set(255, 0, 0);
+        }
     }
  	
 	// set lasers based on amp
@@ -956,7 +960,7 @@ void testApp::update() {
 
     
     if(selectedRod) {
-        selectedRod->color.set(255, 0, 0);
+        selectedRod->color.set(255, 255, 0);
         selectedRod->setLaser(1);
     }
     
@@ -1197,10 +1201,6 @@ void testApp::keyPressed(int key){
             easyCam.enableMouseInput();
             break;
             
-        case 'L':
-            params["comms.learnMode"] = ! (bool) params["comms.learnMode"];
-            break;
-            
         case '>':
         case '.':
             if(selectedRod &&  selectedRod->getIndex() < rods.size()-1) selectedRod = &rods[selectedRod->getIndex()+1];
@@ -1254,6 +1254,12 @@ void testApp::keyPressed(int key){
         case 'A':
             params["comms.forceLasersOn"] = !params["comms.forceLasersOn"];
             break;
+
+        case 'L':
+            params["comms.learnMode"] = ! (bool) params["comms.learnMode"];
+            break;
+            
+
 #endif
     }
 }
