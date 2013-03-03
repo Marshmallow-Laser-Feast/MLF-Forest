@@ -30,7 +30,7 @@
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="camera">
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="view" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="fov" value="40"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotx" value="45"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="roty" value="32"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotz" value="0"></Parameter>
@@ -80,13 +80,13 @@
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="animation">
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="laser">
-                <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="file" value="1"></Parameter>
+                <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="file" value="2"></Parameter>
                 <Parameter type="N3msa12controlfreak13ParameterBoolE" name="loop" value="1"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="1.000000000"></Parameter>
                 <Parameter type="N3msa12controlfreak13ParameterBoolE" name="playRandom" value="1"></Parameter>
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomChangeTimeMin" value="5"></Parameter>
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomChangeTimeMax" value="15"></Parameter>
-                <Parameter type="N3msa12controlfreak12ParameterIntE" name="nextChangeMillis" value="339561"></Parameter>
+                <Parameter type="N3msa12controlfreak12ParameterIntE" name="nextChangeMillis" value="380865"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="performance">
                 <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="file" value="0"></Parameter>
@@ -114,8 +114,8 @@
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="60"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="compression">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="0.000000000"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="3.682546377"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.024387725"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">
@@ -137,7 +137,7 @@
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="comms">
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="learnMode" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="learnAmpThreshold" value="0.500000000"></Parameter>
-            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="forceLasersOn" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="forceLasersOn" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="param1" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="param2" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="param3" value="0"></Parameter>
