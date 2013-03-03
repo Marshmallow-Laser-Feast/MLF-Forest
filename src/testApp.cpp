@@ -204,18 +204,6 @@ void testApp::setup() {
     //        params.addBool("rayReflection");
     //    } params.endGroup();
     
-    params.startGroup("performers").close(); {
-        params.addInt("count").setTooltip("number of performers").setRange(0, 30).setClamp(true);
-        params.addInt("heightMin").setTooltip("minimum performer height (cm)").setRange(1, 200).setClamp(true).set(100);
-        params.addInt("heightMax").setTooltip("maximum performer height (cm)").setRange(1, 200).setClamp(true).set(150);
-        params.addInt("speedMin").setTooltip("minimum performer speed (cm/s)").setRange(1, 500).setClamp(true).set(10);
-        params.addInt("speedMax").setTooltip("maximum performer speed (cm/s)").setRange(1, 500).setClamp(true).set(20);
-        params.addInt("color").setClamp(true).set(60);
-        params.addFloat("affectRadius").setRange(0, 2).setClamp(true);
-        params.addFloat("noiseAmount").setRange(0, 20).setClamp(true).trackVariable(&Performer::noiseAmount);
-        params.addFloat("noiseFreq").setRange(0, 0.1).setClamp(true).trackVariable(&Performer::noiseFreq);
-    } params.endGroup();
-    
     params.startGroup("laser").close(); {
         params.addBool("displayLaser").trackVariable(&Rod::displayLaser);
         params.addInt("height").setRange(0, 10000).setClamp(true).trackVariable(&Rod::laserHeight);
@@ -226,6 +214,18 @@ void testApp::setup() {
         params.addFloat("laserRandomProbability").setClamp(true).set(0.3).trackVariable(&Rod::laserRandomProbability);
         params.addFloat("triggerThreshold").setTooltip("turn laser on when amp increases above this").trackVariable(&Rod::laserTriggerThreshold).setClamp(true).set(0.1);
         params.addFloat("cutoffThreshold").setTooltip("cut laser off when amp falls below this").trackVariable(&Rod::laserCutoffThreshold).setClamp(true).set(0.5);
+    } params.endGroup();
+    
+    params.startGroup("performers").close(); {
+        params.addInt("count").setTooltip("number of performers").setRange(0, 30).setClamp(true);
+        params.addInt("heightMin").setTooltip("minimum performer height (cm)").setRange(1, 200).setClamp(true).set(100);
+        params.addInt("heightMax").setTooltip("maximum performer height (cm)").setRange(1, 200).setClamp(true).set(150);
+        params.addInt("speedMin").setTooltip("minimum performer speed (cm/s)").setRange(1, 500).setClamp(true).set(10);
+        params.addInt("speedMax").setTooltip("maximum performer speed (cm/s)").setRange(1, 500).setClamp(true).set(20);
+        params.addInt("color").setClamp(true).set(60);
+        params.addFloat("affectRadius").setRange(0, 2).setClamp(true);
+        params.addFloat("noiseAmount").setRange(0, 20).setClamp(true).trackVariable(&Performer::noiseAmount);
+        params.addFloat("noiseFreq").setRange(0, 0.1).setClamp(true).trackVariable(&Performer::noiseFreq);
     } params.endGroup();
     
     params.startGroup("randomMusic"); {
@@ -385,6 +385,7 @@ void testApp::setup() {
     cameras.resize(params.get<msa::controlfreak::ParameterNamedIndex>("camera.view").size());
     
     easyCam.disableMouseInput();
+    easyCam.setPosition(0, 1000, 0);
     easyCam.setDistance(4400);
     cameras[0] = &easyCam;
     
