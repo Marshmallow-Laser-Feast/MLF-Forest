@@ -1226,6 +1226,10 @@ void testApp::keyPressed(int key){
         case '\'':
             rodCommunicator->paused ^= true;
             break;
+            
+        case 'A':
+            params["comms.forceLasersOn"] = !params["comms.forceLasersOn"];
+            break;
 #endif
     }
 }

@@ -137,6 +137,7 @@ void RodInfo::setRawData(const RawAccelerometerData &data) {
 
 
 float RodInfo::getAmplitude() {
+    if(status != ROD_STATUS_OK) return 0;
     float signal = rawData.z/90.f;
     signal *= ForestSerialPort::ampGain;
     signal = ofClamp(signal, 0, 1);
