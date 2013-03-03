@@ -9,6 +9,7 @@
 RodCommunicator::RodCommunicator() {
 	MODE = DISCOVERING;
 	totalRodCount = 0;
+    paused = false;
 	running = false;
     smoothedUpdateRate = 0;
 }
@@ -173,25 +174,32 @@ void RodCommunicator::threadedFunction() {
 	// then run
 	while(running) {
 		
-		float tm = ofGetElapsedTimef();
-		// timer for reporting
-		updateRate = 1.f/(tm - t);
-		t = tm;
-		
-		// this is also wrong - should be a proper timer
-		ofSleepMillis(msPerFrame);
-		
-		// ask the rods for data
-		for(int i = 0; i < ports.size(); i++) {
-			ports[i].request();
-		}
-		
-		//usleep(10000);
-		
-		// read the data back
-		for(int i = 0; i < ports.size(); i++) {
-			ports[i].retrieve();
-		}
+        if(paused) {
+            ofSleepMillis(100);
+            for(int i = 0; i < ports.size(); i++) {
+                ports[i].reset();
+            }
+        } else {
+            float tm = ofGetElapsedTimef();
+            // timer for reporting
+            updateRate = 1.f/(tm - t);
+            t = tm;
+            
+            // this is also wrong - should be a proper timer
+            ofSleepMillis(msPerFrame);
+            
+            // ask the rods for data
+            for(int i = 0; i < ports.size(); i++) {
+                ports[i].request();
+            }
+            
+            //usleep(10000);
+            
+            // read the data back
+            for(int i = 0; i < ports.size(); i++) {
+                ports[i].retrieve();
+            }
+        }
 		
 	}
 }

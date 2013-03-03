@@ -156,7 +156,15 @@ bool ForestSerialPort::tryToRead(unsigned char *buff, int length, int timeout) {
 }
 
 
-
+void ForestSerialPort::reset() {
+    int a = serial.available();
+	unsigned char s[256];
+	if(a) {
+		printf("Found stuff in the buffer (%d bytes)\n", a);
+		serial.read(s, MIN(a, 256));
+		a = serial.available();
+	}
+}
 
 bool ForestSerialPort::setTimeslot(int boardId, int timeslot, bool set) {
 	unsigned char buff[] = {0xFF, 0x06, 0x01, 0x01, 0x00, 0x00, 0x00};

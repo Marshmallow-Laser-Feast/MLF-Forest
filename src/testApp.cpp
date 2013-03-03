@@ -1223,6 +1223,9 @@ void testApp::keyPressed(int key){
 			rodCommunicator->reset();
 			rodMapper.reset();
 			break;
+        case '\'':
+            rodCommunicator->paused ^= true;
+            break;
 #endif
     }
 }

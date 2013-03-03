@@ -49,7 +49,7 @@ public:
 	void draw();
 	void inspect();
 	
-    
+    bool paused;    
     
 protected:
 	void threadedFunction();
@@ -67,7 +67,7 @@ private:
 	vector<ForestSerialPort> ports;
 	CommunicatorMode MODE;
 	int totalRodCount;
-	
+
 	// reported update rate in hz
 	float updateRate;
 	bool running;
