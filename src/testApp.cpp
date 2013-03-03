@@ -1232,6 +1232,10 @@ void testApp::keyPressed(int key){
             params["animation.laser.file"] = 0;
             break;
             
+        case 'o':
+            params["sound.osc.forceSend"] = true;
+            break;
+            
             
             
 #ifdef DOING_SERIAL
