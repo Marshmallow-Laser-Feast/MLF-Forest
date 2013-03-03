@@ -228,6 +228,15 @@ void testApp::setup() {
         params.addFloat("cutoffThreshold").setTooltip("cut laser off when amp falls below this").trackVariable(&Rod::laserCutoffThreshold).setClamp(true).set(0.5);
     } params.endGroup();
     
+    params.startGroup("randomMusic"); {
+        params.addBool("enabled");
+        params.addInt("randomChangeTimeMin").setTooltip("Change random animation after min this many seconds").setClamp(true);
+        params.addInt("randomChangeTimeMax").setTooltip("Change random animation after max this many seconds").setClamp(true);;
+        params.addFloat("randomAmpMin").setClamp(true);
+        params.addFloat("randomAmpMax").setClamp(true);
+        params.addInt("nextChangeMillis");
+    } params.endGroup();
+    
     params.startGroup("animation"); {
         params.startGroup("laser"); {
             params.addNamedIndex("file").setTooltip("use a black & white PJPG quicktime for laser animation");
@@ -630,6 +639,17 @@ void updateRodLaserAnimation() {
 
 
 //--------------------------------------------------------------
+void updateRandomMusic() {
+    if(params["randomMusic.enabled"]) {
+        if(ofGetElapsedTimeMillis() >= (int)params["randomMusic.nextChangeMillis"]) {
+            params["randomMusic.nextChangeMillis"] = ofGetElapsedTimeMillis() + 1000 * ofRandom(params["randomMusic.randomChangeTimeMin"], params["randomMusic.randomChangeTimeMax"]);
+            int randomRodIndex = ofRandom(floor(rods.size()));
+            rods[randomRodIndex].setAmp(ofRandom(params["randomMusic.randomAmpMin"], params["randomMusic.randomAmpMax"]));
+        }
+    }
+}
+
+//--------------------------------------------------------------
 void updatePerformanceAnimation() {
     msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.performance.file");
     if(paramNamedIndex.hasChanged()) {
@@ -880,7 +900,7 @@ void testApp::update() {
     // this simply moves the performers around
     for(int i=0; i<performers.size(); i++) performers[i].update();
     
-	
+	updateRandomMusic();
     
     // serial comms should simply set (overwrite) the value of Amp for each rod
 #ifdef DOING_SERIAL
