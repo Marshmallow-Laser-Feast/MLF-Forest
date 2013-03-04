@@ -266,7 +266,7 @@ void ForestSerialPort::request() {
 	unsigned char s[256];
     int loops = 10;
 	if(a && loops-->0) {
-		printf("Error: found stuff in the buffer (%d bytes)\n", a);
+		printf("%s Error: found stuff in the buffer (%d bytes)\n", serialNo.c_str(), a);
 		serial.read(s, MIN(a, 256));
 		a = serial.available();
 	}
@@ -276,7 +276,7 @@ void ForestSerialPort::request() {
 		0x23, // command length
 		0x02, // command number
 		0x00, // ID (broadcast)
-		0x00, // data type, will be set after allocation
+		0x00, // data type, will be set after allocationmymy JHmymy KuKu j MrMr Ku
 		0x00, // param1
 		0x00, // param2
 		0x00, // param3
