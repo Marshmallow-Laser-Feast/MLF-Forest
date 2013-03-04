@@ -30,7 +30,7 @@
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="camera">
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="view" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="fov" value="40"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotx" value="45"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="roty" value="32"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotz" value="0"></Parameter>
@@ -83,8 +83,8 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomChangeTimeMin" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomChangeTimeMax" value="3"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="randomAmpMin" value="0.000000000"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="randomAmpMax" value="0.446428567"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="nextChangeMillis" value="1748160"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="randomAmpMax" value="0.535714269"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="nextChangeMillis" value="1917819"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="triggerOnMouse" value="0"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="animation">
@@ -123,8 +123,8 @@
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="60"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="compression">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="0.143471003"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.000950139"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="2.208063841"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.014622940"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">

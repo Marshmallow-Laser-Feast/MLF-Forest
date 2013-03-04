@@ -82,7 +82,7 @@ public:
 private:
 	
 	bool setTimeslot(int boardId, int timeslot, bool set = true);
-	bool tryToRead(unsigned char *buff, int length, int timeout = 1000);
+	bool tryToRead(unsigned char *buff, int length, int timeout = 100);
 	
 	D2xxSerial serial;
 	string serialNo;

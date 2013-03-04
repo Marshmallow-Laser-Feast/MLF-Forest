@@ -221,7 +221,7 @@ void ForestSerialPort::retrieve() {
 	if(currentCommandType==RETURN_RAW_ACCELEROMETER) {
 		for(int i = 0; i < rodInfos.size(); i++) {
 			RawAccelerometerData accel;
-			if(tryToRead((unsigned char*)&accel, sizeof(accel), 1000)) {
+			if(tryToRead((unsigned char*)&accel, sizeof(accel), 30)) {
 				if(rodInfos.find(accel.id)!=rodInfos.end()) {
 					if(accel.x!=0x40) {
 						rodInfos[accel.id].setRawData(accel);
