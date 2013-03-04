@@ -74,6 +74,10 @@ RodMapper rodMapper;
 #endif
 
 
+int animation_nextChangeMillis = 0;
+int randomMusic_nextChangeMillis = 0;
+
+
 
 //--------------------------------------------------------------
 ofVec3f windowToWorld(float x, float y) {
@@ -234,7 +238,6 @@ void testApp::setup() {
         params.addInt("randomChangeTimeMax").setTooltip("Change random animation after max this many seconds").setClamp(true);;
         params.addFloat("randomAmpMin").setClamp(true);
         params.addFloat("randomAmpMax").setClamp(true);
-        params.addInt("nextChangeMillis");
         params.addBool("triggerOnMouse");
     } params.endGroup();
     
@@ -246,7 +249,6 @@ void testApp::setup() {
             params.addBool("playRandom");
             params.addInt("randomChangeTimeMin").setTooltip("Change random animation after min this many seconds").setClamp(true);
             params.addInt("randomChangeTimeMax").setTooltip("Change random animation after max this many seconds").setClamp(true);;
-            params.addInt("nextChangeMillis");
         } params.endGroup();
         params.startGroup("performance"); {
             params.addNamedIndex("file").setTooltip("use a black & white PJPG quicktime for performance animation");
@@ -632,8 +634,8 @@ void updateRodLaserAnimation() {
     
     
     if(params["animation.laser.playRandom"]) {
-        if(ofGetElapsedTimeMillis() >= (int)params["animation.laser.nextChangeMillis"]) {
-            params["animation.laser.nextChangeMillis"] = ofGetElapsedTimeMillis() + 1000 * ofRandom(params["animation.laser.randomChangeTimeMin"], params["animation.laser.randomChangeTimeMax"]);
+        if(ofGetElapsedTimeMillis() >= animation_nextChangeMillis) {
+            animation_nextChangeMillis = ofGetElapsedTimeMillis() + 1000 * ofRandom(params["animation.laser.randomChangeTimeMin"], params["animation.laser.randomChangeTimeMax"]);
             paramNamedIndex = ofRandom(1, paramNamedIndex.size());
         }
     }
@@ -643,8 +645,8 @@ void updateRodLaserAnimation() {
 //--------------------------------------------------------------
 void updateRandomMusic() {
     if(params["randomMusic.enabled"]) {
-        if(ofGetElapsedTimeMillis() >= (int)params["randomMusic.nextChangeMillis"]) {
-            params["randomMusic.nextChangeMillis"] = ofGetElapsedTimeMillis() + 1000 * ofRandom(params["randomMusic.randomChangeTimeMin"], params["randomMusic.randomChangeTimeMax"]);
+        if(ofGetElapsedTimeMillis() >= randomMusic_nextChangeMillis) {
+            randomMusic_nextChangeMillis = ofGetElapsedTimeMillis() + 1000 * ofRandom(params["randomMusic.randomChangeTimeMin"], params["randomMusic.randomChangeTimeMax"]);
             int randomRodIndex = ofRandom(floor(rods.size()));
             rods[randomRodIndex].setAmp(ofRandom(params["randomMusic.randomAmpMin"], params["randomMusic.randomAmpMax"]));
         }
