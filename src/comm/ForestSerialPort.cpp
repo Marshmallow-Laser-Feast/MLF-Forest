@@ -260,6 +260,16 @@ void ForestSerialPort::retrieve() {
 
 // reads the data back from the lasers
 void ForestSerialPort::request() {
+    
+    // check for stuff in the buffer (i.e. errors?)
+    int a = serial.available();
+	unsigned char s[256];
+    int loops = 10;
+	if(a && loops-->0) {
+		printf("Error: found stuff in the buffer (%d bytes)\n", a);
+		serial.read(s, MIN(a, 256));
+		a = serial.available();
+	}
 	
 	unsigned char cmd[] = {
 		0xFF, // frame start marker
