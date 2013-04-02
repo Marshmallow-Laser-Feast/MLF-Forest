@@ -1,15 +1,8 @@
 // Forest project - SC code
 
-//  ======= Notes re: version SC_Forest_14
-//
-// changed the definition of ~globalSoundShapeBus:
-// OLD:  ~globalSoundShapeBus = Bus.control(s, 2); // wrongly asks for 2 channels
-// NEW:  ~globalSoundShapeBus = Bus.control(s, 1);
-// - changed ~arrSoundFuncs: the 2 "Sine Ringz" functions needed Mix.new to mix them to mono.
-// - changed ~arrPanFuncs as follows:
-//    - changed the Stereo function to use Pan2, not SplayAz
-//    - changed Surround function by replacing "oscillator" with "oscillator ! 2" as SplayAz needs an array of inputs.
-// ======= end
+// Copyright (C) 2013 Paul Miller (paul@palemoonrising.co.uk) & Memo Akten (memo@memo.tv)
+// This file is distributed under the terms of the GNU General Public License
+// see http://www.gnu.org/licenses/gpl.html
 
 /*
 NOTE: This can receive the following OSC messages (type & ranges in brackets):

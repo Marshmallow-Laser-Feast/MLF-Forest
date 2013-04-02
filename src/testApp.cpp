@@ -54,7 +54,9 @@ ofxAssimpModelLoader venueModel;
 ofImage layoutImage;
 ofxCvContourFinder layoutImageContours;
 
-ofVideoPlayer animationVideo;
+ofVideoPlayer *animationVideo = NULL;
+//vector<ofVideoPlayer*> laserAnimations;
+
 ofxCvContourFinder animationVideoContours;
 
 ofSoundPlayer messageAudio;
@@ -589,28 +591,41 @@ vector<Rod*> checkRodCollisions(ofVec3f p, float radius, bool setAmp = true) {
 //--------------------------------------------------------------
 void updateRodLaserAnimation() {
     msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.laser.file");
-    
+    static int videoNumber = 0;
     if(paramNamedIndex.hasChanged()) {
         if((int)paramNamedIndex == 0) {
-            animationVideo.close();
+            //            animationVideo->close();
+            if(animationVideo) {
+                delete animationVideo;
+                animationVideo = NULL;
+            }
         } else {
             params["animation.performance.file"] = 0;
             params["animation.performance.file"].clearChanged();
-            params["performers.count"] = 0;
-            animationVideo.loadMovie(paramNamedIndex.getSelectedLabel());
-            animationVideo.setLoopState(params["animation.laser.loop"] ? OF_LOOP_NORMAL : OF_LOOP_NONE);
-            animationVideo.setSpeed(params["animation.laser.speed"]);
-            animationVideo.play();
+//            params["performers.count"] = 0;
+            
+            if(animationVideo) {
+                videoNumber++;
+                printf("deleting video %i %s\n", videoNumber, animationVideo->getMoviePath().c_str());
+                delete animationVideo;
+                animationVideo = NULL;
+            }
+
+            animationVideo = new ofVideoPlayer;
+            animationVideo->loadMovie(paramNamedIndex.getSelectedLabel());
+            animationVideo->setLoopState(params["animation.laser.loop"] ? OF_LOOP_NORMAL : OF_LOOP_NONE);
+            animationVideo->setSpeed(params["animation.laser.speed"]);
+            animationVideo->play();
         }
     }
     
     
     // if video is loaded and a it's a laser animation
-    if(animationVideo.isLoaded() && (int)paramNamedIndex > 0) {
-        if(params["animation.laser.loop"].hasChanged()) animationVideo.setLoopState(params["animation.laser.loop"] ? OF_LOOP_NORMAL : OF_LOOP_NONE);
-        if(params["animation.laser.speed"].hasChanged()) animationVideo.setSpeed(params["animation.laser.speed"]);
+    if(animationVideo && animationVideo->isLoaded() && (int)paramNamedIndex > 0) {
+        if(params["animation.laser.loop"].hasChanged()) animationVideo->setLoopState(params["animation.laser.loop"] ? OF_LOOP_NORMAL : OF_LOOP_NONE);
+        if(params["animation.laser.speed"].hasChanged()) animationVideo->setSpeed(params["animation.laser.speed"]);
         
-        animationVideo.update();
+        animationVideo->update();
         
         //        float outputPitchMult = params["sound.local.outputPitchMult"];
         //        float volumeVariance = params["sound.volumeVariance"];
@@ -619,12 +634,12 @@ void updateRodLaserAnimation() {
         //        float volumePitchMult = params["tuning.volumePitchMult"];
         //        ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
         
-        ofPixelsRef pixels = animationVideo.getPixelsRef();
+        ofPixelsRef pixels = animationVideo->getPixelsRef();
         for(int i=0; i<rods.size(); i++) {
             Rod &r = rods[i];
             ofVec2f imagePos;
-            imagePos.x = ofMap(r.getX(), -installationSize.x/2, installationSize.x/2, 0, animationVideo.getWidth());
-            imagePos.y = ofMap(r.getZ(), -installationSize.z/2, installationSize.z/2, 0, animationVideo.getHeight());
+            imagePos.x = ofMap(r.getX(), -installationSize.x/2, installationSize.x/2, 0, animationVideo->getWidth());
+            imagePos.y = ofMap(r.getZ(), -installationSize.z/2, installationSize.z/2, 0, animationVideo->getHeight());
             //            if(pixels.getColor(imagePos.x, imagePos.y).r > 0) r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
             //            else r.amp = 0;
 //            r.setLaser(pixels.getColor(imagePos.x, imagePos.y).r / 255.0);
@@ -658,50 +673,55 @@ void updatePerformanceAnimation() {
     msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.performance.file");
     if(paramNamedIndex.hasChanged()) {
         if((int)paramNamedIndex == 0) {
-            animationVideo.close();
+            //            animationVideo->close();
+            if(animationVideo) {
+                delete animationVideo;
+                animationVideo = NULL;
+            }
         } else {
             params["animation.laser.file"] = 0;
             params["animation.laser.file"].clearChanged();
             params["performers.count"] = 0;
             
-            //            animationVideo.loadMovie("animations/laser/" + paramNamedIndex.getSelectedLabel());
-            animationVideo.loadMovie(paramNamedIndex.getSelectedLabel());
-            animationVideo.setLoopState(OF_LOOP_NONE);
-            animationVideo.setSpeed(params["animation.performance.speed"]);
+            animationVideo = new ofVideoPlayer;
+            //            animationVideo->loadMovie("animations/laser/" + paramNamedIndex.getSelectedLabel());
+            animationVideo->loadMovie(paramNamedIndex.getSelectedLabel());
+            animationVideo->setLoopState(OF_LOOP_NONE);
+            animationVideo->setSpeed(params["animation.performance.speed"]);
             
-            if(params["animation.performance.play"]) animationVideo.play();
-            params["animation.performance.time"].setRange(0, animationVideo.getDuration());
+            if(params["animation.performance.play"]) animationVideo->play();
+            params["animation.performance.time"].setRange(0, animationVideo->getDuration());
         }
     }
     
     
     // if video is loaded and a it's a performance animation
-    if(animationVideo.isLoaded() && (int)paramNamedIndex > 0) {
+    if(animationVideo && animationVideo->isLoaded() && (int)paramNamedIndex > 0) {
         Performer::updateFromAnimation = true;
         
-        if(params["animation.performance.speed"].hasChanged()) animationVideo.setSpeed(params["animation.performance.speed"]);
+        if(params["animation.performance.speed"].hasChanged()) animationVideo->setSpeed(params["animation.performance.speed"]);
         
         if(params["animation.performance.play"].hasChanged()) {
-            if(params["animation.performance.play"]) animationVideo.play();
-            else animationVideo.stop();
+            if(params["animation.performance.play"]) animationVideo->play();
+            else animationVideo->stop();
         }
         
         if(params["animation.performance.play"]) {
-            params["animation.performance.time"] = animationVideo.getPosition() * animationVideo.getDuration();
+            params["animation.performance.time"] = animationVideo->getPosition() * animationVideo->getDuration();
         } else {
-            animationVideo.setPosition((float)params["animation.performance.time"] / animationVideo.getDuration());
+            animationVideo->setPosition((float)params["animation.performance.time"] / animationVideo->getDuration());
         }
         
-        animationVideo.update();
+        animationVideo->update();
         //        params["animation.performance.time"].clearChanged();
         //        if(params["animation.performance.time"]
         
         ofxCvColorImage colorImage;
-        colorImage.allocate(animationVideo.getWidth(), animationVideo.getHeight());
-        colorImage.setFromPixels(animationVideo.getPixelsRef());
+        colorImage.allocate(animationVideo->getWidth(), animationVideo->getHeight());
+        colorImage.setFromPixels(animationVideo->getPixelsRef());
         
         ofxCvGrayscaleImage greyImage;
-        greyImage.allocate(animationVideo.getWidth(), animationVideo.getHeight());
+        greyImage.allocate(animationVideo->getWidth(), animationVideo->getHeight());
         greyImage = colorImage;
         
         //        greyImage.blur(params["animation.performance.blurAmount"]);
@@ -725,7 +745,7 @@ void updatePerformanceAnimation() {
             p.setGlobalPosition(x, 0, z);
             p.heightNorm = 0.5;
             p.height = ofLerp(heightMin, heightMax, p.heightNorm);
-            p.color = animationVideo.getPixelsRef().getColor(blob.centroid.x, blob.centroid.y);
+            p.color = animationVideo->getPixelsRef().getColor(blob.centroid.x, blob.centroid.y);
             //            p.color *= 255;
             
         }
@@ -1109,9 +1129,9 @@ void testApp::draw() {
             layoutImage.draw(ofGetWidth()-w, 0, w, w);
             layoutImageContours.draw(ofGetWidth()-w, 0, w, w);
         }
-        if(animationVideo.isLoaded()) {
+        if(animationVideo && animationVideo->isLoaded()) {
             ofSetColor(255);
-            animationVideo.draw(ofGetWidth()-w, w, w, w);
+            animationVideo->draw(ofGetWidth()-w, w, w, w);
             animationVideoContours.draw(ofGetWidth()-w, w, w, w);
         }
         
@@ -1120,7 +1140,7 @@ void testApp::draw() {
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 2), ofGetWidth() - 100, 30);
     
     if(selectedRod && params["display.bDisplaySelectedId"]) {
-        ofDrawBitmapString(selectedRod->getInfoStr(), ofGetWidth() - 285, ofGetHeight()-110);
+        ofDrawBitmapString(selectedRod->getInfoStr(), ofGetWidth() - 285, ofGetHeight()-130);
     }
     
 #ifdef DOING_SERIAL
