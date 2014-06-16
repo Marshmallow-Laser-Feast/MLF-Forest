@@ -23,7 +23,6 @@ obj/
 Debug*/
 Release*/
 *.mode*
-*.app/
 *.pyc
 .svn/
 
