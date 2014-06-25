@@ -4,7 +4,17 @@
 // This file is distributed under the terms of the GNU General Public License
 // see http://www.gnu.org/licenses/gpl.html
 
-/*
+/**************************************************
+LAUNCH INSTRUCTIONS
+Make sure server is running (Language / Boot Server, CMD+B)
+Check Log to make sure it didn't fail (common error is 48000 != 44100, fix from Audio Midi Setup)
+Select all this text (CMD+A)
+Shift+Enter to run
+Make sure audio is set to 'Surround(PanAz)' if surround, or 'Stereo' if stereo
+
+***************************************************
+
+
 NOTE: This can receive the following OSC messages (type & ranges in brackets):
 Message: '/forestAmp', rodNo (int 0-149), value (float 0.0-1.0)
 Message: '/forestFreq', rodNo (int 0-149), value (float 0.0-20000.0)
@@ -12,7 +22,7 @@ Message: '/forestPos', rodNo (int 0-149), value (float 0.0-1.0)
 Message: '/forestCentre', rodNo (int 0-149), value (float 0.0-1.0)
 
 e.g message: ['/forestAmp", 15, 0.33] means set the amp of rod 15 to 0.33
-*/
+***************************************************/
 
 (
 // initialise
