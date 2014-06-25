@@ -16,7 +16,7 @@
 #include "Performer.h"
 #include "ScaleManager.h"
 #include "ofxOpenCv.h"
-#include "ofxAssimpModelLoader.h"
+//#include "ofxAssimpModelLoader.h"
 #include "ofxOsc.h"
 #include "ofxMidi.h"
 
@@ -49,7 +49,7 @@ ofVec3f mouse3d;    // 3d coordinates of mouse
 float mouseRadius = 50; // radius of mouse cursor
 Rod *selectedRod = NULL; // rod the mouse is currently hitting
 
-ofxAssimpModelLoader venueModel;
+//ofxAssimpModelLoader venueModel;
 
 ofImage layoutImage;
 ofxCvContourFinder layoutImageContours;
@@ -403,9 +403,9 @@ void testApp::setup() {
     
     messageAudio.loadSound("message.wav");
     
-    venueModel.loadModel("3d/venue.dae");
-    venueModel.setScaleNomalization(false);
-    venueModel.setScale(1, -1, 1);
+//    venueModel.loadModel("3d/venue.dae");
+//    venueModel.setScaleNomalization(false);
+//    venueModel.setScale(1, -1, 1);
     
     sendRodOsc(true);
 }
@@ -1022,7 +1022,7 @@ void drawFloor() {
     ofVertex(-floorWidth/2, 0, floorLength/2);
     ofEndShape(true);
     
-    venueModel.drawFaces();
+//    venueModel.drawFaces();
     
     ofSetColor(100, 0, 0);
     ofLine(-floorWidth/2, 5, 0, floorWidth/2, 5, 0);
