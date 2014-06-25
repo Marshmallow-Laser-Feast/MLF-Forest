@@ -1003,6 +1003,7 @@ void testApp::update() {
     
 	// send OSC
     bool bForce = params["sound.osc.forceSend"];
+    if(ofGetFrameNum() < 5) bForce = true; // force true for first 5 frames to fix osc init issue
     int sendFullFrameCount = params["sound.osc.sendFullFrameCount"];
     if(sendFullFrameCount && (ofGetFrameNum() % (sendFullFrameCount * 30) == 0)) bForce = true;
     sendRodOsc(bForce);  // send OSC, force if nessecary
