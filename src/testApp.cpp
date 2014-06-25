@@ -898,7 +898,7 @@ void sendRodOsc(bool bForce) {
 
 //--------------------------------------------------------------
 void testApp::update() {
-    msa::controlfreak::update();
+//    msa::controlfreak::update();
     
     checkAndInitRodLayout();
     checkAndInitPerformers();
