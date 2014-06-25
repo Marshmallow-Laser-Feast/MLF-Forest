@@ -13,6 +13,7 @@
 
 #include "ofMain.h"
 #include "ofxMidi.h"
+#include "ofxAssimpModelLoader.h"
 
 class testApp : public ofBaseApp, public ofxMidiListener {
     
@@ -33,5 +34,11 @@ public:
     void gotMessage(ofMessage msg);
     
     virtual void newMidiMessage(ofxMidiMessage& msg);
+    
+    ofxAssimpModelLoader venueModel;
+    
+    void drawFloor();
+
+
 
 };

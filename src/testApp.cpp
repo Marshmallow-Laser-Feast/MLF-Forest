@@ -403,9 +403,9 @@ void testApp::setup() {
     
     messageAudio.loadSound("message.wav");
     
-//    venueModel.loadModel("3d/venue.dae");
-//    venueModel.setScaleNomalization(false);
-//    venueModel.setScale(1, -1, 1);
+    venueModel.loadModel("3d/venue.dae");
+    venueModel.setScaleNomalization(false);
+    venueModel.setScale(1, -1, 1);
     
     sendRodOsc(true);
 }
@@ -1011,7 +1011,7 @@ void testApp::update() {
 
 
 //--------------------------------------------------------------
-void drawFloor() {
+void testApp::drawFloor() {
     int floorWidth = params["layout.floorWidth"];
     int floorLength = params["layout.floorLength"];
     ofSetColor((int)params["display.floorColor"].getMappedTo(0, 255));
@@ -1022,7 +1022,7 @@ void drawFloor() {
     ofVertex(-floorWidth/2, 0, floorLength/2);
     ofEndShape(true);
     
-//    venueModel.drawFaces();
+    venueModel.drawFaces();
     
     ofSetColor(100, 0, 0);
     ofLine(-floorWidth/2, 5, 0, floorWidth/2, 5, 0);
