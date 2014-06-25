@@ -30,20 +30,20 @@
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="camera">
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="view" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="fov" value="40"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotx" value="45"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="roty" value="32"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotz" value="0"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="layout">
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="floorWidth" value="6000"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="floorWidth" value="3000"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="floorLength" value="3000"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="installationWidth" value="1900.000000000"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="installationLength" value="1900.000000000"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rodCountWidth" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rodCountLength" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomness" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="image" value="8"></Parameter>
+            <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="image" value="1"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="rods">
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMin" value="250"></Parameter>
@@ -54,7 +54,7 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="angleAmp" value="1"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="dampSpeed" value="0.026785715"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="showRodAmp" value="83"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="selectedRodAmp" value="0.000000000"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="selectedRodAmp" value="0.001159474"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="laser">
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="displayLaser" value="1"></Parameter>
@@ -121,8 +121,8 @@
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="60"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="compression">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="3.176508427"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.021036480"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="0.000620365"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.000008616"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">
@@ -140,22 +140,6 @@
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="invert" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="noteRandomness" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="detuneAmount" value="8"></Parameter>
-        </Parameter>
-        <Parameter type="N3msa12controlfreak14ParameterGroupE" name="comms">
-            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="learnMode" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="learnAmpThreshold" value="0.500000000"></Parameter>
-            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="forceLasersOn" value="1"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="param1" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="param2" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="param3" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipOverTimeConstant" value="116"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipThreshold" value="40"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserTimeoutValue" value="255"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserHoldoff" value="7"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="ampGain" value="1.607142806"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="gateThreshold" value="1225"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="attackThreshold" value="294"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="attackSmoothing" value="1.000000000"></Parameter>
         </Parameter>
     </Parameter>
 </ofxMSAControlFreak>
