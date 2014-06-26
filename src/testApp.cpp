@@ -18,7 +18,7 @@
 #include "ofxOpenCv.h"
 //#include "ofxAssimpModelLoader.h"
 #include "ofxOsc.h"
-#include "ofxMidi.h"
+//#include "ofxMidi.h"
 
 
 #ifdef DOING_SERIAL
@@ -1331,6 +1331,6 @@ void testApp::dragEvent(ofDragInfo dragInfo){
 
 
 //--------------------------------------------------------------
-void testApp::newMidiMessage(ofxMidiMessage& msg) {
-    
-}
+//void testApp::newMidiMessage(ofxMidiMessage& msg) {
+//    
+//}
