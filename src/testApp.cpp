@@ -1023,7 +1023,7 @@ void testApp::drawFloor() {
     ofVertex(-floorWidth/2, 0, floorLength/2);
     ofEndShape(true);
     
-    venueModel.drawFaces();
+//    venueModel.drawFaces();
     
     ofSetColor(100, 0, 0);
     ofLine(-floorWidth/2, 5, 0, floorWidth/2, 5, 0);
