@@ -365,7 +365,7 @@ void testApp::setup() {
         
         params.addFloat("attackSmoothing")
 		.setTooltip("how smoothed over the attack is")
-		.setRange(1, 6)
+		.setRange(1, 20)
 		.setClamp(true)
 		.trackVariable(&RodInfo::attackSmoothing);
         
@@ -475,7 +475,7 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
             r.setup(installationRadius);
         }
         
-        sort(rods.begin(), rods.end());
+//        sort(rods.begin(), rods.end());
         for(int i=0; i<rods.size(); i++) {
             rods[i].setIndex(i);
             rods[i].setDeviceId(i); // HACK: replace this with correct map
