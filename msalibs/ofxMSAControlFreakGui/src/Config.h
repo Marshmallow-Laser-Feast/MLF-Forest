@@ -20,7 +20,7 @@ namespace msa {
             
             
             class Config;
-            typedef std::tr1::shared_ptr<Config> ConfigPtr;
+            typedef std::shared_ptr<Config> ConfigPtr;
             
             class Config {
             public:

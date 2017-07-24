@@ -365,7 +365,7 @@ namespace msa {
             
             //--------------------------------------------------------------
             void Gui::showControlProperties(Control *targetControl) {
-                ofLogNotice() << "Gui::showControlProperties " << (int)targetControl;
+                ofLogNotice() << "Gui::showControlProperties " << (long)targetControl;
                 _pGuiControls->_pControlProperties->show(targetControl);
             }
             

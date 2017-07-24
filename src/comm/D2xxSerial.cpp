@@ -123,12 +123,14 @@ bool D2xxSerial::open(int which, int baudRate) {
 bool D2xxSerial::open(string who, int baudRate) {
 	
 	FT_STATUS err = FT_OpenEx((void*)who.c_str(), FT_OPEN_BY_SERIAL_NUMBER, &handle);
-	
+	//FT_STATUS err = FT_Open(0,&handle);
 	if (err != FT_OK) {
 		// FT_OpenEx failed
 		printf("Error connecting to '%s': %s\n", who.c_str(), getError(err));
 		return false;
-	}
+    //} else {
+    //    printf("Success connecting to serial port\n");
+    }
 	setBaudRate(baudRate);
 	return true;
 }

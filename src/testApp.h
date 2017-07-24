@@ -12,6 +12,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxMSAControlFreakGui.h"
 //#include "ofxMidi.h"
 #include "ofxAssimpModelLoader.h"
 
@@ -39,7 +40,20 @@ public:
     ofxAssimpModelLoader venueModel;
     
     void drawFloor();
+    
+    msa::controlfreak::ParameterGroup params;
+    msa::controlfreak::gui::Gui gui;
+    
 
-
-
+    void updateFilesGroup(string paramPath, string filePath, bool bAddNone);
+    void checkAndInitRodLayout(bool bForceUpdate = false);
+    void updateRodLaserAnimation();
+    void checkAndInitPerformers(bool bForceUpdate);
+    void checkAndInitFbo(bool bForceUpdate = false);
+    void updateCamera();
+    void updateRandomMusic();
+    void updatePerformanceAnimation();
+    void updateRodTuning();
+    void resetAll();
+    void sendRodOsc(bool bForce);
 };

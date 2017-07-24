@@ -8,10 +8,12 @@
 //  Marshmallow Laser Feast
 //  Forest
 //
+#define DOING_SERIAL
+
 
 
 #include "testApp.h"
-#include "ofxMSAControlFreakGui.h"
+
 #include "Rod.h"
 #include "Performer.h"
 #include "ScaleManager.h"
@@ -25,10 +27,6 @@
 #include "RodCommunicator.h"
 #include "RodMapper.h"
 #endif
-
-
-msa::controlfreak::ParameterGroup params;
-msa::controlfreak::gui::Gui gui;
 
 vector<Rod> rods;
 
@@ -102,15 +100,59 @@ ofVec3f windowToWorld(float x, float y) {
     return ofVec3f(posX, posY, posZ);
 }
 
+
+#include <sys/stat.h>
+#include <fstream>
+#include <dirent.h>
+#include <errno.h>
+
+
+void listDirectory(string dir, vector<string> &files) {
+    dir = ofToDataPath(dir);
+    if(dir.rfind("/")!=dir.size()-1) dir += "/";
+
+    DIR *dp;
+    struct dirent *dirp;
+    if((dp  = opendir(dir.c_str())) == NULL) {
+        cout << "Error(" << errno << ") opening " << dir << endl;
+        return;
+    }
+    
+    
+    while ((dirp = readdir(dp)) != NULL) {
+        string s = dirp->d_name;
+        if(s.size()>0 && s[0]!='.') {
+            files.push_back(dir + dirp->d_name);
+        }
+        
+    }
+    closedir(dp);
+    for(auto &f: files) {
+        printf("FILE: %s\n", f.c_str());
+    }
+    return;
+}
+
+
+
 //--------------------------------------------------------------
-void updateFilesGroup(string paramPath, string filePath, bool bAddNone) {
+void testApp::updateFilesGroup(string paramPath, string filePath, bool bAddNone) {
     msa::controlfreak::ParameterNamedIndex &paramFiles = params.get<msa::controlfreak::ParameterNamedIndex>(paramPath);
-    ofDirectory dir;
-    dir.listDir(filePath);
+    //ofDirectory dir;
+    //printf("Listing %s\n", filePath.c_str());
+    
+    vector<string> dir;
+    
+    listDirectory(filePath, dir);
+    //dir.listDir(filePath);
+    //printf("Done listing\n");
     paramFiles.clearLabels();
     if(bAddNone) paramFiles.addLabel("<NONE>");
-    for(int i=0; i<dir.size(); i++) {
-        paramFiles.addLabel(dir.getPath(i));
+    //for(int i=0; i<dir.size(); i++) {
+     //   paramFiles.addLabel(dir.getPath(i));
+    //}
+    for(auto d: dir) {
+        paramFiles.addLabel(d);
     }
 }
 
@@ -404,15 +446,16 @@ void testApp::setup() {
     messageAudio.loadSound("message.wav");
     
     venueModel.loadModel("3d/venue.dae");
-    venueModel.setScaleNomalization(false);
+    venueModel.setScaleNormalization(false);
     venueModel.setScale(1, -1, 1);
     
     sendRodOsc(true);
+    checkAndInitRodLayout(true);
 }
 
 
 //--------------------------------------------------------------
-void checkAndInitRodLayout(bool bForceUpdate = false) {
+void testApp::checkAndInitRodLayout(bool bForceUpdate) {
     msa::controlfreak::ParameterGroup &paramsLayout = params.getGroup("layout");
     if(bForceUpdate || paramsLayout.hasChanged())  {
         ofLogNotice() << "checkAndInitRodLayout at frame " << ofGetFrameNum();
@@ -443,6 +486,8 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
             
             //            rods.resize(layoutImageContours.blobs.size());
             rods.clear();
+            
+            
             for(int i=0; i<layoutImageContours.nBlobs; i++) {
                 rods.push_back(Rod());
                 Rod &r = rods[i];
@@ -491,7 +536,7 @@ void checkAndInitRodLayout(bool bForceUpdate = false) {
 
 
 //--------------------------------------------------------------
-void checkAndInitPerformers(bool bForceUpdate = false) {
+void testApp::checkAndInitPerformers(bool bForceUpdate = false) {
     msa::controlfreak::ParameterGroup &paramsPerformers = params.getGroup("performers");
     if(bForceUpdate || paramsPerformers.hasChanged()) {
         ofLogNotice() << "checkAndInitPerformers at frame " << ofGetFrameNum();
@@ -527,7 +572,7 @@ void checkAndInitPerformers(bool bForceUpdate = false) {
 }
 
 //--------------------------------------------------------------
-void checkAndInitFbo(bool bForceUpdate = false) {
+void testApp::checkAndInitFbo(bool bForceUpdate) {
     msa::controlfreak::ParameterGroup &paramsFbo = params.getGroup("fbo");
     if(bForceUpdate || paramsFbo.hasChanged()) {
         ofLogNotice() << "checkAndInitFbo at frame " << ofGetFrameNum();
@@ -546,10 +591,10 @@ void checkAndInitFbo(bool bForceUpdate = false) {
 }
 
 //--------------------------------------------------------------
-void updateCamera() {
+void testApp::updateCamera() {
     msa::controlfreak::ParameterGroup &paramsCamera = params.getGroup("camera");
     if(params["performers.count"].hasChanged()) paramsCamera["trackPerson"].setRange(1, (int)params["performers.count"]);
-    if(paramsCamera["trackPerson"].hasChanged()) cameras[2]->setParent(performers[paramsCamera["trackPerson"]]);
+   // if(paramsCamera["trackPerson"].hasChanged()) cameras[2]->setParent(performers[paramsCamera["trackPerson"]]);
     easyCam.setFov(paramsCamera["fov"]);
 }
 
@@ -589,7 +634,7 @@ vector<Rod*> checkRodCollisions(ofVec3f p, float radius, bool setAmp = true) {
 
 
 //--------------------------------------------------------------
-void updateRodLaserAnimation() {
+void testApp::updateRodLaserAnimation() {
     msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.laser.file");
     static int videoNumber = 0;
     if(paramNamedIndex.hasChanged()) {
@@ -658,7 +703,7 @@ void updateRodLaserAnimation() {
 
 
 //--------------------------------------------------------------
-void updateRandomMusic() {
+void testApp::updateRandomMusic() {
     if(params["randomMusic.enabled"]) {
         if(ofGetElapsedTimeMillis() >= randomMusic_nextChangeMillis) {
             randomMusic_nextChangeMillis = ofGetElapsedTimeMillis() + 1000 * ofRandom(params["randomMusic.randomChangeTimeMin"], params["randomMusic.randomChangeTimeMax"]);
@@ -669,7 +714,7 @@ void updateRandomMusic() {
 }
 
 //--------------------------------------------------------------
-void updatePerformanceAnimation() {
+void testApp::updatePerformanceAnimation() {
     msa::controlfreak::ParameterNamedIndex &paramNamedIndex = params.get<msa::controlfreak::ParameterNamedIndex>("animation.performance.file");
     if(paramNamedIndex.hasChanged()) {
         if((int)paramNamedIndex == 0) {
@@ -766,7 +811,7 @@ void checkAndInitSoundFile() {
 }
 
 //--------------------------------------------------------------
-void updateRodTuning() {
+void testApp::updateRodTuning() {
     bool useIndex = params["tuning.useIndex"];
     float indexMultipler = params["tuning.indexMultipler"];
     ofVec3f noteCount(params["tuning.noteCountWidth"], 0, params["tuning.noteCountLength"]);
@@ -811,7 +856,7 @@ void updateRodTuning() {
 
 
 //--------------------------------------------------------------
-void resetAll() {
+void testApp::resetAll() {
     checkAndInitRodLayout(true);
     checkAndInitPerformers(true);
     checkAndInitFbo(true);
@@ -820,7 +865,7 @@ void resetAll() {
 }
 
 //--------------------------------------------------------------
-void sendRodOsc(bool bForce) {
+void testApp::sendRodOsc(bool bForce) {
     if(params["sound.osc.enabled"].hasChanged()) {
         bForce = true;
         checkAndInitRodLayout(true);  // force zero if enabled state has changed

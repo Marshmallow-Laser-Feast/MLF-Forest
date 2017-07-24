@@ -43,7 +43,7 @@ namespace msa {
                     controls.push_back(c);
                     controlsMap[c] = c;
                 } else {
-                    ofLogVerbose() << "Renderer::add: " << c->getPath() << " " << (int)c << " " << c->x << " " << c->y << " " << c->width  << " " << c->height;
+                    ofLogVerbose() << "Renderer::add: " << c->getPath() << " " << (long)c << " " << c->x << " " << c->y << " " << c->width  << " " << c->height;
                     throw runtime_error("msa::controlfreak::gui::Renderer::add(Control*): Control already added to renderer");
                 }
             }

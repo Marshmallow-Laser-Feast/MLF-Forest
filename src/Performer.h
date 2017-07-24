@@ -52,7 +52,7 @@ public:
         if(model == NULL) {
             model = new ofxAssimpModelLoader();
             model->loadModel("3d/person.dae");
-            model->setScaleNomalization(false);
+            model->setScaleNormalization(false);
             model->setScale(0.01, -0.01, 0.01);
         }
         

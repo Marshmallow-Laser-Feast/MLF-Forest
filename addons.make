@@ -1,4 +1,5 @@
+ofxAssimpModelLoader
 ofxOpenCv
 ofxOsc
+ofxPoco
 ofxXmlSettings
-ofxMidi

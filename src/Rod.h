@@ -69,7 +69,7 @@ public:
         pitchIndexOffset = ofRandomf();
         amp = 0;
         laserAlpha = 0;
-        polarCoordinates.x = getPosition().length();
+        polarCoordinates.x = glm::length(getPosition());//.length();
         polarCoordinates.y = ofMap(atan2(getPosition().z, getPosition().x), -PI, PI, 0, 360);
         
         polarCoordinatesNorm.x = polarCoordinates.x / installationRadius;

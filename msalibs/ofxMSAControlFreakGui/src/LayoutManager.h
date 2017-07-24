@@ -22,7 +22,7 @@ namespace msa {
             class Panel;
             
             class LayoutManager;
-            typedef std::tr1::shared_ptr<LayoutManager> LayoutManagerPtr;
+            typedef std::shared_ptr<LayoutManager> LayoutManagerPtr;
             
             // for auto-layout
             class LayoutManager {

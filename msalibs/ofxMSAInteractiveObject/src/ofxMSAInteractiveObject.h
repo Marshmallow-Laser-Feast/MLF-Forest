@@ -12,7 +12,7 @@
 #pragma once
 
 #include "ofMain.h"
-
+#include <map>
 
 class ofxMSAInteractiveObject : public ofRectangle {
 public:
@@ -99,7 +99,7 @@ public:
 
 private:
 	bool            _isMouseOver;       // is mouse over the rect
-	map<int, bool>    _isMousePressed;       // is mouse down over the rect (for any given mouse button)
+    ::map<int, bool>    _isMousePressed;       // is mouse down over the rect (for any given mouse button)
     unsigned long   _stateChangeTimestampMillis;
 	ofRectangle	oldRect;
 };

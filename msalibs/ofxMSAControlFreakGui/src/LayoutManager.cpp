@@ -62,7 +62,7 @@ namespace msa {
                         //                            newHead.y = boundRect.y;
                         //                            controlPos = newHead + controlOffset;
                         //                        }
-                        control.setPosition(controlPos);
+                        control.setPosition(controlPos.x,controlPos.y);
                         control.x += indent * curScale.x;
                         
                         if(control.layout.doAffectFlow) {
