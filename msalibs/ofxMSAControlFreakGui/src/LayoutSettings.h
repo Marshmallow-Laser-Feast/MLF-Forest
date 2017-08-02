@@ -31,8 +31,8 @@ namespace msa {
                 bool    doAffectFlow;
                 bool    doIncludeInContainerRect;
                 bool	newColumn;
-                ofVec2f paddingPre;
-                ofVec2f paddingPost;
+                glm::vec3 paddingPre;
+                glm::vec3 paddingPost;
                 
                 LayoutSettings() {
                     positionMode = kRelative;

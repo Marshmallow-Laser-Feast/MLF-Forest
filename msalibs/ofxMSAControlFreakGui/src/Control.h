@@ -41,7 +41,7 @@ namespace msa {
                 bool    visible;
                 bool    doIsolateOnActive;   // fade other controls if this is active
                 char	keyboardShortcut;
-                ofVec2f scale;
+                glm::vec3 scale;
 
                 LayoutSettings layout;
                 
@@ -54,9 +54,9 @@ namespace msa {
                 int getDepth(bool bUpdate = false);         // how deep in the heirarchy it is (how many levels deep)
                 bool isActive();       // whether the control is active or not
                 bool getParentActive(); // whether any of the controls parents are active or not
-                ofVec2f getScale();
-                ofVec2f getInheritedScale();// inherited scale
-                ofVec2f getParentScale();   // inherited scale of parent
+                glm::vec3 getScale();
+                glm::vec3 getInheritedScale();// inherited scale
+                glm::vec3 getParentScale();   // inherited scale of parent
 
                 Config *getConfig();
 

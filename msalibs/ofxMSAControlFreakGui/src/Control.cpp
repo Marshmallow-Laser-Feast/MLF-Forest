@@ -34,7 +34,7 @@ namespace msa {
                 doIsolateOnActive = true;
                 keyboardShortcut = 0;
                 //                setKeyboardShortcut(0);
-                scale.set(1, 1);
+                scale = glm::vec3(1, 1, 1);
                 layout.set(0, 0, 0, 0);
                 
                 _alpha = 1;
@@ -89,18 +89,18 @@ namespace msa {
             }
             
             //--------------------------------------------------------------
-            ofVec2f Control::getScale() {
+            glm::vec3 Control::getScale() {
                 return scale;
             }
             
             //--------------------------------------------------------------
-            ofVec2f Control::getInheritedScale() {
+            glm::vec3 Control::getInheritedScale() {
                 return getParent() ? scale * getParent()->getInheritedScale() : scale;
             }
             
             //--------------------------------------------------------------
-            ofVec2f Control::getParentScale() {
-                return getParent() ? getParent()->getInheritedScale() : ofVec2f(1, 1);
+            glm::vec3 Control::getParentScale() {
+                return getParent() ? getParent()->getInheritedScale() : glm::vec3(1, 1, 1);
             }
             
             //--------------------------------------------------------------

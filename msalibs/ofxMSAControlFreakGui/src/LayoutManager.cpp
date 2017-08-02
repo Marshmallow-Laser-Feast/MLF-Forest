@@ -38,9 +38,9 @@ namespace msa {
             
             
             //--------------------------------------------------------------
-            void LayoutManager::positionControl(Control &control, ofVec2f &parentScale, int panelDepth) {
+            void LayoutManager::positionControl(Control &control, glm::vec3 &parentScale, int panelDepth) {
                 // calculate scale
-                ofVec2f curScale = parentScale * control.scale;
+                glm::vec3 curScale = parentScale * control.scale;
                 
                 int indent = panelDepth * control.getConfig()->layout.indent;
                 
@@ -53,9 +53,13 @@ namespace msa {
                 switch(control.layout.positionMode) {
                     case LayoutSettings::kRelative: // normal (controls are placed in a free flowing manner, like html, layout.position is offset off calculated)
                     {
-                        ofVec2f newHead(_curHead);
-                        ofVec2f controlOffset((control.layout.position + control.layout.paddingPre) * curScale);
-                        ofVec2f controlPos(newHead + controlOffset);
+                        glm::vec3 newHead(_curHead);
+                        
+                        
+                        
+                        
+                        glm::vec3 controlOffset((control.layout.position + control.layout.paddingPre) * curScale);
+                        glm::vec3 controlPos(newHead + controlOffset);
                         float postHeight = (control.height + control.layout.paddingPost.y + control.getConfig()->layout.padding.y) * curScale.y;
                         //                        if(control.layout.newColumn || (doWrap && controlPos.y + postHeight > maxPos.y)) {
                         //                            newHead.x = control.getParent()->getRight() + control.layout.paddingPost.x + control.getConfig()->layout.padding.x;
@@ -105,18 +109,18 @@ namespace msa {
 ////                            _curHead += ofVec2f(container.getParent()->getLeft(), container.getParent()->getBottom());
 //                        if(container.getParent())
 //                            _curHead += container.getParent()->pLayoutManager->_curHead;
-                        if(bResetHead) _curHead.set(container.layout.x, container.layout.y - scrollY);
+                        if(bResetHead) _curHead = glm::vec3(container.layout.x, container.layout.y - scrollY, 0);
                         
                         break;
                         
                     case LayoutSettings::kAbsolute: // layout.position is relative to container
                         if(container.getParent())
-                            _curHead += ofVec2f(container.getParent()->getLeft(), container.getParent()->getTop());
+                            _curHead += glm::vec3(container.getParent()->getLeft(), container.getParent()->getTop(), 0);
                         break;
 
                         
                     case LayoutSettings::kFixed: // layout.position is relative to screen
-                        _curHead.set(container.layout.x, container.layout.y);
+                        _curHead = glm::vec3(container.layout.x, container.layout.y, 0);
                         break;
                         
                 }
@@ -148,7 +152,7 @@ namespace msa {
                 }
                 
                 int panelDepth          = container.getDepth();
-                ofVec2f containerScale  = container.getInheritedScale();
+                glm::vec3 containerScale  = container.getInheritedScale();
                 
                 positionControl(container, containerScale, panelDepth);
                 

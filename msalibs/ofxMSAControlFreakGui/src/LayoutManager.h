@@ -37,7 +37,7 @@ namespace msa {
                 int targetScrollY;  // set this one
                 int scrollY;   // actual one, lerps to targetScrollY 
                 bool doWrap;
-                ofVec2f     _curHead;
+                glm::vec3     _curHead;
                 
                 LayoutManager();
                 
@@ -49,7 +49,7 @@ namespace msa {
                 virtual void arrangeControls(Container &container, bool bResetHead); // this is the main function which is called
                 
                 virtual void prepareContainerRecursively(Container &container);
-                virtual void positionControl(Control &control, ofVec2f &parentScale, int panelDepth);
+                virtual void positionControl(Control &control, glm::vec3 &parentScale, int panelDepth);
                 virtual void addToRenderer(Control &control);
                 virtual void growParent(Control &control);
             };
