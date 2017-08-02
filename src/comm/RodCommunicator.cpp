@@ -175,6 +175,7 @@ void RodCommunicator::threadedFunction() {
 	int maxRodCount = 0;
 	totalRodCount = 0;
 	for(int i = 0; i < ports.size(); i++) {
+        ports[i].progress = 0;
 		int rodCount = ports[i].getRodCount();
 		maxRodCount = MAX(maxRodCount, rodCount);
 		totalRodCount += rodCount;

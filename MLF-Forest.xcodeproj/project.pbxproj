@@ -413,6 +413,7 @@
 		D1B370068072AAB890CD42D2 /* pstdint.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = pstdint.h; path = ../../../addons/ofxAssimpModelLoader/libs/assimp/include/assimp/Compiler/pstdint.h; sourceTree = SOURCE_ROOT; };
 		D1F2D509F3D753BBF52DAA19 /* rc4.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = rc4.h; path = ../../../addons/ofxPoco/libs/openssl/include/openssl/rc4.h; sourceTree = SOURCE_ROOT; };
 		D21BB17B0FF9F66BD443641D /* calib3d_c.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = calib3d_c.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/calib3d/calib3d_c.h; sourceTree = SOURCE_ROOT; };
+		D28045081F320A36002E2960 /* rodMap.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = rodMap.txt; path = bin/data/layout/rodMap.txt; sourceTree = "<group>"; };
 		D2991184C57509808BF041C8 /* inpainting.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = inpainting.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/videostab/inpainting.hpp; sourceTree = SOURCE_ROOT; };
 		D315839A1D24D10046025C0C /* asn1_mac.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = asn1_mac.h; path = ../../../addons/ofxPoco/libs/openssl/include/openssl/asn1_mac.h; sourceTree = SOURCE_ROOT; };
 		D43C38658CE359EE99F6E9FD /* filters.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = filters.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/core/cuda/filters.hpp; sourceTree = SOURCE_ROOT; };
@@ -466,8 +467,6 @@
 		EA20B2FF1F1D060600412021 /* opencv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = opencv.a; sourceTree = "<group>"; };
 		EA20B3021F1D064C00412021 /* assimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = assimp.a; sourceTree = "<group>"; };
 		EA20B3051F1E2C6A00412021 /* libftd2xx.1.4.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libftd2xx.1.4.4.dylib; path = /usr/local/lib/libftd2xx.1.4.4.dylib; sourceTree = "<absolute>"; };
-		EA5BE8FE1F1D015100F97E94 /* testApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testApp.cpp; sourceTree = "<group>"; };
-		EA5BE8FF1F1D015100F97E94 /* testApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testApp.h; sourceTree = "<group>"; };
 		EA5BE9011F1D016800F97E94 /* ftd2xx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ftd2xx.h; path = ../../../../../../../../usr/local/include/ftd2xx.h; sourceTree = "<group>"; };
 		EA5BE9041F1D01A200F97E94 /* license.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = license.md; sourceTree = "<group>"; };
 		EA5BE9051F1D01A200F97E94 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -1338,6 +1337,7 @@
 			children = (
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
+				D28045081F320A36002E2960 /* rodMap.txt */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				EA5BE9021F1D01A200F97E94 /* msalibs */,
@@ -1353,8 +1353,6 @@
 				EA20B3051F1E2C6A00412021 /* libftd2xx.1.4.4.dylib */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				EA5BE9011F1D016800F97E94 /* ftd2xx.h */,
-				EA5BE8FE1F1D015100F97E94 /* testApp.cpp */,
-				EA5BE8FF1F1D015100F97E94 /* testApp.h */,
 				3B31B5DED954DA117757AD3C /* comm */,
 				2FCC5EA8496B83BF3220ED7C /* Performer.cpp */,
 				12752959DC7C9A2C3AFFDB19 /* Performer.h */,

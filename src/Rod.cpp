@@ -80,7 +80,7 @@ void Rod::saveDeviceIdToRodMap(vector<Rod> &rods) {
 	ofstream rodMapFile;
 	
 	rodMapFile.open (ofToDataPath(path).c_str());
-
+    rodMapFile << "# deviceId:index\n";
     for(int i =0; i< rods.size(); i++) {
         rodMapFile << ofToString(rods[i].getDeviceId()) + ":" + ofToString(rods[i].getIndex()) + "\n";
     }

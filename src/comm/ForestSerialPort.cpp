@@ -223,7 +223,7 @@ void ForestSerialPort::retrieve() {
 	if(currentCommandType==RETURN_RAW_ACCELEROMETER) {
 		for(int i = 0; i < rodInfos.size(); i++) {
 			RawAccelerometerData accel;
-			if(tryToRead((unsigned char*)&accel, sizeof(accel), 100)) {
+			if(tryToRead((unsigned char*)&accel, sizeof(accel), laserTimeoutValue)) {
 				if(rodInfos.find(accel.id)!=rodInfos.end()) {
 					if(accel.x!=0x40) {
 						rodInfos[accel.id].setRawData(accel);
@@ -349,7 +349,7 @@ void ForestSerialPort::draw(int x, int y) {
 	float width = 50;
 	ofSetHexColor(0xFFFFFF);
 	
-	drawString(serialNo, x, y);//, ofColor(0, 0, 0, 120), ofColor(255, 255, 255, 255));
+	drawString(serialNo + " (" + ofToString(rodInfos.size()) + ")", x, y);//, ofColor(0, 0, 0, 120), ofColor(255, 255, 255, 255));
     
 	map<int,RodInfo>::iterator it = rodInfos.begin();
 

@@ -487,7 +487,7 @@ void testApp::checkAndInitRodLayout(bool bForceUpdate) {
             //            rods.resize(layoutImageContours.blobs.size());
             rods.clear();
             
-            
+            printf("found %d rods in layout\n", layoutImageContours.nBlobs);
             for(int i=0; i<layoutImageContours.nBlobs; i++) {
                 rods.push_back(Rod());
                 Rod &r = rods[i];
@@ -1232,27 +1232,7 @@ void testApp::keyPressed(int key){
         case '9':
             params["animation.laser.file"] = key-48;
             break;
-//            
-//        case '1':   // radial out
-//            params["animation.laser.file"] = 1;
-////            params["animation.laser.loop"] = true;
-//            break;
-//            
-//        case '2':   // radial in
-//            params["animation.laser.file"] = 2;
-////            params["animation.laser.loop"] = true;
-//            break;
-//            
-//        case '3':   // spiral
-//            params["animation.laser.file"] = 3;
-////            params["animation.laser.loop"] = false;
-//            break;
-//            
-//        case '4':   // spiral
-//            params["animation.laser.file"] = 4;
-//            //            params["animation.laser.loop"] = false;
-//            break;
-//            
+   
         case 's':
             params.saveXmlValues();
             Rod::saveDeviceIdToRodMap(rods);
