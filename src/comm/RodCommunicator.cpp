@@ -47,10 +47,22 @@ string RodCommunicator::getValues() {
 }
 void RodCommunicator::start() {
     ForestSerialPort::font.loadFont("fonts/automat.ttf", 6);
+    MODE = DISCOVERING;
+    printf("======================================================================\n");
+    printf("SCAN STARTED\n");
+    
 	// block whilst creating forest serial ports, then start thread
 	vector<string> serialNos = D2xxSerial::getDeviceSerialNumbers();
 	printf("Found %d serial ports\n", (int) serialNos.size());
-	ports.resize(serialNos.size());
+	
+    if(serialNos.size()>maxNumSerialPorts) {
+        printf("Only using first %d serial ports\n", maxNumSerialPorts);
+        serialNos.resize(maxNumSerialPorts);
+    }
+    
+    ports.resize(serialNos.size());
+    
+    
 	for(int i = 0; i < serialNos.size(); i++) {
 		if(!ports[i].close()) {
 			printf("Couldn't close port '%s'\n", serialNos[i].c_str());

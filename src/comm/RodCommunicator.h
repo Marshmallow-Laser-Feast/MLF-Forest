@@ -20,6 +20,8 @@
 #include "ofMain.h"
 #include "ForestSerialPort.h"
 
+#define MAX_NUM_SERIAL_PORTS 4
+
 class RodCommunicator: public ofThread {
 public:
 	RodCommunicator();
@@ -34,7 +36,8 @@ public:
 	//
 	bool doneDiscovering();
 	
-	
+    int maxNumSerialPorts = MAX_NUM_SERIAL_PORTS;
+    
 	float getProgress();
 	
 	void setLaser(int deviceId, bool on);
@@ -50,6 +53,8 @@ public:
 	void inspect();
 	
     bool paused;    
+    
+    
     
 protected:
 	void threadedFunction();

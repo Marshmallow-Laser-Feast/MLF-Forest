@@ -95,6 +95,8 @@ string padMe(int num, int space) {
 
 // discover lasers on the network and give them timeslots
 void ForestSerialPort::discover() {
+    
+    
 	rodInfos.clear();
 	int slotId = 1;
 	progress = 0;
@@ -105,7 +107,7 @@ void ForestSerialPort::discover() {
             bool success = setTimeslot(id, slotId);
             
             if(success) {
-                printf("DEVICE ID: %d - TIMESLOT: %d\n", id, slotId);
+                printf("found device: %d\n", id);// - TIMESLOT: %d\n", id, slotId);
                 foundDeviceIds.insert(id);
                 slotId++;
             }
@@ -132,7 +134,7 @@ void ForestSerialPort::discover() {
 	report += top + "\n" + bottom + "\n";
 	report += "=================================\n";
 	printf("%s\n", report.c_str());
-	printf("There are %d rodInfos\n", rodInfos.size());
+	//printf("There are %d rodInfos\n", rodInfos.size());
 }
 
 
@@ -186,7 +188,7 @@ bool ForestSerialPort::setTimeslot(int boardId, int timeslot, bool set) {
 	
 	// read the current identity packet of the rod
 	if(tryToRead((unsigned char *)&ident, sizeof(ident))) {
-
+        //ident.printDebug();
 		if(set) {
 			// now set its timeslot
 			buff[4] = timeslot;
