@@ -1013,7 +1013,12 @@ void testApp::update() {
         if(hitRods.size()) {
             if(ofGetMousePressed() && !ofGetKeyPressed()) selectedRod = hitRods[0];
             else hitRods[0]->color.set(255, 0, 0);
+        } else {
+            if(ofGetMousePressed() && !ofGetKeyPressed()) {
+                selectedRod = NULL;
+            }
         }
+        
     }
  	
 	// set lasers based on amp
@@ -1287,6 +1292,9 @@ void testApp::keyPressed(int key){
         case ',':
             if(selectedRod && selectedRod->getIndex() > 0) selectedRod = rods[selectedRod->getIndex()-1];
             else selectedRod = rods[rods.size()-1];
+            break;
+        case '/':
+            selectedRod = NULL;
             break;
             
         case 'R':

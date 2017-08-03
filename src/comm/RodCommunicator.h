@@ -74,8 +74,8 @@ private:
 	int totalRodCount;
 
 	// reported update rate in hz
-	float updateRate;
+	float updateRate = 0;
 	bool running;
 	ofTrueTypeFont font;
-    float smoothedUpdateRate;
+    float smoothedUpdateRate = 0;
 };
