@@ -68,7 +68,7 @@
 		EA20B2FD1F1D049400412021 /* ofxMSAInteractiveObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA5BE95F1F1D01A200F97E94 /* ofxMSAInteractiveObject.cpp */; };
 		EA20B3001F1D060600412021 /* opencv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA20B2FF1F1D060600412021 /* opencv.a */; };
 		EA20B3031F1D065100412021 /* assimp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA20B3021F1D064C00412021 /* assimp.a */; };
-		EA20B3061F1E2C6A00412021 /* libftd2xx.1.4.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EA20B3051F1E2C6A00412021 /* libftd2xx.1.4.4.dylib */; };
+		EAC7DEAE1F3392CC000D04E1 /* libftd2xx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1F6ECC1F33901200749CB8 /* libftd2xx.a */; };
 		FB09C6B2A1DA0EA217240CB8 /* ofxCvGrayscaleImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 057122A817D12571F8C0C7A4 /* ofxCvGrayscaleImage.cpp */; };
 /* End PBXBuildFile section */
 
@@ -464,9 +464,9 @@
 		E90542C149C83316678AB011 /* cxmisc.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = cxmisc.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv/cxmisc.h; sourceTree = SOURCE_ROOT; };
 		E93D421BB41B892141AC9F25 /* bufferpool.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = bufferpool.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/core/bufferpool.hpp; sourceTree = SOURCE_ROOT; };
 		E9998694E5001F9CF0B13BF0 /* ofxXmlPoco.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlPoco.cpp; path = ../../../addons/ofxPoco/src/ofxXmlPoco.cpp; sourceTree = SOURCE_ROOT; };
+		EA1F6ECC1F33901200749CB8 /* libftd2xx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libftd2xx.a; path = ftdi/lib/libftd2xx.a; sourceTree = SOURCE_ROOT; };
 		EA20B2FF1F1D060600412021 /* opencv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = opencv.a; sourceTree = "<group>"; };
 		EA20B3021F1D064C00412021 /* assimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = assimp.a; sourceTree = "<group>"; };
-		EA20B3051F1E2C6A00412021 /* libftd2xx.1.4.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libftd2xx.1.4.4.dylib; path = /usr/local/lib/libftd2xx.1.4.4.dylib; sourceTree = "<absolute>"; };
 		EA5BE9011F1D016800F97E94 /* ftd2xx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ftd2xx.h; path = ../../../../../../../../usr/local/include/ftd2xx.h; sourceTree = "<group>"; };
 		EA5BE9041F1D01A200F97E94 /* license.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = license.md; sourceTree = "<group>"; };
 		EA5BE9051F1D01A200F97E94 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -595,8 +595,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA20B3001F1D060600412021 /* opencv.a in Frameworks */,
-				EA20B3061F1E2C6A00412021 /* libftd2xx.1.4.4.dylib in Frameworks */,
 				EA20B3031F1D065100412021 /* assimp.a in Frameworks */,
+				EAC7DEAE1F3392CC000D04E1 /* libftd2xx.a in Frameworks */,
 				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1350,7 +1350,7 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				EA20B3051F1E2C6A00412021 /* libftd2xx.1.4.4.dylib */,
+				EA1F6ECC1F33901200749CB8 /* libftd2xx.a */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				EA5BE9011F1D016800F97E94 /* ftd2xx.h */,
 				3B31B5DED954DA117757AD3C /* comm */,
@@ -2000,7 +2000,7 @@
 				INSTALL_PATH = /Applications;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/lib,
+					"$(PROJECT_DIR)/ftdi/lib",
 				);
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_FRAMEWORKS)",
@@ -2281,7 +2281,7 @@
 				INSTALL_PATH = /Applications;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/lib,
+					"$(PROJECT_DIR)/ftdi/lib",
 				);
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_FRAMEWORKS)",
@@ -2368,7 +2368,7 @@
 				INSTALL_PATH = /Applications;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/lib,
+					"$(PROJECT_DIR)/ftdi/lib",
 				);
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_FRAMEWORKS)",
