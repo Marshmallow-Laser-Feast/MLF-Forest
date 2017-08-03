@@ -171,7 +171,7 @@ void RodCommunicator::threadedFunction() {
 	running = true;
 	discover();
 	
-	
+    unsigned long loopCount;
 	
 	int maxRodCount = 0;
 	totalRodCount = 0;
@@ -218,9 +218,20 @@ void RodCommunicator::threadedFunction() {
                 ports[i].retrieve();
             }
         }
-		
+        
+        loopCount++;
+        
+        if(loopCount%20==0) {
+            checkStatus();
+        }
 	}
     stopped = true;
+}
+
+void RodCommunicator::checkStatus() {
+    for(int i = 0; i < ports.size(); i++) {
+        ports[i].checkStatus();
+    }
 }
 
 void RodCommunicator::stop() {

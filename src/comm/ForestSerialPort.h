@@ -49,6 +49,8 @@ public:
 	// close the serial port
 	bool close();
 	
+    
+    void checkStatus();
 	
 	// how much progress has been made in
 	// discovering the lasers. used for startup

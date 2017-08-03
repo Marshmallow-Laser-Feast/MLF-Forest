@@ -156,6 +156,21 @@ bool ForestSerialPort::tryToRead(unsigned char *buff, int length, int timeout) {
 	return false;
 }
 
+void ForestSerialPort::checkStatus() {
+    int timeoutCount = 0;
+    for(int i = 0; i < rodInfos.size(); i++) {
+        if(rodInfos[i].timeout>0.5) {
+            timeoutCount++;
+        }
+    }
+    if(timeoutCount==rodInfos.size()) {
+        // all rods are disconnected
+    }
+    if(!serial.isOk()) {
+        printf("Serial port not ok\n");
+    }
+}
+
 
 void ForestSerialPort::reset() {
     int a = serial.available();

@@ -119,7 +119,14 @@ bool D2xxSerial::open(int which, int baudRate) {
 	setBaudRate(baudRate);
 	return true;
 }
-
+bool D2xxSerial::isOk() {
+    DWORD amountInRxQueue;
+    DWORD amountInTxQueue;
+    DWORD eventStatus;
+    
+    
+    FT_STATUS status = FT_GetStatus (handle, &amountInRxQueue,&amountInTxQueue, &eventStatus);
+}
 bool D2xxSerial::open(string who, int baudRate) {
 	
 	FT_STATUS err = FT_OpenEx((void*)who.c_str(), FT_OPEN_BY_SERIAL_NUMBER, &handle);

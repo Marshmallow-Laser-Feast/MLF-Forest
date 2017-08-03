@@ -35,7 +35,7 @@ public:
 	
 	int read();
 	
-	
+    bool isOk();
 	int getLatencyTimer();
 	
 	void setLatencyTimer(int ms);

@@ -63,7 +63,7 @@ private:
 
 
 	void discover();
-	
+    void checkStatus();
 	
 	enum CommunicatorMode {
 		DISCOVERING,
