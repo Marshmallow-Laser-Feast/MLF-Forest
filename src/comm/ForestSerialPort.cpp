@@ -148,7 +148,6 @@ bool ForestSerialPort::tryToRead(unsigned char *buff, int length, int timeout) {
 			return true;
 		} else {
 			printf("Error, read returned number not equal to available\n");
-			
 		}
 	} else {
 		//printf("Error, read timed out\n");
@@ -187,7 +186,7 @@ bool ForestSerialPort::setTimeslot(int boardId, int timeslot, bool set) {
 	
 	
 	// read the current identity packet of the rod
-	if(tryToRead((unsigned char *)&ident, sizeof(ident))) {
+	if(tryToRead((unsigned char *)&ident, sizeof(ident), 100)) {
         //ident.printDebug();
 		if(set) {
 			// now set its timeslot
@@ -195,7 +194,7 @@ bool ForestSerialPort::setTimeslot(int boardId, int timeslot, bool set) {
 			serial.write(buff, 7);
 			
 			// read the acknowledgement
-			if(tryToRead((unsigned char *)&ident, sizeof(ident))) {
+			if(tryToRead((unsigned char *)&ident, sizeof(ident), 100)) {
 				rodInfos[ident.deviceId] = RodInfo(ident.deviceId, ident.timeslot);
 				allRodInfos[ident.deviceId] = &rodInfos[ident.deviceId];
 				return true;
@@ -244,7 +243,7 @@ void ForestSerialPort::retrieve() {
 		for(int i = 0; i < rodInfos.size(); i++) {
 			ProcessedAccelerometerData accel;
 			
-			if(tryToRead((unsigned char*)&accel, sizeof(accel))) {
+			if(tryToRead((unsigned char*)&accel, sizeof(accel), laserTimeoutValue)) {
 				if(rodInfos.find(accel.id)!=rodInfos.end()) {
 					rodInfos[accel.id].setProcessedData(accel);
 
@@ -460,6 +459,7 @@ void ForestSerialPort::drawString(string s, int x, int y) {
 
 // close the serial port
 bool ForestSerialPort::close() {
+    printf("closing serial port %s\n", serialNo.c_str());
 	return serial.close();
 }
 

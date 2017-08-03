@@ -497,7 +497,7 @@ void testApp::checkAndInitRodLayout(bool bForceUpdate) {
                 float z = ofMap(blob.centroid.y, 0, greyImage.getHeight(), -installationLength/2, installationLength/2);
                 
                 r->setGlobalPosition(x, 0, z);
-                printf("[%d]    %3.3f,   %3.3f      =>       %3.3f, %3.3f              =>    %3.3f, %3.3f\n",i,  blob.centroid.x, blob.centroid.y, x, z, r->getX(), r->getZ());
+                // printf("[%d]    %3.3f,   %3.3f      =>       %3.3f, %3.3f              =>    %3.3f, %3.3f\n",i,  blob.centroid.x, blob.centroid.y, x, z, r->getX(), r->getZ());
             }
             
         } else {
@@ -1241,6 +1241,7 @@ void testApp::draw() {
 void testApp::exit() {
     resetAll();
     sendRodOsc(true);
+    rodCommunicator->stop();
 }
 
 //--------------------------------------------------------------

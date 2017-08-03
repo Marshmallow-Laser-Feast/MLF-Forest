@@ -31,7 +31,7 @@ public:
 	
 	// call this in your setup
 	void start();
-	
+    void stop();
 	string getValues();
 	//
 	bool doneDiscovering();
@@ -54,7 +54,7 @@ public:
 	
     bool paused;    
     
-    
+    bool stopped = true;
     
 protected:
 	void threadedFunction();

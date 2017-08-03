@@ -22,7 +22,7 @@ Uses [SuperCollider](http://supercollider.sourceforge.net/) for audio synthesis
 
 Requires D2xx FTDI drivers for RS485 comms. v1.4.4 included in repo. Alternatively download latest drivers from <http://www.ftdichip.com/Drivers/D2XX.htm>. (they're also included in the repo)
 
-In order for them to work, you need to disable your own FTDI drivers - do this on the command line by typing:
+In order for them to work, you need to disable your own FTDI drivers - you can install D2xxHelper in ftdi/installers or you can also do this manually on the command line by typing:
 
 sudo kextunload -b com.apple.driver.AppleUSBFTDI
 

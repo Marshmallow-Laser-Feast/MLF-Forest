@@ -79,13 +79,14 @@ public:
     static set<int> foundDeviceIds;
     static ofTrueTypeFont font;
     static void drawString(string s, int x, int y);
+    string serialNo;
 private:
 	
 	bool setTimeslot(int boardId, int timeslot, bool set = true);
-	bool tryToRead(unsigned char *buff, int length, int timeout = 100);
+	bool tryToRead(unsigned char *buff, int length, int timeout);
 	
 	D2xxSerial serial;
-	string serialNo;
+	
 
 	
 	map<int,RodInfo> rodInfos;

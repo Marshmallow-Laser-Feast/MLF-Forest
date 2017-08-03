@@ -167,6 +167,7 @@ int RodCommunicator::findRodWithBiggestAmplitude(float &outAmplitude) {
 
 
 void RodCommunicator::threadedFunction() {
+    stopped = false;
 	running = true;
 	discover();
 	
@@ -219,8 +220,30 @@ void RodCommunicator::threadedFunction() {
         }
 		
 	}
+    stopped = true;
 }
 
+void RodCommunicator::stop() {
+    printf("Shutting down serial\n");
+    running = false;
+    
+    ofSleepMillis(200);
+    int counter = 0;
+    while(!stopped) {
+        ofSleepMillis(10);
+        counter++;
+        if(counter%10==0) {
+            printf("Waiting for thread to end\n");
+        }
+    }
+    for(int i =0; i < ports.size(); i++) {
+        if(ports[i].close()) {
+            printf("Port '%s' closed successfully\n", ports[i].serialNo.c_str());
+        } else {
+            printf("Couldn't close port '%s'\n", ports[i].serialNo.c_str());
+        }
+    }
+}
 
 // this blocks until the entire network is discovered
 void RodCommunicator::discover() {
