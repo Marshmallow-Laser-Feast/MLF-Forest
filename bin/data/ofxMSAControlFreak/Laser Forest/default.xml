@@ -79,7 +79,7 @@
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="noiseFreq" value="0.011160715"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="randomMusic">
-            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="enabled" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="enabled" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomChangeTimeMin" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomChangeTimeMax" value="3"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="randomAmpMin" value="0.000000000"></Parameter>
@@ -121,8 +121,8 @@
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="60"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="compression">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="0.000431050"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.000053881"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="0.000000103"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.000000013"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">

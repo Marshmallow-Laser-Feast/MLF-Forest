@@ -194,12 +194,16 @@ void RodCommunicator::threadedFunction() {
             }
         } else {
             float tm = ofGetElapsedTimef();
+            float timeTakenForLastCycle = tm - t;
+            
             // timer for reporting
             updateRate = 1.f/(tm - t);
             t = tm;
-            
+            float sleepTime = msPerFrame - timeTakenForLastCycle*1000.f;
+            if(sleepTime>0) {
             // this is also wrong - should be a proper timer
-            ofSleepMillis(msPerFrame);
+                ofSleepMillis(sleepTime);
+            }
             
             // ask the rods for data
             for(int i = 0; i < ports.size(); i++) {

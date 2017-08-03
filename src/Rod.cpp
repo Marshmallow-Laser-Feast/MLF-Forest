@@ -41,7 +41,7 @@ Rod::IDDisplayType Rod::idDisplayType = DISPLAY_PITCH_INDEX;
 map<int,Rod*> Rod::deviceIdToRod;
 
 
-void Rod::loadDeviceIdToRodMap(vector<Rod> &rods) {
+void Rod::loadDeviceIdToRodMap(vector<Rod*> &rods) {
     string path = ROD_MAP_FILE;
 	string line;
 	
@@ -64,7 +64,7 @@ void Rod::loadDeviceIdToRodMap(vector<Rod> &rods) {
 			if(parts.size()==2) {
 				int index = ofToInt(parts[1]);
 				int deviceId = ofToInt(parts[0]);
-                rods[index].setDeviceId(deviceId);
+                rods[index]->setDeviceId(deviceId);
 			}
             
 		}
@@ -74,7 +74,7 @@ void Rod::loadDeviceIdToRodMap(vector<Rod> &rods) {
 }
 
 
-void Rod::saveDeviceIdToRodMap(vector<Rod> &rods) {
+void Rod::saveDeviceIdToRodMap(vector<Rod*> &rods) {
 
     string path = ROD_MAP_FILE;
 	ofstream rodMapFile;
@@ -82,7 +82,7 @@ void Rod::saveDeviceIdToRodMap(vector<Rod> &rods) {
 	rodMapFile.open (ofToDataPath(path).c_str());
     rodMapFile << "# deviceId:index\n";
     for(int i =0; i< rods.size(); i++) {
-        rodMapFile << ofToString(rods[i].getDeviceId()) + ":" + ofToString(rods[i].getIndex()) + "\n";
+        rodMapFile << ofToString(rods[i]->getDeviceId()) + ":" + ofToString(rods[i]->getIndex()) + "\n";
     }
 	
 	rodMapFile.close();

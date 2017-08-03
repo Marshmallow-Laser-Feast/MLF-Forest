@@ -220,8 +220,8 @@ public:
     }
     
     
-    static void loadDeviceIdToRodMap(vector<Rod> &rods);
-    static void saveDeviceIdToRodMap(vector<Rod> &rods);
+    static void loadDeviceIdToRodMap(vector<Rod*> &rods);
+    static void saveDeviceIdToRodMap(vector<Rod*> &rods);
     
     //--------------------------------------------------------------
     void draw() {
@@ -293,9 +293,9 @@ public:
     
     
     //--------------------------------------------------------------
-    bool operator< (const Rod &rhs) const {
-        return getSortScore() < rhs.getSortScore();
-    }
+//    bool operator< (const Rod &rhs) const {
+//        return getSortScore() < rhs.getSortScore();
+//    }
     
     
 private:

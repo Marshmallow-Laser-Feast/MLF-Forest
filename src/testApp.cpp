@@ -28,7 +28,7 @@
 #include "RodMapper.h"
 #endif
 
-vector<Rod> rods;
+vector<Rod*> rods;
 
 vector<Performer> performers;
 
@@ -489,12 +489,15 @@ void testApp::checkAndInitRodLayout(bool bForceUpdate) {
             
             printf("found %d rods in layout\n", layoutImageContours.nBlobs);
             for(int i=0; i<layoutImageContours.nBlobs; i++) {
-                rods.push_back(Rod());
-                Rod &r = rods[i];
+                rods.push_back(new Rod());
+                Rod *r = rods[i];
                 ofxCvBlob &blob = layoutImageContours.blobs[i];
+                
                 float x = ofMap(blob.centroid.x, 0, greyImage.getWidth(), -installationWidth/2, installationWidth/2);
                 float z = ofMap(blob.centroid.y, 0, greyImage.getHeight(), -installationLength/2, installationLength/2);
-                r.setGlobalPosition(x, 0, z);
+                
+                r->setGlobalPosition(x, 0, z);
+                printf("[%d]    %3.3f,   %3.3f      =>       %3.3f, %3.3f              =>    %3.3f, %3.3f\n",i,  blob.centroid.x, blob.centroid.y, x, z, r->getX(), r->getZ());
             }
             
         } else {
@@ -504,28 +507,31 @@ void testApp::checkAndInitRodLayout(bool bForceUpdate) {
             rods.clear();
             for(int i=0; i<rodCountWidth; i++) {
                 for(int j=0; j<rodCountLength; j++) {
-                    rods.push_back(Rod());
-                    Rod &r = rods[j*rodCountWidth + i];
+                    rods.push_back(new Rod());
+                    Rod *r = rods[j*rodCountWidth + i];
                     float x = ofMap(i, 0, rodCountWidth-1, -installationWidth/2, installationWidth/2);
                     float z = ofMap(j, 0, rodCountLength-1, -installationLength/2, installationLength/2);
-                    r.setGlobalPosition(x, 0, z);
+                    r->setGlobalPosition(x, 0, z);
                 }
             }
         }
         
+    
         float installationRadius = installationSize.x/2;//sqrt(installationSize.x * installationSize.x + installationSize.z * installationSize.z)/2;
         for(int i=0; i<rods.size(); i++) {
-            Rod &r = rods[i];
-            r.move(randomness * ofVec3f(ofRandomf(), 0, ofRandomf()));
-            r.setup(installationRadius);
+            Rod *r = rods[i];
+            r->move(randomness * ofVec3f(ofRandomf(), 0, ofRandomf()));
+            r->setup(installationRadius);
         }
         
-        sort(rods.begin(), rods.end());
-        for(int i=0; i<rods.size(); i++) {
-            rods[i].setIndex(i);
-            rods[i].setDeviceId(i); // HACK: replace this with correct map
+        sort(rods.begin(), rods.end(), [](const Rod *a, const Rod *b) {
+            return b->getSortScore() < a->getSortScore();
+        });
+
+        for(int i = 0; i < rods.size(); i++) {
+            rods[i]->setIndex(i);
+            rods[i]->setDeviceId(i); // HACK: replace this with correct map
         }
-        
         
         Rod::loadDeviceIdToRodMap(rods);
         
@@ -621,10 +627,10 @@ vector<Rod*> checkRodCollisions(ofVec3f p, float radius, bool setAmp = true) {
     //    ofSoundPlayer *psound = params["sound.local.enabled"] ? &sound : NULL;
     
     for(int i=0; i<rods.size(); i++) {
-        Rod &r = rods[i];
-        if((p - r.getGlobalPosition()).lengthSquared() < radius * radius) {
-            if(setAmp) r.setAmp(1);
-            hitRods.push_back(&r);
+        Rod *r = rods[i];
+        if((p - r->getGlobalPosition()).lengthSquared() < radius * radius) {
+            if(setAmp) r->setAmp(1);
+            hitRods.push_back(r);
         }
         //            r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
     }
@@ -681,14 +687,14 @@ void testApp::updateRodLaserAnimation() {
         
         ofPixelsRef pixels = animationVideo->getPixelsRef();
         for(int i=0; i<rods.size(); i++) {
-            Rod &r = rods[i];
+            Rod *r = rods[i];
             ofVec2f imagePos;
-            imagePos.x = ofMap(r.getX(), -installationSize.x/2, installationSize.x/2, 0, animationVideo->getWidth());
-            imagePos.y = ofMap(r.getZ(), -installationSize.z/2, installationSize.z/2, 0, animationVideo->getHeight());
+            imagePos.x = ofMap(r->getX(), -installationSize.x/2, installationSize.x/2, 0, animationVideo->getWidth());
+            imagePos.y = ofMap(r->getZ(), -installationSize.z/2, installationSize.z/2, 0, animationVideo->getHeight());
             //            if(pixels.getColor(imagePos.x, imagePos.y).r > 0) r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
             //            else r.amp = 0;
 //            r.setLaser(pixels.getColor(imagePos.x, imagePos.y).r / 255.0);
-            if(pixels.getColor(imagePos.x, imagePos.y).r > 50) r.setLaser(1);
+            if(pixels.getColor(imagePos.x, imagePos.y).r > 50) r->setLaser(1);
         }
     }
     
@@ -708,7 +714,7 @@ void testApp::updateRandomMusic() {
         if(ofGetElapsedTimeMillis() >= randomMusic_nextChangeMillis) {
             randomMusic_nextChangeMillis = ofGetElapsedTimeMillis() + 1000 * ofRandom(params["randomMusic.randomChangeTimeMin"], params["randomMusic.randomChangeTimeMax"]);
             int randomRodIndex = ofRandom(floor(rods.size()));
-            rods[randomRodIndex].setAmp(ofRandom(params["randomMusic.randomAmpMin"], params["randomMusic.randomAmpMax"]));
+            rods[randomRodIndex]->setAmp(ofRandom(params["randomMusic.randomAmpMin"], params["randomMusic.randomAmpMax"]));
         }
     }
 }
@@ -825,13 +831,13 @@ void testApp::updateRodTuning() {
     
     bool bRet = false;
     for(int i=0; i<rods.size(); i++) {
-        Rod &r = rods[i];
-        float distanceToCenter = r.getPolarCoordinatesNorm().x;
-        float angle = r.getPolarCoordinatesNorm().y;
+        Rod *r = rods[i];
+        float distanceToCenter = r->getPolarCoordinatesNorm().x;
+        float angle = r->getPolarCoordinatesNorm().y;
         
         int pitchIndex = 0;
-        if(noteRandomness) pitchIndex += noteRandomness * r.getPitchIndexOffset();
-        if(useIndex) pitchIndex += r.getIndex() * indexMultipler;
+        if(noteRandomness) pitchIndex += noteRandomness * r->getPitchIndexOffset();
+        if(useIndex) pitchIndex += r->getIndex() * indexMultipler;
         float distRatio = distanceToCenter;
         if(invert) distRatio = 1-distRatio;
         pitchIndex += distRatio * noteCountDistance;
@@ -848,9 +854,9 @@ void testApp::updateRodTuning() {
         }
         pitchIndex += inputPitchOffset;
         if(maxNoteCount > 0) {
-            r.heightNorm = ofNormalize(pitchIndex, 0, maxNoteCount);
+            r->heightNorm = ofNormalize(pitchIndex, 0, maxNoteCount);
         }
-        r.setPitchIndex(pitchIndex);
+        r->setPitchIndex(pitchIndex);
     }
 }
 
@@ -885,12 +891,12 @@ void testApp::sendRodOsc(bool bForce) {
         
         ofxOscBundle b;
         for(int i=0; i<rods.size(); i++) {
-            Rod &r = rods[i];
+            Rod *r = rods[i];
             ofxOscMessage m;
             m.clear();
             m.setAddress("/forestAmp");
             m.addIntArg(i);
-            m.addFloatArg(r.volume);
+            m.addFloatArg(r->volume);
             b.addMessage(m);
         }
         oscSender->sendBundle(b);
@@ -898,9 +904,9 @@ void testApp::sendRodOsc(bool bForce) {
         if(bSendRodPositionsOsc) {
             b.clear();
             for(int i=0; i<rods.size(); i++) {
-                Rod &r = rods[i];
-                float distanceToCenter = r.getPolarCoordinatesNorm().x;
-                float angle = r.getPolarCoordinatesNorm().y;
+                Rod *r = rods[i];
+                float distanceToCenter = r->getPolarCoordinatesNorm().x;
+                float angle = r->getPolarCoordinatesNorm().y;
                 
                 ofxOscMessage m;
                 m.setAddress("/forestPos");
@@ -921,11 +927,11 @@ void testApp::sendRodOsc(bool bForce) {
             b.clear();
             float detuneAmount = 1 + (0.059 * 0.01 * (float)params["tuning.detuneAmount"]);
             for(int i=0; i<rods.size(); i++) {
-                Rod &r = rods[i];
+                Rod *r = rods[i];
                 ofxOscMessage m;
                 m.setAddress("/forestFreq");
                 m.addIntArg(i);
-                float freq = scaleManager.currentFreq(r.getPitchIndex()) * outputPitchMult;
+                float freq = scaleManager.currentFreq(r->getPitchIndex()) * outputPitchMult;
                 if(detuneAmount != 1) freq *= ofRandom(1/detuneAmount, 1*detuneAmount);
                 if(i==0) freq /= (float)params["tuning.subbassDivider"];
                 m.addFloatArg(freq);
@@ -955,10 +961,10 @@ void testApp::update() {
     
     // clear all laser values and fade rod Amps
     for(int i = 0; i < rods.size(); i++) {
-        Rod &r = rods[i];
+        Rod *r = rods[i];
 //        r.setLaser(0);
-        r.fadeAmp();
-        r.color = ofColor((float)params["rods.color"]);
+        r->fadeAmp();
+        r->color = ofColor((float)params["rods.color"]);
     }
     
     // update positions of virtual performers based on animation
@@ -989,8 +995,8 @@ void testApp::update() {
         }
         
 		for(int i=0; i<rods.size(); i++) {
-			Rod &r = rods[i];
-			r.setAmp(MAX(r.getAmp(), rodCommunicator->getAmplitude( r.getDeviceId() )));
+			Rod *r = rods[i];
+			r->setAmp(MAX(r->getAmp(), rodCommunicator->getAmplitude( r->getDeviceId() )));
 		}
 	}
 #endif
@@ -1014,10 +1020,10 @@ void testApp::update() {
     int volumePower = params["sound.osc.volumePower"];
     float totalVolume = 0;
 	for(int i = 0; i < rods.size(); i++) {
-        Rod &r = rods[i];
-        r.setLaserBasedonAmp();
-        r.volume = pow(r.getAmp(), volumePower);
-        totalVolume += r.volume;
+        Rod *r = rods[i];
+        r->setLaserBasedonAmp();
+        r->volume = pow(r->getAmp(), volumePower);
+        totalVolume += r->volume;
     }
     params["sound.compression.totalVolume"] = totalVolume;
     params["sound.compression.avgVolume"] = totalVolume / rods.size();
@@ -1036,14 +1042,14 @@ void testApp::update() {
     // send laser value back down serial
 #ifdef DOING_SERIAL
 	for(int i=0; i<rods.size(); i++) {
-		rodCommunicator->setLaser(rods[i].getDeviceId(), rods[i].getLaser());
+		rodCommunicator->setLaser(rods[i]->getDeviceId(), rods[i]->getLaser());
 	}
 	
 #endif
     
     {
         int showRodAmp = MIN((int)params["rods.showRodAmp"], rods.size()-1);
-        params["rods.selectedRodAmp"] = rods[showRodAmp].getAmp();
+        params["rods.selectedRodAmp"] = rods[showRodAmp]->getAmp();
     }
     
 	// send OSC
@@ -1134,7 +1140,7 @@ void testApp::draw() {
     ofPushStyle();
     
     drawFloor();
-    for(int i=0; i<rods.size(); i++) rods[i].draw();
+    for(int i=0; i<rods.size(); i++) rods[i]->draw();
     for(int i=0; i<performers.size(); i++) {
         performers[i].draw();
         ofVec3f v = performers[i].getOrientationEuler();
@@ -1208,6 +1214,26 @@ void testApp::draw() {
     drawSerialProgress();
     
 #endif
+//    ofRectangle debugR(200, 100, 400, 400);
+//    ofSetColor(0, 0, 0);
+//    ofDrawRectangle(debugR);
+//    ofSetColor(200, 0, 0);
+//    
+//    for(int i = 0; i < rods.size(); i++) {
+//        Rod *r = rods[i];
+//        
+//        glm::vec3 imagePos;
+//        imagePos.x = ofMap(r->getX(), -installationSize.x/2, installationSize.x/2, debugR.getLeft(), debugR.getHeight());
+//        imagePos.y = ofMap(r->getZ(), -installationSize.z/2, installationSize.z/2, debugR.getTop(), debugR.getBottom());
+//        ofCircle(imagePos, 5);
+//        //            if(pixels.getColor(imagePos.x, imagePos.y).r > 0) r.trigger(retriggerThreshold, scaleManager, outputPitchMult, maxNoteCount, volumePitchMult, volumeVariance, psound);
+//        //            else r.amp = 0;
+//        //            r.setLaser(pixels.getColor(imagePos.x, imagePos.y).r / 255.0);
+//        //if(pixels.getColor(imagePos.x, imagePos.y).r > 50) r.setLaser(1);
+//        
+//       // printf("[%d]    %3.3f,   %3.3f      =>       %3.3f, %3.3f\n",i,  imagePos.x, imagePos.y, r.getX(), r.getZ());
+//    }
+    
 	
 }
 
@@ -1252,14 +1278,14 @@ void testApp::keyPressed(int key){
             
         case '>':
         case '.':
-            if(selectedRod &&  selectedRod->getIndex() < rods.size()-1) selectedRod = &rods[selectedRod->getIndex()+1];
-            else selectedRod = &rods[0];
+            if(selectedRod &&  selectedRod->getIndex() < rods.size()-1) selectedRod = rods[selectedRod->getIndex()+1];
+            else selectedRod = rods[0];
             break;
             
         case '<':
         case ',':
-            if(selectedRod && selectedRod->getIndex() > 0) selectedRod = &rods[selectedRod->getIndex()-1];
-            else selectedRod = &rods[rods.size()-1];
+            if(selectedRod && selectedRod->getIndex() > 0) selectedRod = rods[selectedRod->getIndex()-1];
+            else selectedRod = rods[rods.size()-1];
             break;
             
         case 'R':
