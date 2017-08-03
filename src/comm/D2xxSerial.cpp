@@ -126,9 +126,28 @@ bool D2xxSerial::isOk() {
     
     
     FT_STATUS status = FT_GetStatus (handle, &amountInRxQueue,&amountInTxQueue, &eventStatus);
+    
+    if(status==FT_OK) {
+        return true;
+    } else {
+        printf("Error checking status on '%s': %s\n", serialNo.c_str(), getError(status));
+        return false;
+    }
+}
+
+bool D2xxSerial::resetDevice() {
+    FT_STATUS status = FT_ResetDevice(handle);
+    
+    if(status==FT_OK) {
+        return true;
+    } else {
+        printf("error resetting\n");
+        return false;
+    }
 }
 bool D2xxSerial::open(string who, int baudRate) {
 	
+    serialNo = who;
 	FT_STATUS err = FT_OpenEx((void*)who.c_str(), FT_OPEN_BY_SERIAL_NUMBER, &handle);
 	//FT_STATUS err = FT_Open(0,&handle);
 	if (err != FT_OK) {

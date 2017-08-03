@@ -217,21 +217,28 @@ void RodCommunicator::threadedFunction() {
             for(int i = 0; i < ports.size(); i++) {
                 ports[i].retrieve();
             }
+            loopCount++;
+            
+            if(loopCount%20==0) {
+                checkStatus();
+            }
+            
         }
         
-        loopCount++;
         
-        if(loopCount%20==0) {
-            checkStatus();
-        }
 	}
     stopped = true;
 }
 
-void RodCommunicator::checkStatus() {
+bool RodCommunicator::checkStatus() {
+    bool ok = true;
     for(int i = 0; i < ports.size(); i++) {
-        ports[i].checkStatus();
+        if(!ports[i].checkStatus()) {
+            ok = false;
+            ports[i].resetDevice();
+        }
     }
+    return ok;
 }
 
 void RodCommunicator::stop() {

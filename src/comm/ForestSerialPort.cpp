@@ -57,7 +57,9 @@ void ForestSerialPort::setLaser(int laserId, bool on) {
 	if(on) bitSet(laserBitmap[whichChar], whichBit);
 	else bitClear(laserBitmap[whichChar], whichBit);
 }
-
+bool ForestSerialPort::resetDevice() {
+    return serial.resetDevice();
+}
 
 
 ForestSerialPort::~ForestSerialPort() {
@@ -68,9 +70,12 @@ ForestSerialPort::~ForestSerialPort() {
 void ForestSerialPort::open(string portSerialNumber) {
 	this->serialNo = portSerialNumber;
 	if(serial.open(portSerialNumber, SERIAL_PORT_SPEED)) {
+        
 		printf("Connected to '%s' successfully\n", portSerialNumber.c_str());
-		ofSleepMillis(10);
-		// this is supposed to be good
+		
+        ofSleepMillis(10);
+		serial.resetDevice();
+        // this is supposed to be good
 		serial.setLatencyTimer(2);
 		ofSleepMillis(10);
 		int a = serial.available();
@@ -156,19 +161,26 @@ bool ForestSerialPort::tryToRead(unsigned char *buff, int length, int timeout) {
 	return false;
 }
 
-void ForestSerialPort::checkStatus() {
+bool ForestSerialPort::checkStatus() {
     int timeoutCount = 0;
-    for(int i = 0; i < rodInfos.size(); i++) {
-        if(rodInfos[i].timeout>0.5) {
+    bool ok = true;
+    for(auto it = rodInfos.begin(); it != rodInfos.end(); it++) {
+        
+
+        if((*it).second.timeout>0.5) {
             timeoutCount++;
         }
     }
     if(timeoutCount==rodInfos.size()) {
         // all rods are disconnected
+        printf("all rods disconnected on %s\n", serialNo.c_str());
+        ok = false;
     }
     if(!serial.isOk()) {
         printf("Serial port not ok\n");
+        ok = false;
     }
+    return ok;
 }
 
 

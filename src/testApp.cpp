@@ -1323,6 +1323,11 @@ void testApp::keyPressed(int key){
             
             
 #ifdef DOING_SERIAL
+        case 'c':
+            if(rodCommunicator->checkStatus()) {
+                printf("All rods good\n");
+            }
+            break;
 		case '\t':
 			showRodGui ^= true;
 			break;

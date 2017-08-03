@@ -50,13 +50,14 @@ public:
 	bool close();
 	
     
-    void checkStatus();
+    bool checkStatus();
 	
 	// how much progress has been made in
 	// discovering the lasers. used for startup
 	float progress;
 	
     void reset();
+    bool resetDevice();
 	int getRodCount();
 	
 	// draw some debug info

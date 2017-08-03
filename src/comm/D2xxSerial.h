@@ -27,7 +27,7 @@ public:
 	
 	int available();
 	
-	
+    bool resetDevice();
 	int read(unsigned char *buffer, int length);
 	
 	
@@ -43,5 +43,5 @@ public:
 private:
 	bool opened;	
 	FT_HANDLE handle;
-	
+    string serialNo;
 };

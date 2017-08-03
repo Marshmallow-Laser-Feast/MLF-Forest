@@ -55,6 +55,7 @@ public:
     bool paused;    
     
     bool stopped = true;
+    bool checkStatus();
     
 protected:
 	void threadedFunction();
@@ -63,7 +64,7 @@ private:
 
 
 	void discover();
-    void checkStatus();
+    
 	
 	enum CommunicatorMode {
 		DISCOVERING,
