@@ -1,8 +1,6 @@
 # LASER FOREST
 Copyright © 2013, Marshmallow Laser Feast
 
-274577800
-834xgj
 This is the source code for our LASER FOREST project
 <https://vimeo.com/64652497>
 <https://vimeo.com/64662736>
@@ -14,14 +12,14 @@ The source code is released as is, warts and all, with all last minute fixes hac
 
 
 # Dependencies
-Current version built on OSX 10.9.3
+Current version built on OSX 10.12.5
 
 Written mainly in C++ with [openFrameworks](http://openframeworks.cc)
-(current version built with v0.8.2)
+(current version built with v0.10.0)
 
 Uses [SuperCollider](http://supercollider.sourceforge.net/) for audio synthesis
 
-Requires D2xx FTDI drivers for RS485 comms. v1.4.4 included in repo. Alternatively download latest drivers from <http://www.ftdichip.com/Drivers/D2XX.htm>. (they're also included in the repo)
+Requires D2xx FTDI drivers for RS485 comms. v1.2.2 included in repo.  (do not use the latest version (1.4.4) - I think it's less stable)Alternatively download from <http://www.ftdichip.com/Drivers/D2XX.htm>. 
 
 In order for them to work, you need to disable your own FTDI drivers - you can install D2xxHelper in ftdi/installers or you can also do this manually on the command line by typing:
 
