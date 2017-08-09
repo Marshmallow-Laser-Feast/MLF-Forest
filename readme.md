@@ -1,8 +1,6 @@
 # LASER FOREST
 Copyright © 2013, Marshmallow Laser Feast
 
-274577800
-834xgj
 This is the source code for our LASER FOREST project
 <https://vimeo.com/64652497>
 <https://vimeo.com/64662736>
