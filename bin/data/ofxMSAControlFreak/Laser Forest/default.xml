@@ -31,8 +31,8 @@
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="view" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="fov" value="40"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotx" value="45"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="roty" value="32"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotx" value="86"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="roty" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotz" value="0"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="layout">
@@ -43,7 +43,9 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rodCountWidth" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rodCountLength" value="10"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomness" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="image" value="10"></Parameter>
+            <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="image" value="2"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="angleOffset" value="0.508928537"></Parameter>
+            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="angleFlip" value="0"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="rods">
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="heightMin" value="250"></Parameter>
@@ -89,7 +91,7 @@
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="animation">
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="laser">
                 <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="file" value="0"></Parameter>
-                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="loop" value="1"></Parameter>
+                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="loop" value="0"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="1.000000000"></Parameter>
                 <Parameter type="N3msa12controlfreak13ParameterBoolE" name="playRandom" value="0"></Parameter>
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomChangeTimeMin" value="5"></Parameter>
@@ -121,8 +123,8 @@
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="60"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="compression">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="0.000000103"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.000000013"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="0.018532349"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.000280793"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">
@@ -143,7 +145,7 @@
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="comms">
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="learnMode" value="0"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="learnAmpThreshold" value="0.500000000"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="learnAmpThreshold" value="0.477678567"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="forceLasersOn" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="param1" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="param2" value="0"></Parameter>
@@ -152,7 +154,7 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipThreshold" value="45"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserTimeoutValue" value="66"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserHoldoff" value="10"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="ampGain" value="1.000000000"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="ampGain" value="3.482142925"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="gateThreshold" value="1000"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="attackThreshold" value="1000"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="attackSmoothing" value="4.000000000"></Parameter>

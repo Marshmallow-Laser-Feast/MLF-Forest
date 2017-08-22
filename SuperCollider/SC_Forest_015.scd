@@ -27,7 +27,7 @@ e.g message: ['/forestAmp", 15, 0.33] means set the amp of rod 15 to 0.33
 (
 // initialise
 ~rodCount = 151;
-~surroundSpeakerCount = 4;
+~surroundSpeakerCount = 8;
 
 ~recordingsFolder = "~/Desktop";
 ~recChannels = 2;  // default is stereo recordings
@@ -53,7 +53,10 @@ s.recSampleFormat = ~recSampleFormat;
 s.recChannels = ~recChannels;
 // start server
     "INITING0".postln;
-
+"Num channels".postln;
+q.numOutputBusChannels.postln;
+//q.device ="MOTU 828mk3 Hybrid";
+//q.inputStreamsEnabled = 0100000;
 s.waitForBoot({~funcStartSystem.value}, 100, {"couldn't boot".postln});
 
 // sound functions - add new rows at end to create more sound options (see template row)
