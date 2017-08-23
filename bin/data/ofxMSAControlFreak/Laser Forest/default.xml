@@ -123,8 +123,8 @@
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="60"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="compression">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="0.018532349"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.000280793"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="1.074782372"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.016284581"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning">

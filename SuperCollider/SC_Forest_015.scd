@@ -44,6 +44,7 @@ e.g message: ['/forestAmp", 15, 0.33] means set the amp of rod 15 to 0.33
 ~globalVolumeBus = Bus.control(s, 1);
 ~globalSoundShapeBus = Bus.control(s, 1);
 
+~presets = ["normal", "all-on", "up-down"];
 
 
 // set server outputs
@@ -237,6 +238,7 @@ s.waitForBoot({~funcStartSystem.value}, 100, {"couldn't boot".postln});
 	~funcKillSynths.value;
 	~funcKillOsc.value;
 	if (~meter.notNil) {~meter.window.close;  ~meter = nil; "Meters stopped".postln; };
+	~ww.close;
 	s.quit;
 };
 
@@ -302,6 +304,11 @@ s.waitForBoot({~funcStartSystem.value}, 100, {"couldn't boot".postln});
 	s.stopRecording;
 	~recordingStatusText.string = "Status: Not Recording";
 };
+
+
+
+
+
 
 ////////////////////////////////////////////////////////////
 
@@ -455,4 +462,31 @@ Button(w, Rect(0, 0, 380, 30))
 	w.close;
 });
 
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+~presetNetAddr = NetAddr("127.0.0.1", 12345); // for sending preset names to the app
+~winY = 30;
+~ww = Window.new("PRESETS", Rect( 0, 400, 200, 200));
+~ww.setTopLeftBounds(Rect(0, ~winY, ~ww.bounds.width, ~ww.bounds.height));
+w.setTopLeftBounds(Rect(w.bounds.left, ~winY, w.bounds.width, w.bounds.height));
+
+~ww.view.decorator = FlowLayout( ~ww.view.bounds, 10@10, 20@5 );
+~ww.onClose_({
+	"User has Quit".postln;
+	w.close;
+	~funcQuit.value;
+});
+~ww.front;
+~presets.do{ arg name;
+Button(~ww, Rect(0, 0, ~ww.bounds.width - 20, 30))
+	.states_([
+		[name, Color.white, Color.grey],
+	])
+	.action_({
+	"switching to " ++ name.postln;
+		~presetNetAddr.sendMsg("/preset", name ++ ".xml");
+	});
+}
 )

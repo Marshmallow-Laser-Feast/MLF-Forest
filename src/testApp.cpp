@@ -19,7 +19,6 @@
 #include "ScaleManager.h"
 #include "ofxOpenCv.h"
 //#include "ofxAssimpModelLoader.h"
-#include "ofxOsc.h"
 //#include "ofxMidi.h"
 
 
@@ -453,8 +452,18 @@ void testApp::setup() {
     
     sendRodOsc(true);
     checkAndInitRodLayout(true);
+    oscReceiver.setup(12345);
 }
-
+void testApp::receiveOsc() {
+    ofxOscMessage m;
+    while(oscReceiver.getNextMessage(m)) {
+        if(m.getAddress()=="/preset") {
+            string filename = m.getArgAsString(0);
+            printf("Loading xml file '%s'\n", filename.c_str());
+            params.loadXmlSchema(filename);
+        }
+    }
+}
 
 //--------------------------------------------------------------
 void testApp::checkAndInitRodLayout(bool bForceUpdate) {
@@ -964,7 +973,7 @@ void testApp::sendRodOsc(bool bForce) {
 //--------------------------------------------------------------
 void testApp::update() {
 //    msa::controlfreak::update();
-    
+    receiveOsc();
     checkAndInitRodLayout();
     checkAndInitPerformers();
     checkAndInitFbo();
