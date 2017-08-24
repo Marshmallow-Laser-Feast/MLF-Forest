@@ -13,7 +13,7 @@
 
 
 #include "testApp.h"
-
+#include "Sequencer.h"
 #include "Rod.h"
 #include "Performer.h"
 #include "ScaleManager.h"
@@ -39,6 +39,7 @@ ofEasyCam easyCam;
 vector<ofLight*> lights;
 ofFbo fbo;
 
+Sequencer sequencer;
 
 //ofSoundPlayer sound;
 
@@ -453,6 +454,11 @@ void testApp::setup() {
     sendRodOsc(true);
     checkAndInitRodLayout(true);
     oscReceiver.setup(12345);
+    sequencer.load("sequence.xml", bind(&testApp::loadPreset, this, std::placeholders::_1));
+}
+
+void testApp::loadPreset(string name) {
+    params.loadXmlSchema(name + ".xml");
 }
 void testApp::receiveOsc() {
     ofxOscMessage m;
