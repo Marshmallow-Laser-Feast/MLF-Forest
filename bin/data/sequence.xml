@@ -1,3 +1,3 @@
-<sequence playing="1" currPreset="0">
+<sequence playing="0" currPreset="0">
 	<event presetName="default" durationMinutes="10" />
 </sequence>
