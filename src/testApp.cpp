@@ -19,7 +19,6 @@
 #include "ScaleManager.h"
 #include "ofxOpenCv.h"
 //#include "ofxAssimpModelLoader.h"
-#include "ofxOsc.h"
 //#include "ofxMidi.h"
 
 
@@ -229,6 +228,8 @@ void testApp::setup() {
         params.addInt("rodCountLength").setTooltip("number of rods in length (ignored if an image is used)").setClamp(true).setRange(1, 60).set(10);//.trackVariable(&rodCount.z);
         params.addInt("randomness").setTooltip("amount of randomness in position (cm)").setRange(0, 1000).setClamp(true);
         params.addNamedIndex("image").setTooltip("use a black & white image for rod layout (rodCountWidth & rodCountLength will be ignored)");
+        params.addFloat("angleOffset").setRange(-1, 1).setClamp(true);
+        params.addBool("angleFlip");
     } params.endGroup();
     params.startGroup("rods").close(); {
         params.addInt("heightMin").setTooltip("minimum rod height (cm)").setRange(1, 1000).setClamp(true).set(180).trackVariable(&Rod::heightMin);
@@ -451,8 +452,18 @@ void testApp::setup() {
     
     sendRodOsc(true);
     checkAndInitRodLayout(true);
+    oscReceiver.setup(12345);
 }
-
+void testApp::receiveOsc() {
+    ofxOscMessage m;
+    while(oscReceiver.getNextMessage(m)) {
+        if(m.getAddress()=="/preset") {
+            string filename = m.getArgAsString(0);
+            printf("Loading xml file '%s'\n", filename.c_str());
+            params.loadXmlSchema(filename);
+        }
+    }
+}
 
 //--------------------------------------------------------------
 void testApp::checkAndInitRodLayout(bool bForceUpdate) {
@@ -869,7 +880,16 @@ void testApp::resetAll() {
     selectedRod = NULL;
     params["animation.laser.file"] = 0;
 }
-
+float modAngle(float angle, float offset, bool flip) {
+    if(flip) {
+        angle = 1 - angle;
+    }
+    
+    angle += offset;
+    while(angle<0) angle += 1;
+    while(angle>1) angle -= 1;
+    return angle;
+}
 //--------------------------------------------------------------
 void testApp::sendRodOsc(bool bForce) {
     if(params["sound.osc.enabled"].hasChanged()) {
@@ -901,6 +921,9 @@ void testApp::sendRodOsc(bool bForce) {
         }
         oscSender->sendBundle(b);
         
+        float offset = params["layout.angleOffset"];
+        bool flip = params["layout.angleFlip"];
+        
         if(bSendRodPositionsOsc) {
             b.clear();
             for(int i=0; i<rods.size(); i++) {
@@ -911,13 +934,13 @@ void testApp::sendRodOsc(bool bForce) {
                 ofxOscMessage m;
                 m.setAddress("/forestPos");
                 m.addIntArg(i);
-                m.addFloatArg(angle);
+                m.addFloatArg(modAngle(angle, offset, flip));
                 b.addMessage(m);
                 
                 m.clear();
                 m.setAddress("/forestCentre");
                 m.addIntArg(i);
-                m.addFloatArg(1.0 - distanceToCenter);
+                m.addFloatArg(0);//1.0 - distanceToCenter);
                 b.addMessage(m);
             }
             oscSender->sendBundle(b);
@@ -950,7 +973,7 @@ void testApp::sendRodOsc(bool bForce) {
 //--------------------------------------------------------------
 void testApp::update() {
 //    msa::controlfreak::update();
-    
+    receiveOsc();
     checkAndInitRodLayout();
     checkAndInitPerformers();
     checkAndInitFbo();

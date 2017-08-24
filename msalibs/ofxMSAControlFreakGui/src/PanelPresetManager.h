@@ -92,7 +92,10 @@ namespace msa {
                     ParameterGroup *panelParams = dynamic_cast<ParameterGroup*>(&panel->getParameter());
                     if(panelParams) {
                         vector<string> presetsList = panelParams->getPresetsList();
-                        for(int i=0; i<presetsList.size(); i++) presetsNamedIndex->addLabel(presetsList[i]);
+                        for(int i=0; i<presetsList.size(); i++) {
+                            printf("adding %s\n", presetsList[i].c_str());
+                            presetsNamedIndex->addLabel(presetsList[i]);
+                        }
                     } else {
                         ofLogError() << "msa::controlfreak::gui::PanelPresetManager::readDir - no PanelParams";
                     }

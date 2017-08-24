@@ -15,7 +15,7 @@
 #include "ofxMSAControlFreakGui.h"
 //#include "ofxMidi.h"
 #include "ofxAssimpModelLoader.h"
-
+#include "ofxOsc.h"
 class testApp : public ofBaseApp {
 //, public ofxMidiListener {
 
@@ -34,7 +34,7 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
-    
+    void receiveOsc();
 //    virtual void newMidiMessage(ofxMidiMessage& msg);
     
     ofxAssimpModelLoader venueModel;
@@ -44,6 +44,7 @@ public:
     msa::controlfreak::ParameterGroup params;
     msa::controlfreak::gui::Gui gui;
     
+    ofxOscReceiver oscReceiver;
 
     void updateFilesGroup(string paramPath, string filePath, bool bAddNone);
     void checkAndInitRodLayout(bool bForceUpdate = false);

@@ -352,7 +352,7 @@ namespace msa {
                 string s = dir[i];
                 int slash = s.rfind("/");
                 if(slash!=-1) {
-                    s = s.substr(0, slash);
+                    s = s.substr(slash+1);
                 }
                 ret.push_back(s);
             }
