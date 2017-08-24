@@ -464,6 +464,7 @@
 		E90542C149C83316678AB011 /* cxmisc.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = cxmisc.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv/cxmisc.h; sourceTree = SOURCE_ROOT; };
 		E93D421BB41B892141AC9F25 /* bufferpool.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = bufferpool.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/core/bufferpool.hpp; sourceTree = SOURCE_ROOT; };
 		E9998694E5001F9CF0B13BF0 /* ofxXmlPoco.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlPoco.cpp; path = ../../../addons/ofxPoco/src/ofxXmlPoco.cpp; sourceTree = SOURCE_ROOT; };
+		EA19A2FC1F4F02DC00683F12 /* Sequencer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequencer.h; sourceTree = "<group>"; };
 		EA1F6ECC1F33901200749CB8 /* libftd2xx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libftd2xx.a; path = ftdi/lib/libftd2xx.a; sourceTree = SOURCE_ROOT; };
 		EA20B2FF1F1D060600412021 /* opencv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = opencv.a; sourceTree = "<group>"; };
 		EA20B3021F1D064C00412021 /* assimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = assimp.a; sourceTree = "<group>"; };
@@ -1361,6 +1362,7 @@
 				97C38E99A7D76883A7B67F11 /* RodMapper.cpp */,
 				424E0074A33BB76B6A7A645A /* RodMapper.h */,
 				94F7DF355F43B75D52A14905 /* Scale.h */,
+				EA19A2FC1F4F02DC00683F12 /* Sequencer.h */,
 				B68607458608EA9F769A3506 /* ScaleManager.h */,
 				00A1BFCBB38848AD0E0C8539 /* testApp.cpp */,
 				2D129AB0F7D46B8DFCEADEDB /* testApp.h */,

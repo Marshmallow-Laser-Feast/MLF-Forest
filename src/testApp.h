@@ -35,6 +35,8 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     void receiveOsc();
+    
+    void loadPreset(string name);
 //    virtual void newMidiMessage(ofxMidiMessage& msg);
     
     ofxAssimpModelLoader venueModel;

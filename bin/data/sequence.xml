@@ -1,0 +1,5 @@
+<sequence playing="1" currPreset="1">
+	<event presetName="normal" durationMinutes="0.1" />
+	<event presetName="all-on" durationMinutes="0.1" />
+	<event presetName="revert" durationMinutes="0.1" />
+</sequence>
