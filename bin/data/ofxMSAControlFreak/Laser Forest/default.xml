@@ -48,7 +48,7 @@
                 <label2>first person</label2>
             </Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="fov" value="40" min="1" max="100" doClamp="1" inc="1" doSnap="0" path="Laser Forest.camera.fov" tooltip=""></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="1" min="1" max="0" doClamp="1" inc="1" doSnap="0" path="Laser Forest.camera.trackPerson" tooltip=""></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="trackPerson" value="0" min="1" max="0" doClamp="1" inc="1" doSnap="0" path="Laser Forest.camera.trackPerson" tooltip=""></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotx" value="86" min="-360" max="360" doClamp="1" inc="1" doSnap="0" path="Laser Forest.camera.rotx" tooltip=""></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="roty" value="0" min="-360" max="360" doClamp="1" inc="1" doSnap="0" path="Laser Forest.camera.roty" tooltip=""></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="rotz" value="0" min="-360" max="360" doClamp="1" inc="1" doSnap="0" path="Laser Forest.camera.rotz" tooltip=""></Parameter>
@@ -96,10 +96,10 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="diameter" value="7" min="1" max="50" doClamp="1" inc="1" doSnap="0" path="Laser Forest.laser.diameter" tooltip=""></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="alwaysOn" value="0" min="0" max="1" doClamp="0" inc="1" doSnap="0" path="Laser Forest.laser.alwaysOn" tooltip=""></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="random" value="0" min="0" max="1" doClamp="0" inc="1" doSnap="0" path="Laser Forest.laser.random" tooltip=""></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserRandomSkipFrame" value="2" min="0" max="100" doClamp="1" inc="1" doSnap="0" path="Laser Forest.laser.laserRandomSkipFrame" tooltip=""></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="laserRandomProbability" value="0.300000012" min="0.000000000" max="1.000000000" doClamp="1" inc="0.010000000" doSnap="0" path="Laser Forest.laser.laserRandomProbability" tooltip=""></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="triggerThreshold" value="0.053571429" min="0.000000000" max="1.000000000" doClamp="1" inc="0.010000000" doSnap="0" path="Laser Forest.laser.triggerThreshold" tooltip="turn laser on when amp increases above this"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="cutoffThreshold" value="0.553571403" min="0.000000000" max="1.000000000" doClamp="1" inc="0.010000000" doSnap="0" path="Laser Forest.laser.cutoffThreshold" tooltip="cut laser off when amp falls below this"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserRandomSkipFrame" value="14" min="0" max="100" doClamp="1" inc="1" doSnap="0" path="Laser Forest.laser.laserRandomSkipFrame" tooltip=""></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="laserRandomProbability" value="0.040178571" min="0.000000000" max="1.000000000" doClamp="1" inc="0.010000000" doSnap="0" path="Laser Forest.laser.laserRandomProbability" tooltip=""></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="triggerThreshold" value="0.245535716" min="0.000000000" max="1.000000000" doClamp="1" inc="0.010000000" doSnap="0" path="Laser Forest.laser.triggerThreshold" tooltip="turn laser on when amp increases above this"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="cutoffThreshold" value="0.616071403" min="0.000000000" max="1.000000000" doClamp="1" inc="0.010000000" doSnap="0" path="Laser Forest.laser.cutoffThreshold" tooltip="cut laser off when amp falls below this"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="performers" path="Laser Forest.performers" tooltip="">
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="count" value="0" min="0" max="30" doClamp="1" inc="1" doSnap="0" path="Laser Forest.performers.count" tooltip="number of performers"></Parameter>
@@ -128,9 +128,10 @@
                     <label2>../../../data/animations/laser/06. Up To Down.mov</label2>
                     <label3>../../../data/animations/laser/07. Left To Right.mov</label3>
                     <label4>../../../data/animations/laser/08. Right To Left.mov</label4>
+                    <label5>../../../data/animations/laser/tree_pulse_001.mov</label5>
                 </Parameter>
-                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="loop" value="0" min="0" max="1" doClamp="0" inc="1" doSnap="0" path="Laser Forest.animation.laser.loop" tooltip=""></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="1.000000000" min="0.000000000" max="4.000000000" doClamp="1" inc="0.010000000" doSnap="1" path="Laser Forest.animation.laser.speed" tooltip=""></Parameter>
+                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="loop" value="1" min="0" max="1" doClamp="0" inc="1" doSnap="0" path="Laser Forest.animation.laser.loop" tooltip=""></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="4.000000000" min="0.000000000" max="4.000000000" doClamp="1" inc="0.010000000" doSnap="1" path="Laser Forest.animation.laser.speed" tooltip=""></Parameter>
                 <Parameter type="N3msa12controlfreak13ParameterBoolE" name="playRandom" value="0" min="0" max="1" doClamp="0" inc="1" doSnap="0" path="Laser Forest.animation.laser.playRandom" tooltip=""></Parameter>
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomChangeTimeMin" value="5" min="0" max="100" doClamp="1" inc="1" doSnap="0" path="Laser Forest.animation.laser.randomChangeTimeMin" tooltip="Change random animation after min this many seconds"></Parameter>
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="randomChangeTimeMax" value="15" min="0" max="100" doClamp="1" inc="1" doSnap="0" path="Laser Forest.animation.laser.randomChangeTimeMax" tooltip="Change random animation after max this many seconds"></Parameter>
@@ -172,8 +173,8 @@
                 <Parameter type="N3msa12controlfreak12ParameterIntE" name="sendFullFrameCount" value="60" min="0" max="600" doClamp="1" inc="1" doSnap="0" path="Laser Forest.sound.osc.sendFullFrameCount" tooltip="if this is non-zero, send full OSC every this many seconds"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="compression" path="Laser Forest.sound.compression" tooltip="">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="5.951064110" min="0.000000000" max="1.000000000" doClamp="0" inc="0.010000000" doSnap="0" path="Laser Forest.sound.compression.totalVolume" tooltip=""></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.090167642" min="0.000000000" max="1.000000000" doClamp="0" inc="0.010000000" doSnap="0" path="Laser Forest.sound.compression.avgVolume" tooltip=""></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="totalVolume" value="0.000032748" min="0.000000000" max="1.000000000" doClamp="0" inc="0.010000000" doSnap="0" path="Laser Forest.sound.compression.totalVolume" tooltip=""></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="avgVolume" value="0.000000496" min="0.000000000" max="1.000000000" doClamp="0" inc="0.010000000" doSnap="0" path="Laser Forest.sound.compression.avgVolume" tooltip=""></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="tuning" path="Laser Forest.tuning" tooltip="">
@@ -207,8 +208,8 @@
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="param1" value="0" min="0" max="255" doClamp="1" inc="1" doSnap="0" path="Laser Forest.comms.param1" tooltip="Haven&apos;t got info on this from Mike yet"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="param2" value="0" min="0" max="255" doClamp="1" inc="1" doSnap="0" path="Laser Forest.comms.param2" tooltip="Haven&apos;t got info on this from Mike yet"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="param3" value="0" min="0" max="255" doClamp="1" inc="1" doSnap="0" path="Laser Forest.comms.param3" tooltip="Haven&apos;t got info on this from Mike yet"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipOverTimeConstant" value="20" min="0" max="255" doClamp="1" inc="1" doSnap="0" path="Laser Forest.comms.tipOverTimeConstant" tooltip="Tip-over filter time constant. 0-31, 31 = slowest"></Parameter>
-            <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipThreshold" value="60" min="0" max="255" doClamp="1" inc="1" doSnap="0" path="Laser Forest.comms.tipThreshold" tooltip="Tip-over threshold (typ approx 40-50), arbitary units,not degrees!"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipOverTimeConstant" value="10" min="0" max="255" doClamp="1" inc="1" doSnap="0" path="Laser Forest.comms.tipOverTimeConstant" tooltip="Tip-over filter time constant. 0-31, 31 = slowest"></Parameter>
+            <Parameter type="N3msa12controlfreak12ParameterIntE" name="tipThreshold" value="45" min="0" max="255" doClamp="1" inc="1" doSnap="0" path="Laser Forest.comms.tipThreshold" tooltip="Tip-over threshold (typ approx 40-50), arbitary units,not degrees!"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserTimeoutValue" value="66" min="0" max="255" doClamp="1" inc="1" doSnap="0" path="Laser Forest.comms.laserTimeoutValue" tooltip="Laser timeout value. Laser will blank if no new command is received before timeout. Units of 2.048mS"></Parameter>
             <Parameter type="N3msa12controlfreak12ParameterIntE" name="laserHoldoff" value="10" min="0" max="255" doClamp="1" inc="1" doSnap="0" path="Laser Forest.comms.laserHoldoff" tooltip="Time laser must be vertical before turning on after tip-over condition cleared, units of 16mS"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="ampGain" value="3.482142925" min="0.000000000" max="10.000000000" doClamp="1" inc="0.010000000" doSnap="0" path="Laser Forest.comms.ampGain" tooltip="how much to amplify the amplitude signal before clipping"></Parameter>
