@@ -69,6 +69,7 @@
 		EA20B3001F1D060600412021 /* opencv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA20B2FF1F1D060600412021 /* opencv.a */; };
 		EA20B3031F1D065100412021 /* assimp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA20B3021F1D064C00412021 /* assimp.a */; };
 		EAC7DEAE1F3392CC000D04E1 /* libftd2xx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1F6ECC1F33901200749CB8 /* libftd2xx.a */; };
+		EADE13492190A8E00061AE5B /* libIrrXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EADE13482190A8E00061AE5B /* libIrrXML.a */; };
 		FB09C6B2A1DA0EA217240CB8 /* ofxCvGrayscaleImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 057122A817D12571F8C0C7A4 /* ofxCvGrayscaleImage.cpp */; };
 /* End PBXBuildFile section */
 
@@ -557,6 +558,7 @@
 		EA5BE9631F1D01A200F97E94 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		EA5BE9651F1D01A200F97E94 /* ofxMSAOrderedPointerMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMSAOrderedPointerMap.h; sourceTree = "<group>"; };
 		EA83DF139B3F2085C1A56C49 /* ofxAssimpAnimation.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxAssimpAnimation.h; path = ../../../addons/ofxAssimpModelLoader/src/ofxAssimpAnimation.h; sourceTree = SOURCE_ROOT; };
+		EADE13482190A8E00061AE5B /* libIrrXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libIrrXML.a; sourceTree = "<group>"; };
 		EB4C1D48319ED2AFFE26D407 /* imgcodecs.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = imgcodecs.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/imgcodecs.hpp; sourceTree = SOURCE_ROOT; };
 		EC1D6063F6A466C2C0624963 /* rodStructs.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = rodStructs.cpp; path = src/comm/rodStructs.cpp; sourceTree = SOURCE_ROOT; };
 		ECC34C470C60F0A2AE2761B1 /* random.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = random.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/random.h; sourceTree = SOURCE_ROOT; };
@@ -595,6 +597,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EADE13492190A8E00061AE5B /* libIrrXML.a in Frameworks */,
 				EA20B3001F1D060600412021 /* opencv.a in Frameworks */,
 				EA20B3031F1D065100412021 /* assimp.a in Frameworks */,
 				EAC7DEAE1F3392CC000D04E1 /* libftd2xx.a in Frameworks */,
@@ -1400,6 +1403,7 @@
 		EA20B3011F1D064C00412021 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				EADE13482190A8E00061AE5B /* libIrrXML.a */,
 				EA20B3021F1D064C00412021 /* assimp.a */,
 			);
 			name = osx;
@@ -2003,6 +2007,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ftdi/lib",
+					"$(PROJECT_DIR)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx/",
 				);
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_FRAMEWORKS)",
@@ -2284,6 +2289,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ftdi/lib",
+					"$(PROJECT_DIR)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx/",
 				);
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_FRAMEWORKS)",
@@ -2371,6 +2377,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ftdi/lib",
+					"$(PROJECT_DIR)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx/",
 				);
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_FRAMEWORKS)",
