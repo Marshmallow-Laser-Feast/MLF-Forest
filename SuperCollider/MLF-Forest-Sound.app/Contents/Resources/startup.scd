@@ -463,30 +463,30 @@ Button(w, Rect(0, 0, 380, 30))
 });
 
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-~presetNetAddr = NetAddr("127.0.0.1", 12345); // for sending preset names to the app
-~winY = 30;
-~ww = Window.new("PRESETS", Rect( 0, 400, 200, 200));
-~ww.setTopLeftBounds(Rect(0, ~winY, ~ww.bounds.width, ~ww.bounds.height));
-w.setTopLeftBounds(Rect(w.bounds.left, ~winY, w.bounds.width, w.bounds.height));
-
-~ww.view.decorator = FlowLayout( ~ww.view.bounds, 10@10, 20@5 );
-~ww.onClose_({
-	"User has Quit".postln;
-	w.close;
-	~funcQuit.value;
-});
-~ww.front;
-~presets.do{ arg name;
-Button(~ww, Rect(0, 0, ~ww.bounds.width - 20, 30))
-	.states_([
-		[name, Color.white, Color.grey],
-	])
-	.action_({
-	"switching to " ++ name.postln;
-		~presetNetAddr.sendMsg("/preset", name ++ ".xml");
-	});
-}
+//
+//
+// ///////////////////////////////////////////////////////////////////////////////
+// ~presetNetAddr = NetAddr("127.0.0.1", 12345); // for sending preset names to the app
+// ~winY = 30;
+// ~ww = Window.new("PRESETS", Rect( 0, 400, 200, 200));
+// ~ww.setTopLeftBounds(Rect(0, ~winY, ~ww.bounds.width, ~ww.bounds.height));
+// w.setTopLeftBounds(Rect(w.bounds.left, ~winY, w.bounds.width, w.bounds.height));
+//
+// ~ww.view.decorator = FlowLayout( ~ww.view.bounds, 10@10, 20@5 );
+// ~ww.onClose_({
+// 	"User has Quit".postln;
+// 	w.close;
+// 	~funcQuit.value;
+// });
+// ~ww.front;
+// ~presets.do{ arg name;
+// 	Button(~ww, Rect(0, 0, ~ww.bounds.width - 20, 30))
+// 	.states_([
+// 		[name, Color.white, Color.grey],
+// 	])
+// 	.action_({
+// 		"switching to " ++ name.postln;
+// 		~presetNetAddr.sendMsg("/preset", name ++ ".xml");
+// 	});
+//}
 )
